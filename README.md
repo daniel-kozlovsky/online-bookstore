@@ -55,3 +55,14 @@ It is important that the architecture of your book store exhibits:
 •Architecture and Design patterns (MVC,Observer, DAO,etc.) 
 
 •Testing (Robustness to user inputs,Performance and Security)
+
+
+TASKS:
+
+Nina: User stuff, cart, payment, purchase history.. etc
+
+Jess: Product Oriented stuff Analytics
+
+Daniel: Security (no analytics)
+
+Kevin: anything
