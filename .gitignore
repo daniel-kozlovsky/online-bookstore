@@ -1,53 +1,20 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/eclipse
-# Edit at https://www.toptal.com/developers/gitignore?templates=eclipse
-
 ### Eclipse ###
-.submission/metadata
-.submission/bin/
-.submission/tmp/
+submission/.metadata
+submission/BookStore/.project
+submission/BookStore/.classpath
+submission/BookStore/build
+submission/BookStore/target
+submission/.bin/
+submission/.tmp/
 *.tmp
 *.bak
 *.swp
 *~.nib
 local.properties
-.submission/settings/
-.submission/loadpath
-.submission/recommenders
-
-# External tool builders
-.submission/externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# PyDev specific (Python IDE for Eclipse)
-*.pydevproject
-
-# Java annotation processor (APT)
-.submission/factorypath
-
-# sbteclipse plugin
-.submission/target
-
-# STS (Spring Tool Suite)
-.submission/springBeans
-
-# Code Recommenders
-.submission/recommenders/
-
-# Annotation Processing
-.submission/apt_generated/
-.submission/apt_generated_test/
+submission/.settings/
+submission/.loadpath
+submission/BookStore/.settings
 
 
 
-# Uncomment this line if you wish to ignore the project description file.
-# Typically, this file would be tracked if it contains build/dependency configurations:
-#.project
-
-### Eclipse Patch ###
-# Spring Boot Tooling
-.submission/sts4-cache/
-
-# End of https://www.toptal.com/developers/gitignore/api/eclipse
