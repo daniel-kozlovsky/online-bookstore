@@ -24,7 +24,7 @@ test related:
 test/name_of_test
 ```
 
-for anything that is purely experimental meant to be thrownout
+for anything that is purely experimental meant to be thrownout:
 
 ```
 sandbox/name_of_experiment
