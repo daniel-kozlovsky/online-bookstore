@@ -16,6 +16,10 @@ header
 
 
 /* ========= Containers ======== */
+.slides_deals {display: none;}
+.slides_top {display:none;}
+.slides_rating {display:none;}
+.slides_profile {display:none;}
 
 .container {
 	background-color: white;
@@ -55,4 +59,24 @@ header
 	padding: 15px; 
 	height: 260px;
 	background-color: #aaa;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  width: auto;
+  color: black;
+  user-select: none;
+  top: 50%;
+}
+
+/* Position the "next button" to the right */
+.next {
+	right: 0;
+	float:right;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: #dedf7d;
 }
