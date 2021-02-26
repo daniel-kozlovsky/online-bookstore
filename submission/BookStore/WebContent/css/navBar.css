@@ -1,3 +1,11 @@
+/*******************************************************************
+ 
+	This file handles the view of the navigation bar for all pages 
+	related to the bookstore website.
+
+ *******************************************************************/
+ 
+
 @charset "UTF-8";
 
 .nav_bar {
@@ -19,7 +27,7 @@
 	font-size: 17px;
 }
 
-.nav_bar a:hover {
+.nav_bar .hovering:hover {
   background-color: #ddd;
   color: black;
 }
@@ -59,5 +67,12 @@
   width:60px;
   height:40px;
   margin-top: 8px; 
-  background-color: yellow;
+  background-color: white;
+  background-size: 100% 100%;
 }
+
+.nav_bar .nav_bar_img:hover {
+	opacity:0.6;
+}
+
+

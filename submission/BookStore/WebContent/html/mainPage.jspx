@@ -1,0 +1,992 @@
+<!-------------------------------------------------
+
+  This file handles the main page view and content
+  of the online bookstore website for users and 
+  visitors.
+  
+-------------------------------------------------->
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" >
+	<jsp:directive.page contentType="text/html; charset=UTF-8" 
+		pageEncoding="UTF-8" session="true"/>
+	<jsp:output doctype-root-element="html"
+		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+		omit-xml-declaration="true" />
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Online Book Store</title>
+	<link rel="StyleSheet" href="../css/mainPage.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<link rel="StyleSheet" href="../css/navBar.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<link rel="StyleSheet" href="../css/footer.css" type="text/css"
+		title="cse4413" media="screen, print" />
+    <script type="text/javascript" src="../js/slideShowController.js">;</script>
+</head>
+
+
+<body>
+	<!-- Navigation bar -->
+	<div class="nav_bar">
+		<a href="#main"><img class="nav_bar_img" src="../res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding active" href="#home">Home</a>
+		<c:choose>
+			<!-- customer -->
+		  	<c:when test="${applicationScope['user'] eq 'customer'}">
+				<a class="padding hovering" href="pastOrders">Past Orders</a>
+				<a class="padding hovering" href="#returns">Returns</a>
+				<p>Welcome Back ${firstName} ${lastName}</p>
+		  	</c:when>
+
+		  	<!-- visitor -->
+		  	<c:otherwise> 
+				<a class="padding hovering" href="#signIn">Sign In</a>
+				<a class="padding hovering" href="#register">Register</a>
+	  		</c:otherwise>
+		  	
+	  	</c:choose>
+		
+		<!-- shopping cart -->
+	  	<a href="shoppingCartReslut.html" style="float:right;" >
+	  		<img class="nav_bar_img" style="float:right;" src="../res/shoppingCart.png" alt="checkout" />
+  		</a>
+	  	
+	  	<!-- search bar -->
+		<div class="search_bar">
+	  		<form action="MainPage">
+	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
+	    		<button type="submit">search</button>
+	    	</form>
+	  	</div>
+	</div>
+	
+	<!-- headline -->
+	<header>Online Book Store</header>
+	
+	<!-- Today's Deals -->
+	<div class="container" >
+		<span class="title">Today's Deals</span>
+		<div class="row">
+			<div class="column slides_deals" style="display:inline;" >
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals"  style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_deals"  style="display:inline;">
+				<div class="content">
+					<h2>book 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals"  style="display:inline;">
+				<div class="content">
+					<h2>book 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals"  style="display:inline;">
+				<div class="content">
+					<h2>book 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals"  style="display:inline;">
+				<div class="content">
+					<h2>book 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 11</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 12</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 13</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 14</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 15</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 16</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 17</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 18</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 19</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_deals">
+				<div class="content">
+					<h2>book 20</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+		</div>
+					
+		<a class="prev" onclick="plusSlidesDeal(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesDeal(1)">&#10095;</a>
+	</div>
+	
+	<!-- Top 20 best sellers -->
+	<div class="container">
+		<span class="title">Best Seller Books</span>
+		<div class="row">
+			<div class="column slides_top"  style="display:inline;">
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top" style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_top" style="display:inline;">
+				<div class="content">
+					<h2>Column 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top" style="display:inline;">
+				<div class="content">
+					<h2>Column 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top" style="display:inline;">
+				<div class="content">
+					<h2>Column 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top" style="display:inline;">
+				<div class="content">
+					<h2>Column 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 11</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 12</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 13</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 14</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 15</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 16</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 17</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 18</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 19</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_top">
+				<div class="content">
+					<h2>book 20</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+		</div>
+		
+		<a class="prev" onclick="plusSlidesTop(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesTop(1)">&#10095;</a>
+	</div>
+	
+	<!-- Recommendations based on previous purchases if user logged in -->
+	<div class="container">
+		<span class="title">Top Rating Books</span>
+		<div class="row">
+			<div class="column slides_rating"  style="display:inline;">
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating" style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_rating" style="display:inline;">
+				<div class="content">
+					<h2>Column 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating" style="display:inline;">
+				<div class="content">
+					<h2>Column 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating" style="display:inline;">
+				<div class="content">
+					<h2>Column 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating" style="display:inline;">
+				<div class="content">
+					<h2>Column 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 11</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 12</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 13</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 14</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 15</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 16</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 17</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 18</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 19</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_rating">
+				<div class="content">
+					<h2>book 20</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+		</div>
+		
+		<a class="prev" onclick="plusSlidesRating(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesRating(1)">&#10095;</a>
+	</div>
+	
+	<!-- Recommendations based on previous purchases if user logged in -->
+	<c:if test="${applicationScope['user'] eq 'customer'}">
+		<div class="container">
+			<span class="title">Recommended Books Based On Your Profile</span>
+			<div class="row">
+				<div class="column slides_profile"  style="display:inline;">
+					<div class="content">
+						<h2>book 1</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile"  style="display:inline;">
+					<div class="content">
+						<h2>book 2</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile" style="display:inline;">
+					<div class="content">
+						<h2>book 3</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				
+				<div class="column slides_profile" style="display:inline;">
+					<div class="content">
+						<h2>Column 4</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile" style="display:inline;">
+					<div class="content">
+						<h2>Column 5</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile" style="display:inline;">
+					<div class="content">
+						<h2>Column 6</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile" style="display:inline;">
+					<div class="content">
+						<h2>Column 7</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 8</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 9</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 10</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 11</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 12</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 13</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 14</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 15</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 16</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 17</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 18</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 19</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+				<div class="column slides_profile">
+					<div class="content">
+						<h2>book 20</h2>
+						<p>Some text..</p>
+					</div>
+				</div>
+			</div>
+			
+			<a class="prev" onclick="plusSlidesProfile(-1)">&#10094;</a>
+			<a class="next" onclick="plusSlidesProfile(1)">&#10095;</a>
+		</div>
+	</c:if>
+	
+	<!-- Comedy -->
+	<div class="container" >
+		<span class="title">Recommended Comedy</span>
+		<div class="row">
+			<div class="column slides_comedy" style="display:inline;" >
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_comedy"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_comedy"  style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_comedy"  style="display:inline;">
+				<div class="content">
+					<h2>book 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_comedy"  style="display:inline;">
+				<div class="content">
+					<h2>book 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_comedy"  style="display:inline;">
+				<div class="content">
+					<h2>book 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_comedy"  style="display:inline;">
+				<div class="content">
+					<h2>book 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_comedy">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_comedy">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_comedy">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+		</div>
+					
+		<a class="prev" onclick="plusSlidesComedy(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesComedy(1)">&#10095;</a>
+	</div>
+	
+	<!-- Drama -->
+	<div class="container" >
+		<span class="title">Recommended Drama</span>
+		<div class="row">
+			<div class="column slides_drama" style="display:inline;" >
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_drama"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_drama"  style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_drama"  style="display:inline;">
+				<div class="content">
+					<h2>book 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_drama"  style="display:inline;">
+				<div class="content">
+					<h2>book 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_drama"  style="display:inline;">
+				<div class="content">
+					<h2>book 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_drama"  style="display:inline;">
+				<div class="content">
+					<h2>book 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_drama">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_drama">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_drama">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+		</div>
+					
+		<a class="prev" onclick="plusSlidesDrama(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesDrama(1)">&#10095;</a>
+	</div>
+	
+	<!-- Horror -->
+	<div class="container" >
+		<span class="title">Recommended Horror</span>
+		<div class="row">
+			<div class="column slides_horror" style="display:inline;" >
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_horror"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_horror"  style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_horror"  style="display:inline;">
+				<div class="content">
+					<h2>book 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_horror"  style="display:inline;">
+				<div class="content">
+					<h2>book 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_horror"  style="display:inline;">
+				<div class="content">
+					<h2>book 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_horror"  style="display:inline;">
+				<div class="content">
+					<h2>book 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_horror">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_horror">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_horror">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+		</div>
+					
+		<a class="prev" onclick="plusSlidesHorror(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesHorror(1)">&#10095;</a>
+	</div>
+	
+	<!-- Fiction -->
+	<div class="container" >
+		<span class="title">Recommended Fiction</span>
+		<div class="row">
+			<div class="column slides_fiction" style="display:inline;" >
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_fiction">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_fiction">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_fiction">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+		</div>
+					
+		<a class="prev" onclick="plusSlidesFiction(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesFiction(1)">&#10095;</a>
+	</div>
+	
+	<!-- Non Fiction -->
+	<div class="container" >
+		<span class="title">Recommended Non Fiction</span>
+		<div class="row">
+			<div class="column slides_non_fiction" style="display:inline;" >
+				<div class="content">
+					<h2>book 1</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_non_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 2</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_non_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 3</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_non_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 4</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_non_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 5</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_non_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 6</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_non_fiction"  style="display:inline;">
+				<div class="content">
+					<h2>book 7</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+			<div class="column slides_non_fiction">
+				<div class="content">
+					<h2>book 8</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_non_fiction">
+				<div class="content">
+					<h2>book 9</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			<div class="column slides_non_fiction">
+				<div class="content">
+					<h2>book 10</h2>
+					<p>Some text..</p>
+				</div>
+			</div>
+			
+		</div>
+					
+		<a class="prev" onclick="plusSlidesNonFiction(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlidesNonFiction(1)">&#10095;</a>
+	</div>
+	
+	<!-- footer -->
+	<footer>
+		<div class="footer_container">
+			<div class="footer_row">
+				<div class="footer_column">
+					<div class="footer_content">
+						<h2>some title 1</h2>
+						<p>Bla bla bla</p>
+					</div>
+				</div>
+				<div class="footer_column">
+					<div class="footer_content">
+						<h2>some title 2</h2>
+						<p>Bla bla bla</p>
+					</div>
+				</div>
+				<div class="footer_column">
+					<div class="footer_content">
+						<h2>some title 2</h2>
+						<p>Bla bla bla</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+</body>
+
+</html>
+</jsp:root>

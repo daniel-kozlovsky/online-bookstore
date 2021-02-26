@@ -1,3 +1,11 @@
+/*******************************************************************
+ 
+	This file handles the view of the main page of the bookstore 
+	website.
+
+ *******************************************************************/
+ 
+
 body {
   background-color: #e8e9ec;
   margin: 0 !important;
@@ -20,6 +28,11 @@ header
 .slides_top {display:none;}
 .slides_rating {display:none;}
 .slides_profile {display:none;}
+.slides_comedy {display:none;}
+.slides_drama {display:none;}
+.slides_horror {display:none;}
+.slides_fiction {display:none;}
+.slides_non_fiction {display:none;}
 
 .container {
 	background-color: white;
