@@ -5,22 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Queryable {
-	private String tableName;
-	private List<String> wordAttributes;
-	private List<String> numberAttributes;
-	private List<String> varCharAttributes;
-	private List<String> objectAttributes;
-	
-	private List<String> wordQueryTypes;
-	private List<String> numberQueryTypes;
-	private List<String> varCharQueryTypes;
-	private List<String> objectQueryTypes;
+public abstract class Queryable{
+	protected String tableName;
+	protected List<String> wordAttributes;
+	protected List<String> numberAttributes;
+	protected List<String> varCharAttributes;
+	protected List<String> objectAttributes;
 	
 	
-	protected Map<String,List<String>> applicableQueries;			
+	
+	protected Map<String,List<String>> allowedQueries;			
 	private List<String> currentList;
-	private String[] keyWord;
+	private Query query;
+	
+	abstract Query build();	
+	protected abstract boolean isQueryTypeExists(String queryType);
+	protected abstract boolean isAttrubuteExists(String queryType);
+		
+
 	
 	
 	private void addToCurrentList(String attributeName) {
@@ -34,22 +36,29 @@ public abstract class Queryable {
 	
 
 	public Queryable withQueryableWordAttributes(String ...attributeNames) {
-		isAllowedQuerisSetForAttributes();
+
+		
 		clearCurrentList();
+		
 		for(String attributeName:attributeNames) {
-			this.wordAttributes.add(attributeName);
-			addToCurrentList(attributeName);
+			if(!isAttrubuteExists(attributeName)) {
+				this.wordAttributes.add(attributeName);
+				addToCurrentList(attributeName);				
+			}
 		}
 		return this;
 	}
 	
 
+
 	public Queryable withQueryableNumberAttributes(String ...attributeNames) {
-		isAllowedQuerisSetForAttributes();
 		clearCurrentList();
+		
 		for(String attributeName:attributeNames) {
-			this.numberAttributes.add(attributeName);
-			addToCurrentList(attributeName);
+			if(!isAttrubuteExists(attributeName)) {
+				this.numberAttributes.add(attributeName);
+				addToCurrentList(attributeName);				
+			}
 		}
 		return this;
 	}
@@ -57,39 +66,32 @@ public abstract class Queryable {
 	
 
 	public Queryable withQueryableVarCharAttributes(String ...attributeNames) {
-		isAllowedQuerisSetForAttributes();
 		clearCurrentList();
 		for(String attributeName:attributeNames) {
-			this.varCharAttributes.add(attributeName);
-			addToCurrentList(attributeName);
+			if(!isAttrubuteExists(attributeName)) {
+				this.varCharAttributes.add(attributeName);
+				addToCurrentList(attributeName);				
+			}
 		}
 		return this;		
 	}
 	
 	
-
-	public Queryable withQueryableObjectAttributes(String ...attributeNames) {
-		isAllowedQuerisSetForAttributes();
-		clearCurrentList();
-		for(String attributeName:attributeNames) {
-			this.objectAttributes.add(attributeName);
-			addToCurrentList(attributeName);
-		}
-		return this;	
-	}
+	
 	
 
+
 	public Queryable allowAllWordQueries() {
-		for(String wordQuery: wordQueryTypes) {
-			addQueryTypeToAttributes(this.wordAttributes,wordQuery);
+		for(String wordQuery: query.wordQueryTypes) {
+			allowQueryTypeForAttributes(this.wordAttributes,wordQuery);
 		}
 		return this;	
 		
 	}
 
 	public Queryable allowAllNumberQueries() {
-		for(String numQuery: numberQueryTypes) {
-			addQueryTypeToAttributes(numberAttributes,numQuery);
+		for(String numQuery: query.numberQueryTypes) {
+			allowQueryTypeForAttributes(numberAttributes,numQuery);
 		}
 		return this;	
 		
@@ -97,149 +99,96 @@ public abstract class Queryable {
 	
 
 	public Queryable allowAllVarCharQueries() {
-		for(String numQuery: numberQueryTypes) {
-			addQueryTypeToAttributes(numberAttributes,numQuery);
+		for(String varCharQuery: query.varCharQueryTypes) {
+			allowQueryTypeForAttributes(numberAttributes,varCharQuery);
 		}
 		return this;	
 		
 	}
 	
 
-	public Queryable allowAllObjectQueries() {
-		for(String numQuery: numberQueryTypes) {
-			addQueryTypeToAttributes(numberAttributes,numQuery);
-		}
-		return this;	
-		
-	}
 	
 	
 
-	public void allowQueryTypeForAttributes(List<String> attributes,String queryType) {
+	public Queryable allowQueryTypeForAttributes(List<String> attributes,String queryType) {
 		for(String attribute:attributes) {
-			if(isAttributeAllowedQueryType(attribute,queryType)) {
-				if(this.applicableQueries.get(attribute)==null)	this.applicableQueries.put(attribute, new ArrayList<String>());
-				this.applicableQueries.get(attribute).add(queryType);
+			if(isAttributeWithQueryLegal(attribute,queryType)) {
+				if(this.allowedQueries.get(attribute)==null)	this.allowedQueries.put(attribute, new ArrayList<String>());
+				this.allowedQueries.get(attribute).add(queryType);
+			}else {
+				System.err.println("Warning query: "+queryType+" not legal with attribute:"+attribute+"for setting query rule, will not add");
 			}
-
 		}
+		return this;
 		
 	}
 
-	public void allowAttributesForQueryType(List<String> attributes,String queryType) {
-		for(String attribute:attributes) {
-			if(isAttributeAllowedQueryType(attribute,queryType)) {
-				if(this.applicableQueries.get(attribute)==null)	this.applicableQueries.put(attribute, new ArrayList<String>());
-				this.applicableQueries.get(attribute).add(queryType);
-			}
 
-		}
-		
-	}
-	
-	private void addQueryTypeToAttributes(List<String> attributes,String queryType) {
-		for(String attribute:attributes) {
-			if(isAttributeAllowedQueryType(attribute,queryType)) {
-				if(this.applicableQueries.get(attribute)==null)	this.applicableQueries.put(attribute, new ArrayList<String>());
-				this.applicableQueries.get(attribute).add(queryType);
-			}
 
+	protected boolean isAttributeWithQueryLegal(String attribute,String queryType) {
+		if(!isQueryTypeExists(queryType)) {
+			System.err.println("Warning query: "+queryType+" for setting query rule properties does not exist");
+			return false;
 		}
 		
-	}
-	
-	
-	
-	protected boolean isAttributeExists(String attribute) {
-		if(this.wordAttributes.contains(attribute)) {
+		if(!isAttrubuteExists(attribute)) {
+			System.err.println("Warning attribute: "+attribute+" for setting query rule properties does not exist");
+			return false;
+		}
+		
+
+		if(this.wordAttributes.contains(attribute) && this.query.wordQueryTypes.contains(queryType)) {
 			return true;
 		}
 		
-		if(this.numberAttributes.contains(attribute)) {
+		if(this.numberAttributes.contains(attribute) && this.query.numberQueryTypes.contains(queryType)) {
+			return true;
+		}		
+		
+		if(this.varCharAttributes.contains(attribute) && this.query.varCharQueryTypes.contains(queryType)) {
 			return true;
 		}
 		
-		
-		if(this.varCharAttributes.contains(attribute)) {
-			return true;
-		}
-		
-		if(this.objectAttributes.contains(attribute)) {
-			return true;
-		}
 		return false;
+	}	
+	
+	public Queryable allowContains() {
+		allowQueryTypeForAttributes(this.currentList, query.CONTAINS);
+		return this;
 	}
-	
-	protected boolean isAttributeAllowedQueryType(String attribute,String queryType) {
-		if(!isQueryTypeExists(queryType)) return false;
-		
-		if(this.wordAttributes.contains(attribute) && this.wordQueryTypes.contains(queryType)) {
-			return true;
-		}
-		
-		if(this.numberAttributes.contains(attribute) && this.numberQueryTypes.contains(queryType)) {
-			return true;
-		}
-		
-		
-		if(this.varCharAttributes.contains(attribute) && this.varCharQueryTypes.contains(queryType)) {
-			return true;
-		}
-		
-		if(this.objectAttributes.contains(attribute) && this.objectQueryTypes.contains(queryType)) {
-			return true;
-		}
-		return false;
+	public Queryable allowWith() {
+		allowQueryTypeForAttributes(this.currentList, query.WITH);
+		return this;
 	}
-	
-	
-	
-	protected abstract boolean isQueryTypeExists(String queryType);
-	
-	private boolean isAllowedQuerisSetForAttributes() {
-		if(!this.currentList.isEmpty()) {
-			String prefixError="Warning query properties have not yet been set for the current listed ";
-			String suffixError=", listing new attributes of a differnt type will erase the previous list, set allowed queries for attributes first!\n";
-			
-			if(wordAttributes.contains(this.currentList.indexOf(0))){
-				if(wordQueryTypes.isEmpty()) {
-					System.err.println(prefixError+"word attributes"+suffixError);
-					return false;
-				}
-			}else if(numberAttributes.contains(this.currentList.indexOf(0))) {
-				if(numberQueryTypes.isEmpty()) {
-					System.err.println(prefixError+"number attributes"+suffixError);
-					return false;
-				}
-				
-			}else if(varCharAttributes.contains(this.currentList.indexOf(0))) {
-				if(varCharQueryTypes.isEmpty()) {
-					System.err.println(prefixError+"varChar attributes"+suffixError);
-					return false;
-				}
-				
-			}else if(objectAttributes.contains(this.currentList.indexOf(0))) {
-				if(objectQueryTypes.isEmpty()) {
-					System.err.println(prefixError+"object attributes"+suffixError);
-					return false;
-				}
-			}
-		}
-		return true;
-		
+	public Queryable allowStartsWith() {
+		allowQueryTypeForAttributes(this.currentList,query.STARTS_WITH);
+		return this;
 	}
+	public Queryable allowEndsWith() {
+		allowQueryTypeForAttributes(this.currentList,query.ENDS_WITH);
+		return this;
+	}
+	public Queryable allowPattern() {
+		allowQueryTypeForAttributes(this.currentList,query.PATTERN);
+		return this;
+	}
+	public Queryable allowEquals() {
+		allowQueryTypeForAttributes(this.currentList,query.EQUALS);
+		return this;
+	}
+	public Queryable allowAtMost() {
+		allowQueryTypeForAttributes(this.currentList,query.ATMOST);
+		return this;
+	}
+	public Queryable allowAtLeast() {
+		allowQueryTypeForAttributes(this.currentList,query.ATLEAST);
+		return this;
+	}
+	public Queryable allowWithin() {
+		allowQueryTypeForAttributes(this.currentList,query.WITHIN);
+		return this;
+	};
 	
 	
-
-	abstract Query build();
-	abstract Queryable acceptContains();
-	abstract Queryable acceptWith();
-	abstract Queryable acceptStartsWith();
-	abstract Queryable acceptEndsWith();
-	abstract Queryable acceptPattern();
-	abstract Queryable acceptEquals();
-	abstract Queryable acceptAtMost();
-	abstract Queryable acceptAtLeast();
-	abstract Queryable acceptWithin();
 
 }
