@@ -1,4 +1,4 @@
-package dao;
+package dao.accessors.queries;
 
 public class QueryString {
 	public String prefix;

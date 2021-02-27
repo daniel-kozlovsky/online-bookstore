@@ -1,5 +1,4 @@
-package dao;
-
+package dao.accessors;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import dao.accessors.queries.QueryString;
+
 import java.util.Queue;
 
 
@@ -15,81 +17,50 @@ import java.util.Queue;
  * what type of queries are allowed for each attribute. Only the allowed query parameters can be submitted for any given attribute
  * Queries can easily be built on demand to allow for modular and flexible requests.
 */
-public abstract class Query extends DataAccessRequest{
+public abstract class DataAccessRequest {
 	
 //	//Query Type Enumeration//
-	final static String CONTAINS="contains";
-	final static String WITH="with";
-	final static String STARTS_WITH="startsWith";
-	final static String ENDS_WITH="endsWith";
-	final static String PATTERN="pattern";
-	final static String EQUALS="equals";
-	final static String ATMOST="to";
-	final static String ATLEAST="from";
-	final static String WITHIN="within";
+	protected final static String CONTAINS="contains";
+	protected final static String WITH="with";
+	protected final static String STARTS_WITH="startsWith";
+	protected final static String ENDS_WITH="endsWith";
+	protected final static String PATTERN="pattern";
+	protected final static String EQUALS="equals";
+	protected final static String ATMOST="to";
+	protected final static String ATLEAST="from";
+	protected final static String WITHIN="within";
 	
-	protected List<String> wordQueryTypes;//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
-	protected List<String> numberQueryTypes;//=Arrays.asList(ATMOST,ATLEAST,WITHIN,EQUALS);	/*Enum for all number based queries*/
-	protected List<String> varCharQueryTypes;//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
-	
-
-	public abstract String renderQueryString();
-	public abstract String renderMutationString();
-	public abstract Query includeAttributesInResults(String ...attributeNames);
-	public abstract Query withAscendingOrderOf(String attributeName);	
-	public abstract Query withDescendingOrderOf(String attributeName);
-	
-	public Map<String,QueryString> queryTypeTranslation;
+	protected List<String> wordDataAccessRequestTypes;//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
+	protected List<String> numberDataAccessRequestTypes;//=Arrays.asList(ATMOST,ATLEAST,WITHIN,EQUALS);	/*Enum for all number based queries*/
+	protected List<String> varCharDataAccessRequestTypes;//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
 	
 	protected String tableName;
 	protected List<String> wordAttributes;
 	protected List<String> numberAttributes;
 	protected List<String> varCharAttributes;
-	protected Map<String,List<String>> queryRules;	
-	protected Map<String,List<String>> allowedQueries;	
+	protected Map<String,List<String>> dataAccessRules;	
+	protected Map<String,List<String>> allowedDataAccessRequests;	
 	protected String ascOrderOf;/*order of query results ascending*/
 	protected String descOrderOf;/*order of query results descending*/
-	
-	private List<String> attributesToBeQueried;
+	private List<String> attributesToBeAccessed;
 	
 	//Query Request properties
-	private Map<String,Map<String,String>> attributeFormattedQueries; 	/*Map of attributes and all formatted query strings associated with it*/
-	protected List<String> attributesToIncludInResults; 	/*Attributes that will be received after a query*/
-
+	protected Map<String,Map<String,String>> dataAccessFormattedRequest; 	/*Map of attributes and all formatted query strings associated with it*/
+	protected Map<String,QueryString> dataAccessTypeTranslation;
+	
+	public abstract String toJson();
 	
 
-	
-	public Query resultContainsAttributes(String ...attributeNames) {
-		for(String attributeName:attributeNames) {
-			if(this.allowedQueries.keySet().contains(attributeName)) {
-				this.attributesToIncludInResults.add(attributeName);
-			}else {
-				System.err.println("Warning: requested results to include '"+attributeName+"' which do not exist in the schema, and will be left out of the results");
-			}
-		}
-		return this;
-	}
-
-	
-	public Query requestNewQuery() {
-		clearQueryCache();
-		return this;
-	}
-	
-
-
-
-	
-	public Query queryAttributes(String ...attributeNames) {
+	public DataAccessRequest queryAttributes(String ...attributeNames) {
 		if(isAttributeTypesConsistent(attributeNames)) {
 			System.err.println("Warning, the requested query attributes are not of a consistent type, please only request same type attributes for each queryAttribyte() request, attributes not added" );
 			return this;
 		}
 		
 		for(String attributeName: attributeNames) {
-			if(this.allowedQueries.keySet().contains(attributeName)) {
-				if(!attributesToBeQueried.contains(attributeName)) {
-					this.attributesToBeQueried.add(attributeName);
+			if(this.allowedDataAccessRequests.keySet().contains(attributeName)) {
+				if(!attributesToBeAccessed.contains(attributeName)) {
+					this.attributesToBeAccessed.add(attributeName);
 				}
 			}else {
 				System.err.println("Warning: the attribute named: '"+attributeName+"' cannot be queried it does not exist in the schema, and will be left out of the results");
@@ -99,25 +70,25 @@ public abstract class Query extends DataAccessRequest{
 	}
 
 	
-	public Query addFormattedQueryString(String queryType,String queryParameter) {
-		if(this.attributesToBeQueried==null || this.attributesToBeQueried.isEmpty()){
+	public DataAccessRequest addFormattedQueryString(String queryType,String queryParameter) {
+		if(this.attributesToBeAccessed==null || this.attributesToBeAccessed.isEmpty()){
 			System.err.println("Warning: no attributes were requested for query");
 			return this;
 		}
 		
-		if(queryTypeTranslation.get(queryType)==null) {
+		if(this.dataAccessTypeTranslation.get(queryType)==null) {
 			System.err.println("Warning: no mapped translation format for query string, cannot render");
 			return this;
 		}
 		
-		for(String attributeName:this.attributesToBeQueried) {
-			String prefix=queryTypeTranslation.get(queryType).prefix;
-			String suffix=queryTypeTranslation.get(queryType).suffix;
+		for(String attributeName:this.attributesToBeAccessed) {
+			String prefix=this.dataAccessTypeTranslation.get(queryType).prefix;
+			String suffix=this.dataAccessTypeTranslation.get(queryType).suffix;
 			if(isAttributeQueryAllowed(attributeName,queryType)) {
-				if(this.attributeFormattedQueries.get(attributeName).get(queryType)!=null) {
+				if(this.dataAccessFormattedRequest.get(attributeName).get(queryType)!=null) {
 					System.err.println("Warning: query type was already requested, and will be replaced with new version.");
 				}				
-				this.attributeFormattedQueries.get(attributeName).putIfAbsent(queryType, prefix+queryParameter+suffix);
+				this.dataAccessFormattedRequest.get(attributeName).putIfAbsent(queryType, prefix+queryParameter+suffix);
 			}else {
 				System.err.println("Warning: the attribute named: '"+attributeName+"' is not permitted to make this type of query");			
 			}
@@ -127,7 +98,7 @@ public abstract class Query extends DataAccessRequest{
 	
 	
 	
-	public Query wordContains(String contains) {	
+	public DataAccessRequest wordContains(String contains) {	
 		if(isWordQueryValid(contains)) {
 			addFormattedQueryString(this.CONTAINS,contains);
 		}
@@ -135,28 +106,28 @@ public abstract class Query extends DataAccessRequest{
 		return this;				
 	}
 	
-	public Query wordEquals(String equals) {
+	public DataAccessRequest wordEquals(String equals) {
 		if(isWordQueryValid(equals)) {
 		addFormattedQueryString(this.EQUALS,equals);
 		}
 		return this;	
 	}
 	
-	public Query wordStartsWith(String prefix) {
+	public DataAccessRequest wordStartsWith(String prefix) {
 		if(isWordQueryValid(prefix)) {
 		addFormattedQueryString(this.STARTS_WITH,prefix);
 		}
 		return this;
 	}
 	
-	public Query wordEndsWith(String suffix) {
+	public DataAccessRequest wordEndsWith(String suffix) {
 		if(isWordQueryValid(suffix)) {
 		addFormattedQueryString(this.ENDS_WITH,suffix);
 		}
 		return this;
 	}
 	
-	public Query wordWithPattern(String pattern) {
+	public DataAccessRequest wordWithPattern(String pattern) {
 		if(isWordQueryValid(pattern)) {
 		addFormattedQueryString(this.PATTERN,pattern);
 		}
@@ -164,7 +135,7 @@ public abstract class Query extends DataAccessRequest{
 	}
 	
 	
-	public Query varCharContains(String contains) {	
+	public DataAccessRequest varCharContains(String contains) {	
 		if(isWordQueryValid(contains)) {
 			addFormattedQueryString(this.CONTAINS,contains);
 		}
@@ -172,28 +143,28 @@ public abstract class Query extends DataAccessRequest{
 		return this;				
 	}
 	
-	public Query varCharEquals(String equals) {
+	public DataAccessRequest varCharEquals(String equals) {
 		if(isWordQueryValid(equals)) {
 		addFormattedQueryString(this.EQUALS,equals);
 		}
 		return this;	
 	}
 	
-	public Query varCharStartsWith(String prefix) {
+	public DataAccessRequest varCharStartsWith(String prefix) {
 		if(isWordQueryValid(prefix)) {
 		addFormattedQueryString(this.STARTS_WITH,prefix);
 		}
 		return this;
 	}
 	
-	public Query varCharEndsWith(String suffix) {
+	public DataAccessRequest varCharEndsWith(String suffix) {
 		if(isWordQueryValid(suffix)) {
 		addFormattedQueryString(this.ENDS_WITH,suffix);
 		}
 		return this;
 	}
 	
-	public Query varCharWithPattern(String pattern) {
+	public DataAccessRequest varCharWithPattern(String pattern) {
 		if(isWordQueryValid(pattern)) {
 		addFormattedQueryString(this.PATTERN,pattern);
 		}
@@ -201,21 +172,21 @@ public abstract class Query extends DataAccessRequest{
 	}
 	
 
-	public Query numberAtMost(String max) {
+	public DataAccessRequest numberAtMost(String max) {
 		if(isNumberQueryValid(max)) {
 		addFormattedQueryString(this.ATMOST,max);
 		}
 		return this;
 	}
 	
-	public Query numberAtLeast(String min) {
+	public DataAccessRequest numberAtLeast(String min) {
 		if(isNumberQueryValid(min)) {
 		addFormattedQueryString(this.ATLEAST,min);
 		}
 		return this;
 	}
 	
-	public Query numberBetween(String min,String max) {
+	public DataAccessRequest numberBetween(String min,String max) {
 		if(isNumberQueryValid(min) && isNumberQueryValid(max)) {
 			addFormattedQueryString(this.ATMOST,max);
 			addFormattedQueryString(this.ATLEAST,min);
@@ -225,11 +196,9 @@ public abstract class Query extends DataAccessRequest{
 	
 
 	public void clearQueryCache() {
-		this.attributesToBeQueried=new ArrayList<String>();
+		this.attributesToBeAccessed=new ArrayList<String>();
 	}
 
-	
-	public abstract String toJson();
 	
 	
 	private boolean isAttributeTypesConsistent(String ...attributeNames) {
@@ -260,11 +229,11 @@ public abstract class Query extends DataAccessRequest{
 	}
 
 	public boolean isAttributeQueryAllowed(String attributeName, String queryType) {
-		return this.allowedQueries.get(attributeName)!=null && !this.allowedQueries.get(attributeName).isEmpty()&&this.allowedQueries.get(attributeName).contains(queryType);
+		return this.allowedDataAccessRequests.get(attributeName)!=null && !this.allowedDataAccessRequests.get(attributeName).isEmpty()&&this.allowedDataAccessRequests.get(attributeName).contains(queryType);
 	}
 	
 	public boolean isQueryValid(String attributeName, String queryType) {
-		return this.allowedQueries.get(attributeName).contains(queryType);
+		return this.allowedDataAccessRequests.get(attributeName).contains(queryType);
 	}
 	
 	public boolean isWordQueryValid(String queryParameter) {
@@ -286,6 +255,9 @@ public abstract class Query extends DataAccessRequest{
 	public boolean isNumberQueryValid(String queryParameter) {
 		return true;
 	}	
+	
+	
+
 	
 	
 	

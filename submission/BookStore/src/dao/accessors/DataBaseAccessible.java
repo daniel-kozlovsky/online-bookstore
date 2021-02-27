@@ -1,11 +1,11 @@
-package dao;
+package dao.accessors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Queryable{
+public abstract class DataBaseAccessible{
 	protected String tableName;
 	protected List<String> wordAttributes;
 	protected List<String> numberAttributes;
@@ -16,9 +16,9 @@ public abstract class Queryable{
 	
 	protected Map<String,List<String>> allowedQueries;			
 	private List<String> currentList;
-	private Query query;
+	protected DataAccessRequest dataAccessRequest;
 	
-	abstract Query build();	
+	public abstract DataAccessRequest build();	
 	protected abstract boolean isQueryTypeExists(String queryType);
 	protected abstract boolean isAttrubuteExists(String queryType);
 		
@@ -35,7 +35,7 @@ public abstract class Queryable{
 
 	
 
-	public Queryable withQueryableWordAttributes(String ...attributeNames) {
+	public DataBaseAccessible withQueryableWordAttributes(String ...attributeNames) {
 
 		
 		clearCurrentList();
@@ -51,7 +51,7 @@ public abstract class Queryable{
 	
 
 
-	public Queryable withQueryableNumberAttributes(String ...attributeNames) {
+	public DataBaseAccessible withQueryableNumberAttributes(String ...attributeNames) {
 		clearCurrentList();
 		
 		for(String attributeName:attributeNames) {
@@ -65,7 +65,7 @@ public abstract class Queryable{
 	
 	
 
-	public Queryable withQueryableVarCharAttributes(String ...attributeNames) {
+	public DataBaseAccessible withQueryableVarCharAttributes(String ...attributeNames) {
 		clearCurrentList();
 		for(String attributeName:attributeNames) {
 			if(!isAttrubuteExists(attributeName)) {
@@ -81,16 +81,16 @@ public abstract class Queryable{
 	
 
 
-	public Queryable allowAllWordQueries() {
-		for(String wordQuery: query.wordQueryTypes) {
+	public DataBaseAccessible allowAllWordQueries() {
+		for(String wordQuery: dataAccessRequest.wordDataAccessRequestTypes) {
 			allowQueryTypeForAttributes(this.wordAttributes,wordQuery);
 		}
 		return this;	
 		
 	}
 
-	public Queryable allowAllNumberQueries() {
-		for(String numQuery: query.numberQueryTypes) {
+	public DataBaseAccessible allowAllNumberQueries() {
+		for(String numQuery: dataAccessRequest.numberDataAccessRequestTypes) {
 			allowQueryTypeForAttributes(numberAttributes,numQuery);
 		}
 		return this;	
@@ -98,8 +98,8 @@ public abstract class Queryable{
 	}
 	
 
-	public Queryable allowAllVarCharQueries() {
-		for(String varCharQuery: query.varCharQueryTypes) {
+	public DataBaseAccessible allowAllVarCharQueries() {
+		for(String varCharQuery: dataAccessRequest.varCharDataAccessRequestTypes) {
 			allowQueryTypeForAttributes(numberAttributes,varCharQuery);
 		}
 		return this;	
@@ -110,7 +110,7 @@ public abstract class Queryable{
 	
 	
 
-	public Queryable allowQueryTypeForAttributes(List<String> attributes,String queryType) {
+	public DataBaseAccessible allowQueryTypeForAttributes(List<String> attributes,String queryType) {
 		for(String attribute:attributes) {
 			if(isAttributeWithQueryLegal(attribute,queryType)) {
 				if(this.allowedQueries.get(attribute)==null)	this.allowedQueries.put(attribute, new ArrayList<String>());
@@ -137,55 +137,55 @@ public abstract class Queryable{
 		}
 		
 
-		if(this.wordAttributes.contains(attribute) && this.query.wordQueryTypes.contains(queryType)) {
+		if(this.wordAttributes.contains(attribute) && this.dataAccessRequest.wordDataAccessRequestTypes.contains(queryType)) {
 			return true;
 		}
 		
-		if(this.numberAttributes.contains(attribute) && this.query.numberQueryTypes.contains(queryType)) {
+		if(this.numberAttributes.contains(attribute) && this.dataAccessRequest.numberDataAccessRequestTypes.contains(queryType)) {
 			return true;
 		}		
 		
-		if(this.varCharAttributes.contains(attribute) && this.query.varCharQueryTypes.contains(queryType)) {
+		if(this.varCharAttributes.contains(attribute) && this.dataAccessRequest.varCharDataAccessRequestTypes.contains(queryType)) {
 			return true;
 		}
 		
 		return false;
 	}	
 	
-	public Queryable allowContains() {
-		allowQueryTypeForAttributes(this.currentList, query.CONTAINS);
+	public DataBaseAccessible allowContains() {
+		allowQueryTypeForAttributes(this.currentList, dataAccessRequest.CONTAINS);
 		return this;
 	}
-	public Queryable allowWith() {
-		allowQueryTypeForAttributes(this.currentList, query.WITH);
+	public DataBaseAccessible allowWith() {
+		allowQueryTypeForAttributes(this.currentList, dataAccessRequest.WITH);
 		return this;
 	}
-	public Queryable allowStartsWith() {
-		allowQueryTypeForAttributes(this.currentList,query.STARTS_WITH);
+	public DataBaseAccessible allowStartsWith() {
+		allowQueryTypeForAttributes(this.currentList,dataAccessRequest.STARTS_WITH);
 		return this;
 	}
-	public Queryable allowEndsWith() {
-		allowQueryTypeForAttributes(this.currentList,query.ENDS_WITH);
+	public DataBaseAccessible allowEndsWith() {
+		allowQueryTypeForAttributes(this.currentList,dataAccessRequest.ENDS_WITH);
 		return this;
 	}
-	public Queryable allowPattern() {
-		allowQueryTypeForAttributes(this.currentList,query.PATTERN);
+	public DataBaseAccessible allowPattern() {
+		allowQueryTypeForAttributes(this.currentList,dataAccessRequest.PATTERN);
 		return this;
 	}
-	public Queryable allowEquals() {
-		allowQueryTypeForAttributes(this.currentList,query.EQUALS);
+	public DataBaseAccessible allowEquals() {
+		allowQueryTypeForAttributes(this.currentList,dataAccessRequest.EQUALS);
 		return this;
 	}
-	public Queryable allowAtMost() {
-		allowQueryTypeForAttributes(this.currentList,query.ATMOST);
+	public DataBaseAccessible allowAtMost() {
+		allowQueryTypeForAttributes(this.currentList,dataAccessRequest.ATMOST);
 		return this;
 	}
-	public Queryable allowAtLeast() {
-		allowQueryTypeForAttributes(this.currentList,query.ATLEAST);
+	public DataBaseAccessible allowAtLeast() {
+		allowQueryTypeForAttributes(this.currentList,dataAccessRequest.ATLEAST);
 		return this;
 	}
-	public Queryable allowWithin() {
-		allowQueryTypeForAttributes(this.currentList,query.WITHIN);
+	public DataBaseAccessible allowWithin() {
+		allowQueryTypeForAttributes(this.currentList,dataAccessRequest.WITHIN);
 		return this;
 	};
 	

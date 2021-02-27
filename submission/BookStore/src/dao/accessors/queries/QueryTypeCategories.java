@@ -1,4 +1,4 @@
-package dao;
+package dao.accessors.queries;
 
 public class QueryTypeCategories {
 	final static String CONTAINS="contains";

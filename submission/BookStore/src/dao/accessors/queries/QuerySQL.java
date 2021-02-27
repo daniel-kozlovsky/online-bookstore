@@ -1,10 +1,14 @@
-package dao;
+package dao.accessors.queries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import dao.accessors.DataAccessRequest;
+import dao.accessors.DataBaseAccessible;
 
 public class QuerySQL extends Query{
 	
@@ -13,7 +17,6 @@ public class QuerySQL extends Query{
 	private List<String> numberAttributes;
 	private List<String> varCharAttributes;
 	private List<String> objectAttributes;
-
 	
 	protected Map<String,List<String>> allowedQueries;			
 	private List<String> currentList;
@@ -33,6 +36,7 @@ public class QuerySQL extends Query{
 		this.varCharAttributes= new ArrayList<String>();
 		this.objectAttributes= new ArrayList<String>();
 		this.allowedQueries=new HashMap<String, List<String>>();
+
 	}
 
 
@@ -71,21 +75,16 @@ public class QuerySQL extends Query{
 	private String buildQueryParametersString() {
 		String queryString="";
 		int keyCount=0;
-		if (this.attributeQueryStringRequests==null||this.attributeQueryStringRequests.isEmpty()) {
+		if (this.dataAccessFormattedRequest.isEmpty()) {
 			return "";
 		}else {
 			queryString+=" WHERE ";
-			for(String key : this.attributeQueryStringRequests.keySet()) {
-				keyCount++;
-				for(String parameter: this.attributeQueryStringRequests.get(key)) {
-					queryString+=key+parameter;
-					if(this.attributeQueryStringRequests.get(key).indexOf(parameter)<this.attributeQueryStringRequests.get(key).size()-1) {
+			for(String attributeName : this.dataAccessFormattedRequest.keySet()) {
+				for(Entry<String,String> entry : this.dataAccessFormattedRequest.get(attributeName).entrySet()) {		
+				queryString+=entry.getValue();
+					if(this.dataAccessFormattedRequest.get(attributeName).keySet().size()<this.dataAccessFormattedRequest.get(attributeName).size()-1) {
 						queryString+=" AND ";
 					}
-				}
-				
-				if(keyCount<this.attributeQueryStringRequests.keySet().size()) {
-					queryString+=" AND ";
 				}
 			}
 		}
@@ -95,11 +94,6 @@ public class QuerySQL extends Query{
 
 
 
-	@Override
-	public String renderMutationString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 
@@ -134,37 +128,36 @@ public class QuerySQL extends Query{
 	}
 
 	
+	public static class SetupProperties extends DataBaseAccessible{
 
-	
-	public static class SetupProperties extends Queryable{
-
-
+		QuerySQL querySQL;
 		
 		SetupProperties(String tableName){
+			this.tableName=tableName;
+			QuerySQL querySQL=new QuerySQL(tableName);
+			this.dataAccessRequest=querySQL;
 			
 		}
 
 		@Override
-		QuerySQL build() {
+		public DataAccessRequest build() {
 			// TODO Auto-generated method stub
-			QuerySQL query = new QuerySQL(this.tableName);
-			query.wordAttributes= this.wordAttributes;
-			query.numberAttributes= this.numberAttributes;
-			query.varCharAttributes= this.varCharAttributes;
-			query.objectAttributes= this.objectAttributes;
-			return query;
+			this.querySQL.wordAttributes= this.wordAttributes;
+			this.querySQL.numberAttributes= this.numberAttributes;
+			this.querySQL.varCharAttributes= this.varCharAttributes;
+			return querySQL;
 		}
 
 		@Override
 		protected boolean isAttrubuteExists(String queryType) {
 			// TODO Auto-generated method stub
 			
-			return false;
+			return this.querySQL.wordAttributes.contains(queryType)||this.querySQL.numberAttributes.contains(queryType)||this.querySQL.varCharAttributes.contains(queryType);
 		}
 		
 		@Override
 		protected boolean isQueryTypeExists(String queryType) {
-			return wordQueryTypes.contains(queryType)||wordQueryTypes.contains(queryType)||wordQueryTypes.contains(queryType)||wordQueryTypes.contains(queryType);
+			return querySQL.wordDataAccessRequestTypes.contains(queryType)||querySQL.numberDataAccessRequestTypes.contains(queryType)||querySQL.varCharDataAccessRequestTypes.contains(queryType);
 		}
 
 
