@@ -7,35 +7,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import dao.DataSchema;
 import dao.accessors.DataAccessRequest;
-import dao.accessors.DataBaseAccessible;
+import dao.accessors.DataAccessSetup;
+import dao.accessors.DataAccessTypesSQL;
 
 public class QuerySQL extends Query{
 	
-	private final String tableName;
-	private List<String> wordAttributes;
-	private List<String> numberAttributes;
-	private List<String> varCharAttributes;
-	private List<String> objectAttributes;
-	
-	protected Map<String,List<String>> allowedQueries;			
-	private List<String> currentList;
-	
-
 	private String limit = "50";
-	
-	final static List<String> wordQueryTypes=Arrays.asList(CONTAINS, WITH, STARTS_WITH,ENDS_WITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
-	final static List<String> numQueryTypes=Arrays.asList(ATMOST,ATLEAST,WITHIN,EQUALS);	/*Enum for all number based queries*/
-	final static List<String> varCharQueryTypes=Arrays.asList(CONTAINS, WITH, STARTS_WITH,ENDS_WITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
+
 
 	
 	private QuerySQL(String tableName) {
 		this.tableName=tableName;
-		this.wordAttributes= new ArrayList<String>();
-		this.numberAttributes= new ArrayList<String>();
-		this.varCharAttributes= new ArrayList<String>();
-		this.objectAttributes= new ArrayList<String>();
-		this.allowedQueries=new HashMap<String, List<String>>();
+		this.attributesToIncludInResults= new ArrayList<String>();
+		this.ascOrderOf="";
+		this.descOrderOf="";
+		this.dataAccessTypeTranslation=new HashMap<String, QueryString>();
 
 	}
 
@@ -128,37 +116,24 @@ public class QuerySQL extends Query{
 	}
 
 	
-	public static class SetupProperties extends DataBaseAccessible{
+	public static class SetupProperties extends DataAccessSetup{
 
-		QuerySQL querySQL;
-		
-		SetupProperties(String tableName){
-			this.tableName=tableName;
-			QuerySQL querySQL=new QuerySQL(tableName);
-			this.dataAccessRequest=querySQL;
-			
+
+		public SetupProperties(DataSchema dataSchema){
+			super(dataSchema, new DataAccessTypesSQL());		
 		}
 
 		@Override
-		public DataAccessRequest build() {
+		public QuerySQL build() {
 			// TODO Auto-generated method stub
-			this.querySQL.wordAttributes= this.wordAttributes;
-			this.querySQL.numberAttributes= this.numberAttributes;
-			this.querySQL.varCharAttributes= this.varCharAttributes;
+			QuerySQL querySQL = new QuerySQL(this.tableName);
+			querySQL.allowedAttributeDataAccessTypes=this.allowedAttributeDataAccessTypes;
+			querySQL.varCharAttributes=this.varCharAttributes;
+			querySQL.wordAttributes=this.wordAttributes;
+			querySQL.numberAttributes=this.numberAttributes;
 			return querySQL;
 		}
 
-		@Override
-		protected boolean isAttrubuteExists(String queryType) {
-			// TODO Auto-generated method stub
-			
-			return this.querySQL.wordAttributes.contains(queryType)||this.querySQL.numberAttributes.contains(queryType)||this.querySQL.varCharAttributes.contains(queryType);
-		}
-		
-		@Override
-		protected boolean isQueryTypeExists(String queryType) {
-			return querySQL.wordDataAccessRequestTypes.contains(queryType)||querySQL.numberDataAccessRequestTypes.contains(queryType)||querySQL.varCharDataAccessRequestTypes.contains(queryType);
-		}
 
 
 		

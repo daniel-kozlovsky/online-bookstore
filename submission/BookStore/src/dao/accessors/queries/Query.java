@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import dao.DataSchema;
 import dao.accessors.DataAccessRequest;
 
 import java.util.Queue;
@@ -26,8 +27,7 @@ public abstract class Query extends DataAccessRequest{
 	public abstract Query withDescendingOrderOf(String attributeName);
 	
 	protected String tableName;
-	protected Map<String,List<String>> queryRules;	
-	protected Map<String,List<String>> allowedQueries;	
+	
 	protected String ascOrderOf;/*order of query results ascending*/
 	protected String descOrderOf;/*order of query results descending*/
 	
@@ -39,13 +39,17 @@ public abstract class Query extends DataAccessRequest{
 	
 	public Query resultContainsAttributes(String ...attributeNames) {
 		for(String attributeName:attributeNames) {
-			if(this.allowedDataAccessRequests.keySet().contains(attributeName)) {
+			if(_pre_isAttributeAccessAllowed(attributeName)) {
 				this.attributesToIncludInResults.add(attributeName);
-			}else {
-				System.err.println("Warning: requested results to include '"+attributeName+"' which do not exist in the schema, and will be left out of the results");
 			}
 		}
 		return this;
+	}
+	
+	public boolean _pre_isAttributeAccessAllowed(String attributeName) {
+		boolean result=this.allowedAttributeDataAccessTypes.keySet().contains(attributeName);
+		if(!result) System.err.println("Warning: requested results to include '"+attributeName+"' which do not exist in the schema, and will be left out of the results");
+		return result;
 	}
 
 	

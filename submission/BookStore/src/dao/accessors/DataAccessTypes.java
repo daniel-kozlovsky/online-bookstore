@@ -1,6 +1,8 @@
-package dao.accessors.queries;
+package dao.accessors;
 
-public class QueryTypeCategories {
+import java.util.List;
+
+public interface DataAccessTypes {
 	final static String CONTAINS="contains";
 	final static String WITH="with";
 	final static String STARTS_WITH="startsWith";
@@ -9,8 +11,9 @@ public class QueryTypeCategories {
 	final static String EQUALS="equals";
 	final static String ATMOST="to";
 	final static String ATLEAST="from";
-	final static String WITHIN="within";	
-	public static final String[] queryLabels= {CONTAINS,WITH,STARTS_WITH,ENDS_WITH,PATTERN,EQUALS,ATMOST,ATLEAST,WITHIN};
-
-
+	final static String WITHIN="within";
+	List<String> wordDataAccessTypes();
+	List<String> numberDataAccessTypes();
+	List<String> varCharDataAccessTypes();
+	List<String> objectDataAccessTypes();
 }

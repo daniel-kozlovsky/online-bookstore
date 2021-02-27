@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import dao.DataSchema;
 import dao.accessors.queries.QueryString;
 
 import java.util.Queue;
@@ -17,179 +18,153 @@ import java.util.Queue;
  * what type of queries are allowed for each attribute. Only the allowed query parameters can be submitted for any given attribute
  * Queries can easily be built on demand to allow for modular and flexible requests.
 */
-public abstract class DataAccessRequest {
+public abstract class DataAccessRequest{
 	
-//	//Query Type Enumeration//
-	protected final static String CONTAINS="contains";
-	protected final static String WITH="with";
-	protected final static String STARTS_WITH="startsWith";
-	protected final static String ENDS_WITH="endsWith";
-	protected final static String PATTERN="pattern";
-	protected final static String EQUALS="equals";
-	protected final static String ATMOST="to";
-	protected final static String ATLEAST="from";
-	protected final static String WITHIN="within";
-	
-	protected List<String> wordDataAccessRequestTypes;//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
-	protected List<String> numberDataAccessRequestTypes;//=Arrays.asList(ATMOST,ATLEAST,WITHIN,EQUALS);	/*Enum for all number based queries*/
-	protected List<String> varCharDataAccessRequestTypes;//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
 	
 	protected String tableName;
 	protected List<String> wordAttributes;
 	protected List<String> numberAttributes;
 	protected List<String> varCharAttributes;
-	protected Map<String,List<String>> dataAccessRules;	
-	protected Map<String,List<String>> allowedDataAccessRequests;	
-	protected String ascOrderOf;/*order of query results ascending*/
-	protected String descOrderOf;/*order of query results descending*/
+	protected Map<String,List<String>> allowedAttributeDataAccessTypes;	
+	
 	private List<String> attributesToBeAccessed;
+	protected DataSchema dataSchema;
 	
 	//Query Request properties
 	protected Map<String,Map<String,String>> dataAccessFormattedRequest; 	/*Map of attributes and all formatted query strings associated with it*/
 	protected Map<String,QueryString> dataAccessTypeTranslation;
+	DataAccessTypes dataAccessTypes;
 	
 	public abstract String toJson();
 	
 
-	public DataAccessRequest queryAttributes(String ...attributeNames) {
-		if(isAttributeTypesConsistent(attributeNames)) {
-			System.err.println("Warning, the requested query attributes are not of a consistent type, please only request same type attributes for each queryAttribyte() request, attributes not added" );
+	public DataAccessRequest accessAttributes(String ...attributeNames) {
+		if(_pre_isAttributeTypesConsistent(attributeNames)) {
 			return this;
 		}
 		
 		for(String attributeName: attributeNames) {
-			if(this.allowedDataAccessRequests.keySet().contains(attributeName)) {
+			if(_pre_isAttributeAllowedToBeAccessed(attributeName)) {
 				if(!attributesToBeAccessed.contains(attributeName)) {
 					this.attributesToBeAccessed.add(attributeName);
 				}
-			}else {
-				System.err.println("Warning: the attribute named: '"+attributeName+"' cannot be queried it does not exist in the schema, and will be left out of the results");
 			}			
 		}
 		return this;
 	}
+	
 
 	
-	public DataAccessRequest addFormattedQueryString(String queryType,String queryParameter) {
-		if(this.attributesToBeAccessed==null || this.attributesToBeAccessed.isEmpty()){
-			System.err.println("Warning: no attributes were requested for query");
-			return this;
-		}
-		
-		if(this.dataAccessTypeTranslation.get(queryType)==null) {
-			System.err.println("Warning: no mapped translation format for query string, cannot render");
-			return this;
-		}
+	public DataAccessRequest addFormattedQueryString(String dataAccessType,String dataAccessParameter) {
+		if(!_pre_attributesToBeAccessedNotEmpty()) return this;
+		if(!_pre_translationExistsForDataAccessRequest(dataAccessType)) return this;
 		
 		for(String attributeName:this.attributesToBeAccessed) {
-			String prefix=this.dataAccessTypeTranslation.get(queryType).prefix;
-			String suffix=this.dataAccessTypeTranslation.get(queryType).suffix;
-			if(isAttributeQueryAllowed(attributeName,queryType)) {
-				if(this.dataAccessFormattedRequest.get(attributeName).get(queryType)!=null) {
-					System.err.println("Warning: query type was already requested, and will be replaced with new version.");
-				}				
-				this.dataAccessFormattedRequest.get(attributeName).putIfAbsent(queryType, prefix+queryParameter+suffix);
-			}else {
-				System.err.println("Warning: the attribute named: '"+attributeName+"' is not permitted to make this type of query");			
+			String prefix=this.dataAccessTypeTranslation.get(dataAccessType).prefix;
+			String suffix=this.dataAccessTypeTranslation.get(dataAccessType).suffix;
+			if(_pre_isAttributeDataAccessTypeAllowed(attributeName,dataAccessType)) {
+				if(_pre_isAttributeNotRequestedDataAccessForParameter(attributeName,dataAccessParameter));								
+				this.dataAccessFormattedRequest.get(attributeName).putIfAbsent(dataAccessType, prefix+dataAccessParameter+suffix);
 			}
 		}
 		return this;
 	}
 	
+
 	
 	
 	public DataAccessRequest wordContains(String contains) {	
-		if(isWordQueryValid(contains)) {
-			addFormattedQueryString(this.CONTAINS,contains);
+		if(_pre_isWordAttributeDataAccessRequestValid(contains)) {
+			addFormattedQueryString(this.dataAccessTypes.CONTAINS,contains);
 		}
 		
 		return this;				
 	}
 	
 	public DataAccessRequest wordEquals(String equals) {
-		if(isWordQueryValid(equals)) {
-		addFormattedQueryString(this.EQUALS,equals);
+		if(_pre_isWordAttributeDataAccessRequestValid(equals)) {
+		addFormattedQueryString(this.dataAccessTypes.EQUALS,equals);
 		}
 		return this;	
 	}
 	
 	public DataAccessRequest wordStartsWith(String prefix) {
-		if(isWordQueryValid(prefix)) {
-		addFormattedQueryString(this.STARTS_WITH,prefix);
+		if(_pre_isWordAttributeDataAccessRequestValid(prefix)) {
+		addFormattedQueryString(this.dataAccessTypes.STARTS_WITH,prefix);
 		}
 		return this;
 	}
 	
 	public DataAccessRequest wordEndsWith(String suffix) {
-		if(isWordQueryValid(suffix)) {
-		addFormattedQueryString(this.ENDS_WITH,suffix);
+		if(_pre_isWordAttributeDataAccessRequestValid(suffix)) {
+		addFormattedQueryString(this.dataAccessTypes.ENDS_WITH,suffix);
 		}
 		return this;
 	}
 	
 	public DataAccessRequest wordWithPattern(String pattern) {
-		if(isWordQueryValid(pattern)) {
-		addFormattedQueryString(this.PATTERN,pattern);
+		if(_pre_isWordAttributeDataAccessRequestValid(pattern)) {
+		addFormattedQueryString(this.dataAccessTypes.PATTERN,pattern);
 		}
 		return this;
 	}
 	
 	
 	public DataAccessRequest varCharContains(String contains) {	
-		if(isWordQueryValid(contains)) {
-			addFormattedQueryString(this.CONTAINS,contains);
+		if(_pre_isWordAttributeDataAccessRequestValid(contains)) {
+			addFormattedQueryString(this.dataAccessTypes.CONTAINS,contains);
 		}
 		
 		return this;				
 	}
 	
 	public DataAccessRequest varCharEquals(String equals) {
-		if(isWordQueryValid(equals)) {
-		addFormattedQueryString(this.EQUALS,equals);
+		if(_pre_isWordAttributeDataAccessRequestValid(equals)) {
+		addFormattedQueryString(this.dataAccessTypes.EQUALS,equals);
 		}
 		return this;	
 	}
 	
 	public DataAccessRequest varCharStartsWith(String prefix) {
-		if(isWordQueryValid(prefix)) {
-		addFormattedQueryString(this.STARTS_WITH,prefix);
+		if(_pre_isWordAttributeDataAccessRequestValid(prefix)) {
+		addFormattedQueryString(this.dataAccessTypes.STARTS_WITH,prefix);
 		}
 		return this;
 	}
 	
 	public DataAccessRequest varCharEndsWith(String suffix) {
-		if(isWordQueryValid(suffix)) {
-		addFormattedQueryString(this.ENDS_WITH,suffix);
+		if(_pre_isWordAttributeDataAccessRequestValid(suffix)) {
+		addFormattedQueryString(this.dataAccessTypes.ENDS_WITH,suffix);
 		}
 		return this;
 	}
 	
 	public DataAccessRequest varCharWithPattern(String pattern) {
-		if(isWordQueryValid(pattern)) {
-		addFormattedQueryString(this.PATTERN,pattern);
+		if(_pre_isWordAttributeDataAccessRequestValid(pattern)) {
+		addFormattedQueryString(this.dataAccessTypes.PATTERN,pattern);
 		}
 		return this;
 	}
 	
 
 	public DataAccessRequest numberAtMost(String max) {
-		if(isNumberQueryValid(max)) {
-		addFormattedQueryString(this.ATMOST,max);
+		if(_pre_isNumberDataAccessRequestValid(max)) {
+		addFormattedQueryString(this.dataAccessTypes.ATMOST,max);
 		}
 		return this;
 	}
 	
 	public DataAccessRequest numberAtLeast(String min) {
-		if(isNumberQueryValid(min)) {
-		addFormattedQueryString(this.ATLEAST,min);
+		if(_pre_isNumberDataAccessRequestValid(min)) {
+		addFormattedQueryString(this.dataAccessTypes.ATLEAST,min);
 		}
 		return this;
 	}
 	
 	public DataAccessRequest numberBetween(String min,String max) {
-		if(isNumberQueryValid(min) && isNumberQueryValid(max)) {
-			addFormattedQueryString(this.ATMOST,max);
-			addFormattedQueryString(this.ATLEAST,min);
+		if(_pre_isNumberDataAccessRequestValid(min) && _pre_isNumberDataAccessRequestValid(max)) {
+			addFormattedQueryString(this.dataAccessTypes.ATMOST,max);
+			addFormattedQueryString(this.dataAccessTypes.ATLEAST,min);
 		}
 		return this;
 	}
@@ -201,7 +176,7 @@ public abstract class DataAccessRequest {
 
 	
 	
-	private boolean isAttributeTypesConsistent(String ...attributeNames) {
+	private boolean _pre_isAttributeTypesConsistent(String ...attributeNames) {
 		int wordAttcount=0;
 		int numAttcount=0;
 		int varAttcount=0;
@@ -219,24 +194,54 @@ public abstract class DataAccessRequest {
 				varAttcount++;
 			}
 		}
-
-		return (wordAttcount>0&&numAttcount==0&&varAttcount==0) 
+		boolean result=(wordAttcount>0&&numAttcount==0&&varAttcount==0) 
 				||
 				(wordAttcount==0&&numAttcount>0&&varAttcount==0) 
 				||
 				(wordAttcount==0&&numAttcount==0&&varAttcount>0);
+
+		if (!result) System.err.println("Warning, the requested access attributes are not of a consistent type, please only request same type attributes for each request. Attributes were not added" );
+		
+		return result;
+		
+
 		
 	}
+	
+	boolean _pre_isAttributeAllowedToBeAccessed(String attributeName) {
+		boolean result= this.allowedAttributeDataAccessTypes.keySet().contains(attributeName);
+		if(!result)	System.err.println("Warning: the attribute named: '"+attributeName+"' cannot be accessed it is not allowed, and will be left out of the results");
+		return result;
+	}
 
-	public boolean isAttributeQueryAllowed(String attributeName, String queryType) {
-		return this.allowedDataAccessRequests.get(attributeName)!=null && !this.allowedDataAccessRequests.get(attributeName).isEmpty()&&this.allowedDataAccessRequests.get(attributeName).contains(queryType);
+
+	public boolean _pre_isAttributeDataAccessTypeAllowed(String attributeName, String dataAccessParameter) {
+		boolean result=this.allowedAttributeDataAccessTypes.get(attributeName)!=null && !this.allowedAttributeDataAccessTypes.get(attributeName).isEmpty()&&this.allowedAttributeDataAccessTypes.get(attributeName).contains(dataAccessParameter);
+		if(!result)System.err.println("Warning: the attribute named: '"+attributeName+"' is not permitted to make this type of data access");	
+		return result;
 	}
 	
-	public boolean isQueryValid(String attributeName, String queryType) {
-		return this.allowedDataAccessRequests.get(attributeName).contains(queryType);
+	private boolean _pre_isAttributeNotRequestedDataAccessForParameter(String attributeName, String dataAccesParameter) {
+		boolean result=this.dataAccessFormattedRequest.get(attributeName).get(dataAccesParameter)!=null;
+		if(!result)	System.err.println("Warning: attribute : "+attributeName+" already requested, access of type: "+dataAccesParameter+" the previous version will be replaced with most recent one.");
+		
+		return result;
 	}
 	
-	public boolean isWordQueryValid(String queryParameter) {
+	public boolean _pre_attributesToBeAccessedNotEmpty()  {
+		boolean result=this.attributesToBeAccessed==null || this.attributesToBeAccessed.isEmpty();
+		if(!result)System.err.println("Warning: no attributes were requested for query");
+		return result;
+	}
+	
+	public boolean _pre_translationExistsForDataAccessRequest(String dataAccessParameter) {
+		boolean result=this.dataAccessTypeTranslation.get(dataAccessParameter)!=null;
+		if(!result)System.err.println("Warning: no attributes were requested for query");
+		return result;
+	}
+	
+	
+	public boolean _pre_isWordAttributeDataAccessRequestValid(String queryParameter) {
 		boolean result=true;
 		if (!result) {
 			System.err.println("Warning parameter for word query is invalid, will not add query request for attribute");
@@ -244,7 +249,7 @@ public abstract class DataAccessRequest {
 		return true;
 	}
 	
-	public boolean isvarCharQueryValid(String queryParameter) {
+	public boolean _pre_isvarCharQueryDataAccessRequestValid(String queryParameter) {
 		boolean result=true;
 		if (!result) {
 			System.err.println("Warning parameter for word query is invalid, will not add query request for attribute");
@@ -252,7 +257,7 @@ public abstract class DataAccessRequest {
 		return true;
 	}
 	
-	public boolean isNumberQueryValid(String queryParameter) {
+	public boolean _pre_isNumberDataAccessRequestValid(String queryParameter) {
 		return true;
 	}	
 	
