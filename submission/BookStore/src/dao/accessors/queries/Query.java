@@ -34,7 +34,7 @@ public abstract class Query<T extends Query> extends DataAccessRequest<T>{
 	
 	protected List<String> attributesToIncludInResults; 	/*Attributes that will be received after a query*/
 
-
+	public abstract String toJson();
 
 	
 	public T resultContainsAttributes(String ...attributeNames) {

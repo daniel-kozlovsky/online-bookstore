@@ -11,6 +11,5 @@ public interface DataSchema {
 	abstract List<String> varAttributeLabels();//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
 	abstract List<String> objectAttributeLabels();//=Arrays.asList(CONTAINS, WITH, STARTSWITH,ENDSWITH,PATTERN,EQUALS); 	/*Enum for all word type queries*/
 	abstract List<String> getAttributeLabels();
-	abstract String getAttributeLabel(String attributeName);
 
 }

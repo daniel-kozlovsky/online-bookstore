@@ -1,0 +1,56 @@
+package dao.users;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import dao.DataSchema;
+
+public class VisitorSchema implements DataSchema {
+	public static final String SESSION_ID="SESSION_ID";
+	public static final String CART_ID="CART_ID";
+	public static final String CART="CART";
+	
+	private static final List<String> _wordAttributeLabels= new ArrayList<String>();
+	private static final List<String> _numberAttributeLabels= new ArrayList<String>();
+	private static final List<String> _varAttributeLabels= Arrays.asList(new String[]{SESSION_ID,CART_ID});
+	private static final List<String> _objectAttributeLabels= Arrays.asList(new String[]{CART});
+	private static final List<String> _attributeLabels= Arrays.asList(new String[]{SESSION_ID,CART_ID});
+	
+	
+	@Override
+	public String tableName() {
+		// TODO Auto-generated method stub
+		return "VISITOR";
+	}
+	
+	@Override
+	public List<String> wordAttributeLabels() {
+		// TODO Auto-generated method stub
+		return _wordAttributeLabels;
+	}
+
+	@Override
+	public List<String> numberAttributeLabels() {
+		// TODO Auto-generated method stub
+		return _numberAttributeLabels;
+	}
+
+	@Override
+	public List<String> varAttributeLabels() {
+		// TODO Auto-generated method stub
+		return _varAttributeLabels;
+	}
+
+	@Override
+	public List<String> objectAttributeLabels() {
+		// TODO Auto-generated method stub
+		return _objectAttributeLabels;
+	}
+
+	@Override
+	public List<String> getAttributeLabels() {
+		// TODO Auto-generated method stub
+		return _attributeLabels;
+	}
+}

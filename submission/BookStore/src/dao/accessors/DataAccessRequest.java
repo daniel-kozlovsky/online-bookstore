@@ -36,7 +36,6 @@ public abstract class DataAccessRequest<T extends DataAccessRequest>{
 	protected Map<String,QueryString> dataAccessTypeTranslation;
 	protected DataAccessTypes dataAccessTypes;
 	
-	public abstract String toJson();
 	
 
 	public T accessAttributes(String ...attributeNames) {
