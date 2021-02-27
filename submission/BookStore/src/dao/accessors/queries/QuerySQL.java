@@ -12,11 +12,13 @@ import dao.accessors.DataAccessRequest;
 import dao.accessors.DataAccessSetup;
 import dao.accessors.DataAccessTypesSQL;
 
-public class QuerySQL extends Query{
+public class QuerySQL extends Query<QuerySQL>{
 	
 	private String limit = "50";
 
-
+	private static final String EQUALS_NUM="equals_num";
+	private static final String ASC_ORDER="asc";
+	private static final String DSC_ORDER="dsc";
 	
 	private QuerySQL(String tableName) {
 		this.tableName=tableName;
@@ -24,7 +26,17 @@ public class QuerySQL extends Query{
 		this.ascOrderOf="";
 		this.descOrderOf="";
 		this.dataAccessTypeTranslation=new HashMap<String, QueryString>();
-
+		dataAccessTypeTranslation.put(this.dataAccessTypes.CONTAINS, new QueryString(" like "+"'%", "%'"));
+		dataAccessTypeTranslation.put(this.dataAccessTypes.EQUALS, new QueryString("="+"'","'" ));
+		dataAccessTypeTranslation.put(this.dataAccessTypes.STARTS_WITH, new QueryString(" like "+"'","%'" ));
+		dataAccessTypeTranslation.put(this.dataAccessTypes.ENDS_WITH, new QueryString(" like "+"'%","'" ));
+		dataAccessTypeTranslation.put(this.dataAccessTypes.PATTERN, new QueryString(" ~ "+"'","'" ));
+		dataAccessTypeTranslation.put(this.dataAccessTypes.ATMOST, new QueryString(" >= ","" ));
+		dataAccessTypeTranslation.put(this.dataAccessTypes.ATLEAST, new QueryString(" >= ", ""));
+		dataAccessTypeTranslation.put(EQUALS_NUM, new QueryString("=", ""));
+		dataAccessTypeTranslation.put(ASC_ORDER, new QueryString(" ORDER BY ", " ASC"));
+		dataAccessTypeTranslation.put(DSC_ORDER, new QueryString(" ORDER BY ", " DESC"));
+		
 	}
 
 
@@ -86,25 +98,25 @@ public class QuerySQL extends Query{
 
 
 	@Override
-	public Query includeAttributesInResults(String... attributeNames) {
+	public QuerySQL includeAttributesInResults(String... attributeNames) {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 
 
 	@Override
-	public Query withAscendingOrderOf(String attributeName) {
+	public QuerySQL withAscendingOrderOf(String attributeName) {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 
 
 	@Override
-	public Query withDescendingOrderOf(String attributeName) {
+	public QuerySQL withDescendingOrderOf(String attributeName) {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 
@@ -116,7 +128,7 @@ public class QuerySQL extends Query{
 	}
 
 	
-	public static class SetupProperties extends DataAccessSetup{
+	public static class SetupProperties extends DataAccessSetup<SetupProperties>{
 
 
 		public SetupProperties(DataSchema dataSchema){

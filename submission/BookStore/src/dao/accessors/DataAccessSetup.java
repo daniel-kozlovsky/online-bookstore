@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import dao.DataSchema;
 
-public abstract class DataAccessSetup{
+public abstract class DataAccessSetup<T extends DataAccessSetup>{
 	protected String tableName;
 	protected List<String> wordAttributes;
 	protected List<String> numberAttributes;
@@ -43,7 +43,7 @@ public abstract class DataAccessSetup{
 	
 	
 
-	public DataAccessSetup withAccessibleWordAttributes(String ...attributeNames) {		
+	public T withAccessibleWordAttributes(String ...attributeNames) {		
 		clearCurrentList();		
 		for(String attributeName:attributeNames) {
 			if(!_pre_isAttrubuteExistsInSchema(attributeName)) {
@@ -51,10 +51,10 @@ public abstract class DataAccessSetup{
 				addToCurrentList(attributeName);				
 			}
 		}
-		return this;
+		return (T) this;
 	}
 
-	public DataAccessSetup withAccessibleNumberAttributes(String ...attributeNames) {
+	public T withAccessibleNumberAttributes(String ...attributeNames) {
 		clearCurrentList();		
 		for(String attributeName:attributeNames) {
 			if(!_pre_isAttrubuteExistsInSchema(attributeName)) {
@@ -62,12 +62,12 @@ public abstract class DataAccessSetup{
 				addToCurrentList(attributeName);				
 			}
 		}
-		return this;
+		return (T) this;
 	}
 	
 	
 
-	public DataAccessSetup withAccessibleVarCharAttributes(String ...attributeNames) {
+	public T withAccessibleVarCharAttributes(String ...attributeNames) {
 		clearCurrentList();
 		for(String attributeName:attributeNames) {
 			if(!_pre_isAttrubuteExistsInSchema(attributeName)) {
@@ -75,7 +75,7 @@ public abstract class DataAccessSetup{
 				addToCurrentList(attributeName);				
 			}
 		}
-		return this;		
+		return (T) this;		
 	}
 	
 	
@@ -83,75 +83,75 @@ public abstract class DataAccessSetup{
 	
 
 
-	public DataAccessSetup allowAllWordDataAccessTypes() {
+	public T allowAllWordDataAccessTypes() {
 		this.dataAccessTypes.wordDataAccessTypes().forEach(parameter->allowDataAccessTypesForAttributes(this.wordAttributes,parameter));
-		return this;	
+		return (T) this;	
 		
 	}
 
-	public DataAccessSetup allowAllNumberDataAccessTypes() {
+	public T allowAllNumberDataAccessTypes() {
 		this.dataAccessTypes.numberDataAccessTypes().forEach(parameter->allowDataAccessTypesForAttributes(this.numberAttributes,parameter));
-		return this;	
+		return (T) this;	
 		
 	}
 	
 
-	public DataAccessSetup allowAllVarCharDataAccessTypes() {
+	public T allowAllVarCharDataAccessTypes() {
 		this.dataAccessTypes.varCharDataAccessTypes().forEach(parameter->allowDataAccessTypesForAttributes(this.varCharAttributes,parameter));
-		return this;		
+		return (T) this;		
 	}
 	
 
 	
 	
 
-	public DataAccessSetup allowDataAccessTypesForAttributes(List<String> attributes,String dataAccessParameter) {
-		if(!_pre_isLegalDataAccessTypeAndAttributeCombinations(attributes,dataAccessParameter))return this;		
+	public T allowDataAccessTypesForAttributes(List<String> attributes,String dataAccessParameter) {
+		if(!_pre_isLegalDataAccessTypeAndAttributeCombinations(attributes,dataAccessParameter))return (T) this;		
 		for(String attribute:attributes) {
 			if(this.allowedAttributeDataAccessTypes.get(attribute)==null)	this.allowedAttributeDataAccessTypes.put(attribute, new ArrayList<String>());
 			this.allowedAttributeDataAccessTypes.get(attribute).add(dataAccessParameter);
 		}
-		return this;		
+		return (T) this;		
 	}
 	
 	
 	
-	public DataAccessSetup allowContains() {
+	public T allowContains() {
 		allowDataAccessTypesForAttributes(this.currentList, dataAccessTypes.CONTAINS);
-		return this;
+		return (T) this;
 	}
 	
-	public DataAccessSetup allowWith() {
+	public T allowWith() {
 		allowDataAccessTypesForAttributes(this.currentList, dataAccessTypes.WITH);
-		return this;
+		return (T) this;
 	}
-	public DataAccessSetup allowStartsWith() {
+	public T allowStartsWith() {
 		allowDataAccessTypesForAttributes(this.currentList,dataAccessTypes.STARTS_WITH);
-		return this;
+		return (T) this;
 	}
-	public DataAccessSetup allowEndsWith() {
+	public T allowEndsWith() {
 		allowDataAccessTypesForAttributes(this.currentList,dataAccessTypes.ENDS_WITH);
-		return this;
+		return (T) this;
 	}
-	public DataAccessSetup allowPattern() {
+	public T allowPattern() {
 		allowDataAccessTypesForAttributes(this.currentList,dataAccessTypes.PATTERN);
-		return this;
+		return (T) this;
 	}
-	public DataAccessSetup allowEquals() {
+	public T allowEquals() {
 		allowDataAccessTypesForAttributes(this.currentList,dataAccessTypes.EQUALS);
-		return this;
+		return (T) this;
 	}
-	public DataAccessSetup allowAtMost() {
+	public T allowAtMost() {
 		allowDataAccessTypesForAttributes(this.currentList,dataAccessTypes.ATMOST);
-		return this;
+		return (T) this;
 	}
-	public DataAccessSetup allowAtLeast() {
+	public T allowAtLeast() {
 		allowDataAccessTypesForAttributes(this.currentList,dataAccessTypes.ATLEAST);
-		return this;
+		return (T) this;
 	}
-	public DataAccessSetup allowWithin() {
+	public T allowWithin() {
 		allowDataAccessTypesForAttributes(this.currentList,dataAccessTypes.WITHIN);
-		return this;
+		return (T) this;
 	};
 	
 	//contracts	

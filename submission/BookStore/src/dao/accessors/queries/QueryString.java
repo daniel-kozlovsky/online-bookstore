@@ -3,13 +3,11 @@ package dao.accessors.queries;
 public class QueryString {
 	public String prefix;
 	public String suffix;
-	public String type;
 	
-	public QueryString(String prefix, String suffix,String type) {
+	public QueryString(String prefix, String suffix) {
 		super();
 		this.prefix = prefix;
 		this.suffix = suffix;
-		this.type=type;
 	}
 
 	public String getPrefix() {
@@ -21,11 +19,6 @@ public class QueryString {
 		return suffix;
 	}
 
-
-	public String getType() {
-		return type;
-	}
-	
 	public String renderQueryString(String parameter) {
 		return prefix+parameter+suffix;
 	}

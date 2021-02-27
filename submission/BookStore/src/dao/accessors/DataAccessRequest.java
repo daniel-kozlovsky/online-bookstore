@@ -18,14 +18,15 @@ import java.util.Queue;
  * what type of queries are allowed for each attribute. Only the allowed query parameters can be submitted for any given attribute
  * Queries can easily be built on demand to allow for modular and flexible requests.
 */
-public abstract class DataAccessRequest{
+public abstract class DataAccessRequest<T extends DataAccessRequest>{
 	
 	
 	protected String tableName;
 	protected List<String> wordAttributes;
 	protected List<String> numberAttributes;
 	protected List<String> varCharAttributes;
-	protected Map<String,List<String>> allowedAttributeDataAccessTypes;	
+	protected Map<String,List<String>> allowedAttributeDataAccessTypes;
+	
 	
 	private List<String> attributesToBeAccessed;
 	protected DataSchema dataSchema;
@@ -33,14 +34,14 @@ public abstract class DataAccessRequest{
 	//Query Request properties
 	protected Map<String,Map<String,String>> dataAccessFormattedRequest; 	/*Map of attributes and all formatted query strings associated with it*/
 	protected Map<String,QueryString> dataAccessTypeTranslation;
-	DataAccessTypes dataAccessTypes;
+	protected DataAccessTypes dataAccessTypes;
 	
 	public abstract String toJson();
 	
 
-	public DataAccessRequest accessAttributes(String ...attributeNames) {
+	public T accessAttributes(String ...attributeNames) {
 		if(_pre_isAttributeTypesConsistent(attributeNames)) {
-			return this;
+			return (T) this;
 		}
 		
 		for(String attributeName: attributeNames) {
@@ -50,14 +51,14 @@ public abstract class DataAccessRequest{
 				}
 			}			
 		}
-		return this;
+		return (T) this;
 	}
 	
 
 	
-	public DataAccessRequest addFormattedQueryString(String dataAccessType,String dataAccessParameter) {
-		if(!_pre_attributesToBeAccessedNotEmpty()) return this;
-		if(!_pre_translationExistsForDataAccessRequest(dataAccessType)) return this;
+	public T addFormattedQueryString(String dataAccessType,String dataAccessParameter) {
+		if(!_pre_attributesToBeAccessedNotEmpty()) return (T) this;
+		if(!_pre_translationExistsForDataAccessRequest(dataAccessType)) return (T) this;
 		
 		for(String attributeName:this.attributesToBeAccessed) {
 			String prefix=this.dataAccessTypeTranslation.get(dataAccessType).prefix;
@@ -67,106 +68,106 @@ public abstract class DataAccessRequest{
 				this.dataAccessFormattedRequest.get(attributeName).putIfAbsent(dataAccessType, prefix+dataAccessParameter+suffix);
 			}
 		}
-		return this;
+		return (T) this;
 	}
 	
 
 	
 	
-	public DataAccessRequest wordContains(String contains) {	
+	public T wordContains(String contains) {	
 		if(_pre_isWordAttributeDataAccessRequestValid(contains)) {
 			addFormattedQueryString(this.dataAccessTypes.CONTAINS,contains);
 		}
 		
-		return this;				
+		return (T) this;				
 	}
 	
-	public DataAccessRequest wordEquals(String equals) {
+	public T wordEquals(String equals) {
 		if(_pre_isWordAttributeDataAccessRequestValid(equals)) {
 		addFormattedQueryString(this.dataAccessTypes.EQUALS,equals);
 		}
-		return this;	
+		return (T) this;	
 	}
 	
-	public DataAccessRequest wordStartsWith(String prefix) {
+	public T wordStartsWith(String prefix) {
 		if(_pre_isWordAttributeDataAccessRequestValid(prefix)) {
 		addFormattedQueryString(this.dataAccessTypes.STARTS_WITH,prefix);
 		}
-		return this;
+		return (T) this;
 	}
 	
-	public DataAccessRequest wordEndsWith(String suffix) {
+	public T wordEndsWith(String suffix) {
 		if(_pre_isWordAttributeDataAccessRequestValid(suffix)) {
 		addFormattedQueryString(this.dataAccessTypes.ENDS_WITH,suffix);
 		}
-		return this;
+		return (T) this;
 	}
 	
-	public DataAccessRequest wordWithPattern(String pattern) {
+	public T wordWithPattern(String pattern) {
 		if(_pre_isWordAttributeDataAccessRequestValid(pattern)) {
 		addFormattedQueryString(this.dataAccessTypes.PATTERN,pattern);
 		}
-		return this;
+		return (T) this;
 	}
 	
 	
-	public DataAccessRequest varCharContains(String contains) {	
+	public T varCharContains(String contains) {	
 		if(_pre_isWordAttributeDataAccessRequestValid(contains)) {
 			addFormattedQueryString(this.dataAccessTypes.CONTAINS,contains);
 		}
 		
-		return this;				
+		return (T) this;				
 	}
 	
-	public DataAccessRequest varCharEquals(String equals) {
+	public T varCharEquals(String equals) {
 		if(_pre_isWordAttributeDataAccessRequestValid(equals)) {
 		addFormattedQueryString(this.dataAccessTypes.EQUALS,equals);
 		}
-		return this;	
+		return (T) this;	
 	}
 	
-	public DataAccessRequest varCharStartsWith(String prefix) {
+	public T varCharStartsWith(String prefix) {
 		if(_pre_isWordAttributeDataAccessRequestValid(prefix)) {
 		addFormattedQueryString(this.dataAccessTypes.STARTS_WITH,prefix);
 		}
-		return this;
+		return (T) this;
 	}
 	
-	public DataAccessRequest varCharEndsWith(String suffix) {
+	public T varCharEndsWith(String suffix) {
 		if(_pre_isWordAttributeDataAccessRequestValid(suffix)) {
 		addFormattedQueryString(this.dataAccessTypes.ENDS_WITH,suffix);
 		}
-		return this;
+		return (T) this;
 	}
 	
-	public DataAccessRequest varCharWithPattern(String pattern) {
+	public T varCharWithPattern(String pattern) {
 		if(_pre_isWordAttributeDataAccessRequestValid(pattern)) {
 		addFormattedQueryString(this.dataAccessTypes.PATTERN,pattern);
 		}
-		return this;
+		return (T) this;
 	}
 	
 
-	public DataAccessRequest numberAtMost(String max) {
+	public T numberAtMost(String max) {
 		if(_pre_isNumberDataAccessRequestValid(max)) {
 		addFormattedQueryString(this.dataAccessTypes.ATMOST,max);
 		}
-		return this;
+		return (T) this;
 	}
 	
-	public DataAccessRequest numberAtLeast(String min) {
+	public T numberAtLeast(String min) {
 		if(_pre_isNumberDataAccessRequestValid(min)) {
 		addFormattedQueryString(this.dataAccessTypes.ATLEAST,min);
 		}
-		return this;
+		return (T) this;
 	}
 	
-	public DataAccessRequest numberBetween(String min,String max) {
+	public T numberBetween(String min,String max) {
 		if(_pre_isNumberDataAccessRequestValid(min) && _pre_isNumberDataAccessRequestValid(max)) {
 			addFormattedQueryString(this.dataAccessTypes.ATMOST,max);
 			addFormattedQueryString(this.dataAccessTypes.ATLEAST,min);
 		}
-		return this;
+		return (T) this;
 	}
 	
 

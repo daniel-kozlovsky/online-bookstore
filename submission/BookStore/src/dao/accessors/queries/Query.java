@@ -19,7 +19,7 @@ import java.util.Queue;
  * what type of queries are allowed for each attribute. Only the allowed query parameters can be submitted for any given attribute
  * Queries can easily be built on demand to allow for modular and flexible requests.
 */
-public abstract class Query extends DataAccessRequest{
+public abstract class Query<T extends Query> extends DataAccessRequest<T>{
 
 	public abstract String renderQueryString();
 	public abstract Query includeAttributesInResults(String ...attributeNames);
@@ -37,13 +37,13 @@ public abstract class Query extends DataAccessRequest{
 
 
 	
-	public Query resultContainsAttributes(String ...attributeNames) {
+	public T resultContainsAttributes(String ...attributeNames) {
 		for(String attributeName:attributeNames) {
 			if(_pre_isAttributeAccessAllowed(attributeName)) {
 				this.attributesToIncludInResults.add(attributeName);
 			}
 		}
-		return this;
+		return (T) this;
 	}
 	
 	public boolean _pre_isAttributeAccessAllowed(String attributeName) {
