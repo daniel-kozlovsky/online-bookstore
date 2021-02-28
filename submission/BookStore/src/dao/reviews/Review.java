@@ -29,4 +29,57 @@ public class Review {
 	}
 	
 
+	public static class Builder{
+		private String body;
+		private String title;
+		private String userName;
+		private int stars;
+		private Customer customer;
+		private Book book;
+
+		public Builder(){
+		}
+
+		public Builder withBody(String body){
+			this.body=body;
+			return this;
+		}
+
+		public Builder withTitle(String title){
+			this.title=title;
+			return this;
+		}
+
+		public Builder withUserName(String userName){
+			this.userName=userName;
+			return this;
+		}
+
+		public Builder withStars(int stars){
+			this.stars=stars;
+			return this;
+		}
+
+		public Builder withCustomer(Customer customer){
+			this.customer=customer;
+			return this;
+		}
+
+		public Builder withBook(Book book){
+			this.book=book;
+			return this;
+		}
+
+		public Review build(){
+			Review review=new Review();
+			review.body=this.body;
+			review.title=this.title;
+			review.userName=this.userName;
+			review.stars=this.stars;
+			review.customer=this.customer;
+			review.book=this.book;
+			return review;
+		}
+
+	}
 }

@@ -59,4 +59,78 @@ public class Customer {
 		return true;
 	}
 
+	public static class Builder{
+		private String id;
+		private String firstName;
+		private String lastName;
+		private Address address;
+		private String userName;
+		private String password;
+		private Review[] reviews;
+		private Cart cart;
+		private PurchaseOrder[] orders;
+
+		public Builder(){
+		}
+
+		public Builder withId(String id){
+			this.id=id;
+			return this;
+		}
+
+		public Builder withFirstName(String firstName){
+			this.firstName=firstName;
+			return this;
+		}
+
+		public Builder withLastName(String lastName){
+			this.lastName=lastName;
+			return this;
+		}
+
+		public Builder withAddress(Address address){
+			this.address=address;
+			return this;
+		}
+
+		public Builder withUserName(String userName){
+			this.userName=userName;
+			return this;
+		}
+
+		public Builder withPassword(String password){
+			this.password=password;
+			return this;
+		}
+
+		public Builder withReviews(Review[] reviews){
+			this.reviews=reviews;
+			return this;
+		}
+
+		public Builder withCart(Cart cart){
+			this.cart=cart;
+			return this;
+		}
+
+		public Builder withOrders(PurchaseOrder[] orders){
+			this.orders=orders;
+			return this;
+		}
+
+		public Customer build(){
+			Customer customer=new Customer();
+			customer.id=this.id;
+			customer.firstName=this.firstName;
+			customer.lastName=this.lastName;
+			customer.address=this.address;
+			customer.userName=this.userName;
+			customer.password=this.password;
+			customer.reviews=this.reviews;
+			customer.cart=this.cart;
+			customer.orders=this.orders;
+			return customer;
+		}
+
+	}
 }

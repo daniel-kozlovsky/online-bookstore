@@ -23,16 +23,17 @@ public class BuilderCodeGen {
 
 	@Test
 	public void executeCodeGen() {
-		builderCodeGenerator(daoPath,"accessors","DAO","Schema");
+		//builderCodeGenerator(daoPath,"@@@","accessors","DAO","Schema");
 	}
 	
 
-	public void builderCodeGenerator(String sourcePath, String ...exclusions) {
+	public void builderCodeGenerator(String sourcePath,String contains, String ...exclusions) {
 		try {
 			Files.walk(Paths.get(sourcePath))
 			.filter(Files::isRegularFile)
 			.map(path -> path.toString())
 			.filter(path->notContainKeywords(path,exclusions))
+			.filter(path->path.contains(contains))
 			.map(path -> new File(path))
 			.forEach(file->{
 				 BufferedReader input=null ;
@@ -107,7 +108,7 @@ public class BuilderCodeGen {
 			inputMethod.add("\t\t\treturn this;");
 			inputMethod.add("\t\t}");
 			inputMethod.add("");
-			build.add("\t\t\t"+clazz.getSimpleName().toLowerCase()+"."+field.getName()+"=this."+field.getName()+";");
+			build.add("\t\t\t"+clazz.getSimpleName().substring(0,1).toLowerCase()+clazz.getSimpleName().substring(1,clazz.getSimpleName().length())+"."+field.getName()+"=this."+field.getName()+";");
 		}
 		build.add("\t\t\treturn "+clazz.getSimpleName().substring(0,1).toLowerCase()+clazz.getSimpleName().substring(1,clazz.getSimpleName().length())+";");
 		build.add("\t\t}");

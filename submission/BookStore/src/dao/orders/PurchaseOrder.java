@@ -40,4 +40,43 @@ public class PurchaseOrder {
 	}
 	
 	
+	public static class Builder{
+		private String id;
+		private Customer customer;
+		private String status;
+		private Map books;
+
+		public Builder(){
+		}
+
+		public Builder withId(String id){
+			this.id=id;
+			return this;
+		}
+
+		public Builder withCustomer(Customer customer){
+			this.customer=customer;
+			return this;
+		}
+
+		public Builder withStatus(String status){
+			this.status=status;
+			return this;
+		}
+
+		public Builder withBooks(Map books){
+			this.books=books;
+			return this;
+		}
+
+		public PurchaseOrder build(){
+			PurchaseOrder purchaseOrder=new PurchaseOrder();
+			purchaseOrder.id=this.id;
+			purchaseOrder.customer=this.customer;
+			purchaseOrder.status=this.status;
+			purchaseOrder.books=this.books;
+			return purchaseOrder;
+		}
+
+	}
 }
