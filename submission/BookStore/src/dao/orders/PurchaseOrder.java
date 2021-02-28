@@ -1,5 +1,6 @@
 package dao.orders;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import dao.book.Book;
@@ -44,9 +45,20 @@ public class PurchaseOrder {
 		private String id;
 		private Customer customer;
 		private String status;
-		private Map books;
+		private Map<Book,Integer> books;
+
+		public Builder(PurchaseOrder purchaseOrder){
+			this.id=purchaseOrder.id;
+			this.customer=purchaseOrder.customer;
+			this.status=purchaseOrder.status;
+			this.books=purchaseOrder.books;
+		}
 
 		public Builder(){
+			this.id="";
+			this.customer=new Customer.Builder().build();
+			this.status="";
+			this.books=new HashMap<Book, Integer>();
 		}
 
 		public Builder withId(String id){
@@ -64,8 +76,13 @@ public class PurchaseOrder {
 			return this;
 		}
 
-		public Builder withBooks(Map books){
+		public Builder withBooks(Map<Book,Integer> books){
 			this.books=books;
+			return this;
+		}
+		
+		public Builder withBook(Book book,int amount){
+			this.books.put(book, amount);
 			return this;
 		}
 

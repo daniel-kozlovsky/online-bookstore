@@ -71,6 +71,27 @@ public class Customer {
 		private PurchaseOrder[] orders;
 
 		public Builder(){
+			this.id="";
+			this.firstName="";
+			this.lastName="";
+			this.userName="";
+			this.password="";
+			this.address=new Address.Builder().build();
+			this.reviews=new Review[]{(new Review.Builder().build())};
+			this.cart=new Cart.Builder().build();
+			this.orders=new PurchaseOrder[] { (new PurchaseOrder.Builder().build())};
+		}
+		
+		public Builder(Customer customer){
+			this.id=customer.id;
+			this.firstName=customer.firstName;
+			this.lastName=customer.lastName;
+			this.address=customer.address;
+			this.userName=customer.userName;
+			this.password=customer.password;
+			this.reviews=customer.reviews;
+			this.cart=customer.cart;
+			this.orders=customer.orders;
 		}
 
 		public Builder withId(String id){

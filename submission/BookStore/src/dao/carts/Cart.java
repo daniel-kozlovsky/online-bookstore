@@ -1,9 +1,9 @@
 package dao.carts;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import dao.book.Book;
-import dao.reviews.Review;
 import dao.users.Customer;
 import dao.users.Visitor;
 
@@ -33,9 +33,16 @@ public class Cart {
 
 	public static class Builder{
 		private String id;
-		private Map books;
+		private Map<Book,Integer> books;
 
+		public Builder(Cart cart){
+			this.id=cart.id;
+			this.books=cart.books;
+		}
+		
 		public Builder(){
+			this.id="";
+			this.books=new HashMap<Book, Integer>();
 		}
 
 		public Builder withId(String id){
@@ -43,8 +50,13 @@ public class Cart {
 			return this;
 		}
 
-		public Builder withBooks(Map books){
+		public Builder withBooks(Map<Book,Integer> books){
 			this.books=books;
+			return this;
+		}
+		
+		public Builder withBook(Book book,int amount){
+			this.books.put(book, amount);
 			return this;
 		}
 

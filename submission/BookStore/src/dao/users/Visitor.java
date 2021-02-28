@@ -16,6 +16,13 @@ public class Visitor {
 		private Cart cart;
 
 		public Builder(){
+			this.sessionId="";
+			this.cart=new Cart.Builder().build();
+		}
+		
+		public Builder(Visitor visitor){
+			this.sessionId=visitor.sessionId;
+			this.cart=visitor.cart;
 		}
 
 		public Builder withSessionId(String sessionId){

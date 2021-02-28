@@ -15,6 +15,14 @@ public class Address {
 
 		public Builder(){
 		}
+		
+		public Builder(Address address){
+			this.number=address.number;
+			this.street=address.street;
+			this.postalCode=address.postalCode;
+			this.province=address.province;
+			this.country=address.country;
+		}
 
 		public Builder withNumber(String number){
 			this.number=number;

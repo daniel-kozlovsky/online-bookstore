@@ -2,6 +2,7 @@ package dao.book;
 
 import java.io.File;
 
+import dao.orders.PurchaseOrder;
 import dao.reviews.Review;
 
 public class Book {
@@ -70,8 +71,28 @@ public class Book {
 		private File cover;
 		private Review[] reviews;
 
-		public Builder(){
+		public Builder(Book book){
+			this.id=book.id;
+			this.title=book.title;
+			this.description=book.description;
+			this.category=book.category;
+			this.author=book.author;
+			this.price=book.price;
+			this.cover=book.cover;
+			this.reviews=book.reviews;
 		}
+		
+		public Builder(){
+			this.id="";
+			this.title="";
+			this.description="";
+			this.category="";
+			this.author="";
+			this.price=0.0;
+			this.cover=new File("");
+			this.reviews=new Review[] { (new Review.Builder().build())};
+		}
+
 
 		public Builder withId(String id){
 			this.id=id;

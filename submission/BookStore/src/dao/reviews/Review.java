@@ -38,6 +38,21 @@ public class Review {
 		private Book book;
 
 		public Builder(){
+			this.body="";
+			this.title="";
+			this.userName="";
+			this.stars=0;
+			this.customer=new Customer.Builder().build();
+			this.book=new Book.Builder().build();
+		}
+		
+		public Builder(Review review){
+			this.body=review.body;
+			this.title=review.title;
+			this.userName=review.userName;
+			this.stars=review.stars;
+			this.customer=review.customer;
+			this.book=review.book;
 		}
 
 		public Builder withBody(String body){
