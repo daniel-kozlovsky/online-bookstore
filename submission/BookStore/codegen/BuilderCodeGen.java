@@ -1,73 +1,74 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+
+import dao.book.Book;
 
 public class BuilderCodeGen {
 	public static final String relRoot="src";//+File.separator;
 	public static final String daoPath=relRoot+File.separator+"dao";
-	
-	
-	public static boolean notContainKeywords(String input,String ...exclusions) {
-		for(String exclusion:exclusions) {
-			if(input.contains(exclusion)) return false;
-		}
-		return true;
-	}
+
 	@Test
-	public void codeGenerator() {
-		
+	public void executeCodeGen() {
+		builderCodeGenerator(daoPath,"accessors","DAO","Schema");
+	}
+	
+
+	public void builderCodeGenerator(String sourcePath, String ...exclusions) {
 		try {
-			Files.walk(Paths.get(daoPath))
+			Files.walk(Paths.get(sourcePath))
 			.filter(Files::isRegularFile)
 			.map(path -> path.toString())
-			.filter(path->notContainKeywords(path,"DAO","Schema","accessors"))
+			.filter(path->notContainKeywords(path,exclusions))
 			.map(path -> new File(path))
 			.forEach(file->{
-				 FileInputStream fis =null;
 				 BufferedReader input=null ;
-				 FileWriter writer=null;
+				 PrintWriter out=null;
 				 String className=file.getPath().toString().substring(relRoot.length()+1).replace(File.separator,".").replace(".java","");
-
-
 				 try {
-					fis= new FileInputStream(file);
-					input = new BufferedReader(new InputStreamReader(fis));
-//					writer = new FileWriter(file);
+					input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 					Class clazz=Class.forName(className);
-					String builderCodeGen=builderString(clazz);
+					List<String> builderCodeGen=builderString(clazz);
 					String currentLine = "";
-					String sourceCode = "";
+					List<String> sourceCode = new ArrayList<String>();
 				     while (currentLine != null) {	
 				    	 currentLine = input.readLine();
-				    	 if(currentLine!=null)sourceCode+=currentLine+"\n";
+				    	 if(currentLine!=null&&!currentLine.equals("\n}"))sourceCode.add(currentLine);
 				    }
+				     input.close();
 				     
-				     //writer.write("testttttt");
-				     //writer.flush();
-				     System.out.println(sourceCode.replaceFirst("\n}", "replace\n}"));
-				     //String completeCodeGen=sourceCode.replaceFirst("\n}", builderCodeGen+"\n}");
-				    // System.out.println(completeCodeGen);
+				     sourceCode.remove(sourceCode.size()-1);
+				     sourceCode.addAll(builderCodeGen);
+				     sourceCode.add("}");
+				     out = new PrintWriter(new BufferedWriter(new FileWriter(file)),false);
+				     out.write("");
+				     out.flush();
+				     out.close();
+				     out = new PrintWriter(new BufferedWriter(new FileWriter(file)),true);
+				     for(String line:sourceCode) {
+				    	 out.println(line);
+
+				     }
+				     out.flush();
+				     out.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}finally {
-					if(fis!=null) {
-						try {
-							fis.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
 					if(input!=null) {
 						try {
 							input.close();
@@ -76,16 +77,9 @@ public class BuilderCodeGen {
 							e.printStackTrace();
 						}
 					}
-					if(writer!=null) {
-						try {
-							writer.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					if(out!=null) {
+						out.close();
 					}
-
-
 				}
 				 
 			});
@@ -96,39 +90,41 @@ public class BuilderCodeGen {
 		}
 	}
 	
-	private String builderGen(Class<?> clazz,String sorceCode) {
-		String inputCode="";
-		//inputCode+="\t\t\public static class Builder{";
-		for (Field field: clazz.getFields()) {
-			
-		}
-		return sorceCode;
-	}
-
-	public String builderString(Class<?> clazz) {
-		String inputCode="";
-		inputCode+="\tpublic static class Builder{\n";
-		String inputMethod="\t\tpublic Builder"+"(){\n"+"\t\t}\n\n";
-		String fields="";
-		String build="\t\tpublic "+clazz.getSimpleName()+" build(){\n";
-		build+="\t\t\t"+clazz.getSimpleName()+" "+clazz.getSimpleName().substring(0,1).toLowerCase()+clazz.getSimpleName().substring(1,clazz.getSimpleName().length())+ "=new "+clazz.getSimpleName()+"()\n";
+	public List<String> builderString(Class<?> clazz) {
+		List<String> inputCode=new ArrayList<String>();
+		List<String> inputMethod=new ArrayList<String>();
+		List<String> fields=new ArrayList<String>();
+		List<String> build=new ArrayList<String>();
+		inputCode.add("\tpublic static class Builder{");	
+		inputMethod.add("\t\tpublic Builder"+"(){\n"+"\t\t}");
+		inputMethod.add("");		
+		build.add("\t\tpublic "+clazz.getSimpleName()+" build(){");
+		build.add("\t\t\t"+clazz.getSimpleName()+" "+clazz.getSimpleName().substring(0,1).toLowerCase()+clazz.getSimpleName().substring(1,clazz.getSimpleName().length())+ "=new "+clazz.getSimpleName()+"();");
 		for (Field field: clazz.getDeclaredFields()) {
-			fields+="\t\tprivate "+field.getType().getSimpleName()+" "+field.getName()+";\n";
-			inputMethod+="\t\tpublic Builder with"+field.getName().substring(0,1).toUpperCase()+field.getName().substring(1,field.getName().length())+"("+field.getType().getSimpleName()+" "+field.getName()+"){\n";
-			inputMethod+="\t\t\tthis."+field.getName()+"="+field.getName()+";\n";
-			inputMethod+="\t\t\treturn this;\n";
-			inputMethod+="\t\t}\n\n";
-			build+="\t\t\t"+clazz.getSimpleName().toLowerCase()+"."+field.getName()+"=this."+field.getName()+";\n";
+			fields.add("\t\tprivate "+field.getType().getSimpleName()+" "+field.getName()+";");
+			inputMethod.add("\t\tpublic Builder with"+field.getName().substring(0,1).toUpperCase()+field.getName().substring(1,field.getName().length())+"("+field.getType().getSimpleName()+" "+field.getName()+"){");
+			inputMethod.add("\t\t\tthis."+field.getName()+"="+field.getName()+";");
+			inputMethod.add("\t\t\treturn this;");
+			inputMethod.add("\t\t}");
+			inputMethod.add("");
+			build.add("\t\t\t"+clazz.getSimpleName().toLowerCase()+"."+field.getName()+"=this."+field.getName()+";");
 		}
-		build+="\t\t\treturn this;\n";
-		build+="\t\t}\n";
-		inputCode+=fields;
-		inputCode+="\n";
-		inputCode+=inputMethod;
-		inputCode+=build;
-		inputCode+="\n\t}";
-		System.out.println(inputCode);
+		build.add("\t\t\treturn "+clazz.getSimpleName().substring(0,1).toLowerCase()+clazz.getSimpleName().substring(1,clazz.getSimpleName().length())+";");
+		build.add("\t\t}");
+		inputCode.addAll(fields);
+		inputCode.add("");
+		inputCode.addAll(inputMethod);
+		inputCode.addAll(build);
+		inputCode.add("");
+		inputCode.add("\t}");
+
 		return inputCode;
 
+	}
+	public static boolean notContainKeywords(String input,String ...exclusions) {
+		for(String exclusion:exclusions) {
+			if(input.contains(exclusion)) return false;
+		}
+		return true;
 	}
 }
