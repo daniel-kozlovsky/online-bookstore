@@ -1,20 +1,13 @@
-package dao.orders;
+package dao.beans;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import dao.book.Book;
-import dao.users.Customer;
+public class PurchaseOrder extends DataObject{
+	private String customerId;
+	private String status;
+	private Map<Book,Integer> books;	
 
-public class PurchaseOrder {
-	String id;
-	Customer customer;
-	String status;
-	Map<Book,Integer> books;	
-	
-	public Customer getCustomer() {
-		return customer;
-	}
 
 	public String getStatus() {
 		return status;
@@ -22,6 +15,10 @@ public class PurchaseOrder {
 
 	public Map<Book, Integer> getBooks() {
 		return books;
+	}
+	
+	public void setBooks(Map<Book,Integer> books) {
+		this.books=books;
 	}
 	
 	
@@ -35,39 +32,34 @@ public class PurchaseOrder {
 		
 	}
 	
-	public boolean isPurchaseOrderOfBook(Book book) {
-		return false;
-		
-	}
 	
 	
-	public static class Builder{
-		private String id;
-		private Customer customer;
+	public static class Builder extends DataObjectBuilder{
+		private String customerId; //SUBJECT TO CHANGE
 		private String status;
 		private Map<Book,Integer> books;
 
 		public Builder(PurchaseOrder purchaseOrder){
-			this.id=purchaseOrder.id;
-			this.customer=purchaseOrder.customer;
+			this.id=purchaseOrder.getId();
+			this.customerId=purchaseOrder.customerId;
 			this.status=purchaseOrder.status;
 			this.books=purchaseOrder.books;
 		}
 
 		public Builder(){
-			this.id="";
-			this.customer=new Customer.Builder().build();
+			this.id=emptyId();
+			this.customerId=emptyId();
 			this.status="";
 			this.books=new HashMap<Book, Integer>();
 		}
 
-		public Builder withId(String id){
+		public Builder withId(String id){//SUBJECT TO CHANGE
 			this.id=id;
 			return this;
 		}
 
 		public Builder withCustomer(Customer customer){
-			this.customer=customer;
+			this.customerId=customer.getId();
 			return this;
 		}
 
@@ -89,7 +81,7 @@ public class PurchaseOrder {
 		public PurchaseOrder build(){
 			PurchaseOrder purchaseOrder=new PurchaseOrder();
 			purchaseOrder.id=this.id;
-			purchaseOrder.customer=this.customer;
+			purchaseOrder.customerId=this.customerId;
 			purchaseOrder.status=this.status;
 			purchaseOrder.books=this.books;
 			return purchaseOrder;

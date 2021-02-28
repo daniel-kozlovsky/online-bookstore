@@ -1,14 +1,9 @@
-package dao.carts;
+package dao.beans;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import dao.book.Book;
-import dao.users.Customer;
-import dao.users.Visitor;
-
-public class Cart {
-	String id;
+public class Cart extends DataObject{
 	Map<Book,Integer> books;
 	
 	
@@ -31,22 +26,27 @@ public class Cart {
 
 
 
-	public static class Builder{
-		private String id;
+	public static class Builder extends DataObjectBuilder{
+
 		private Map<Book,Integer> books;
 
 		public Builder(Cart cart){
-			this.id=cart.id;
+			this.id=cart.getId();
 			this.books=cart.books;
 		}
 		
 		public Builder(){
-			this.id="";
+			this.id=emptyId();
 			this.books=new HashMap<Book, Integer>();
 		}
 
-		public Builder withId(String id){
-			this.id=id;
+		public Builder withUser(Customer customer){
+			this.id=customer.getId();
+			return this;
+		}
+		
+		public Builder withUser(Visitor visitor){
+			this.id=visitor.getId();
 			return this;
 		}
 

@@ -1,4 +1,4 @@
-package dao.users;
+package dao.beans;
 
 public class Address {
 	String number;

@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import dao.DataSchema;
-import dao.book.Book;
-import dao.users.Customer;
+import dao.beans.Book;
+import dao.beans.Customer;
 
 public class PurchaseOrderSchema implements DataSchema{
 	public static final String ID="ID";

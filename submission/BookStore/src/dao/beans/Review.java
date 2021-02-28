@@ -1,18 +1,29 @@
-package dao.reviews;
+package dao.beans;
 
-
-import dao.book.Book;
-import dao.users.Customer;
-
-public class Review {
-	String body;
-	String title;
-	String userName;
-	int stars;
-	Customer customer;
-	Book book;
+public class Review extends DataObject{
+	private String body;
+	private String title;
+	private String userName;
+	private int stars;
+	private String bookId;//SUBJECT TO CHANGE
 	
 	
+	public String getBody() {
+		return body;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public int getStars() {
+		return stars;
+	}
+
 	public boolean isEqual(Review review) {
 		return false;
 		
@@ -29,21 +40,21 @@ public class Review {
 	}
 	
 
-	public static class Builder{
+	public static class Builder extends DataObjectBuilder{
 		private String body;
 		private String title;
 		private String userName;
 		private int stars;
-		private Customer customer;
-		private Book book;
+		private String id;
+		private String bookId;	
 
 		public Builder(){
 			this.body="";
 			this.title="";
 			this.userName="";
 			this.stars=0;
-			this.customer=new Customer.Builder().build();
-			this.book=new Book.Builder().build();
+			this.id=emptyId();
+			this.bookId=emptyId();
 		}
 		
 		public Builder(Review review){
@@ -51,8 +62,8 @@ public class Review {
 			this.title=review.title;
 			this.userName=review.userName;
 			this.stars=review.stars;
-			this.customer=review.customer;
-			this.book=review.book;
+			this.id=review.getId();
+			this.bookId=review.bookId;
 		}
 
 		public Builder withBody(String body){
@@ -65,23 +76,20 @@ public class Review {
 			return this;
 		}
 
-		public Builder withUserName(String userName){
-			this.userName=userName;
-			return this;
-		}
-
 		public Builder withStars(int stars){
 			this.stars=stars;
 			return this;
 		}
 
 		public Builder withCustomer(Customer customer){
-			this.customer=customer;
+			this.id=customer.getId();
+			this.userName=customer.getUserName();
 			return this;
 		}
+		
 
 		public Builder withBook(Book book){
-			this.book=book;
+			this.bookId=book.getId();
 			return this;
 		}
 
@@ -91,8 +99,8 @@ public class Review {
 			review.title=this.title;
 			review.userName=this.userName;
 			review.stars=this.stars;
-			review.customer=this.customer;
-			review.book=this.book;
+			review.id=this.id;
+			review.bookId=this.bookId;
 			return review;
 		}
 

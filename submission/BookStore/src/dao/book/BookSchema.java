@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import dao.DataSchema;
-import dao.reviews.Review;
+import dao.beans.Review;
 
 public class BookSchema implements DataSchema{
 	

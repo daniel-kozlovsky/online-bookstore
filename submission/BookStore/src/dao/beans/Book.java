@@ -1,12 +1,8 @@
-package dao.book;
+package dao.beans;
 
 import java.io.File;
 
-import dao.orders.PurchaseOrder;
-import dao.reviews.Review;
-
-public class Book {
-	private String id;
+public class Book extends DataObject{
 	private String title;
 	private String description;
 	private String category;
@@ -56,13 +52,16 @@ public class Book {
 	public Review[] getReviews() {
 		return reviews;
 	}
+	
+	public void setReviews(Review[] reviews) {
+		this.reviews=reviews;
+	}
 
 
 	public boolean isReviewOfBook(Review review) {
 		return false;		
 	}
-	public static class Builder{
-		private String id;
+	public static class Builder extends DataObjectBuilder{
 		private String title;
 		private String description;
 		private String category;
@@ -72,7 +71,7 @@ public class Book {
 		private Review[] reviews;
 
 		public Builder(Book book){
-			this.id=book.id;
+			this.id=book.getId();
 			this.title=book.title;
 			this.description=book.description;
 			this.category=book.category;
@@ -83,7 +82,7 @@ public class Book {
 		}
 		
 		public Builder(){
-			this.id="";
+			this.id=emptyId();
 			this.title="";
 			this.description="";
 			this.category="";

@@ -1,11 +1,6 @@
-package dao.users;
-import dao.book.Book;
-import dao.carts.Cart;
-import dao.orders.PurchaseOrder;
-import dao.reviews.Review;
+package dao.beans;
 
-public class Customer {
-	String id;
+public class Customer extends DataObject{
 	String firstName;
 	String lastName;
 	Address address;
@@ -38,11 +33,27 @@ public class Customer {
 	public Review[] getReviews() {
 		return reviews;
 	}
-
+	
 	public Cart getCart() {
 		return cart;
 	}
 
+	public void setCart(Cart cart) {
+		this.cart=cart;
+	}
+	
+	public void setReviews(Review[] reviews) {
+		this.reviews=reviews;
+	}
+
+
+	
+	
+	public PurchaseOrder[] setOrders() {
+		return orders;
+	}
+	
+	
 	public PurchaseOrder[] getOrders() {
 		return orders;
 	}
@@ -59,8 +70,7 @@ public class Customer {
 		return true;
 	}
 
-	public static class Builder{
-		private String id;
+	public static class Builder extends DataObjectBuilder{
 		private String firstName;
 		private String lastName;
 		private Address address;
@@ -71,7 +81,7 @@ public class Customer {
 		private PurchaseOrder[] orders;
 
 		public Builder(){
-			this.id="";
+			this.id=emptyId();
 			this.firstName="";
 			this.lastName="";
 			this.userName="";
@@ -83,7 +93,7 @@ public class Customer {
 		}
 		
 		public Builder(Customer customer){
-			this.id=customer.id;
+			this.id=customer.getId();
 			this.firstName=customer.firstName;
 			this.lastName=customer.lastName;
 			this.address=customer.address;

@@ -1,32 +1,42 @@
-package dao.users;
+package dao.beans;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import dao.DataSchema;
-import dao.carts.Cart;
+public class Visitor extends DataObject {
 
-public class Visitor {
-	public String sessionId="SESSION_ID";
 	public Cart cart;
+	
+	
 
-	public static class Builder{
-		private String sessionId;
+	public Cart getCart() {
+		return cart;
+	}
+
+
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
+
+
+
+	public static class Builder extends DataObjectBuilder{
 		private Cart cart;
 
 		public Builder(){
-			this.sessionId="";
+			this.id=emptyId();
 			this.cart=new Cart.Builder().build();
 		}
 		
 		public Builder(Visitor visitor){
-			this.sessionId=visitor.sessionId;
+			this.id=visitor.getId();
 			this.cart=visitor.cart;
 		}
 
-		public Builder withSessionId(String sessionId){
-			this.sessionId=sessionId;
+		public Builder withSessionId(String sessionId){//SUBJECT TO CHANGE
+			this.id=sessionId;
 			return this;
 		}
 
@@ -37,7 +47,7 @@ public class Visitor {
 
 		public Visitor build(){
 			Visitor visitor=new Visitor();
-			visitor.sessionId=this.sessionId;
+			visitor.id=this.id;
 			visitor.cart=this.cart;
 			return visitor;
 		}

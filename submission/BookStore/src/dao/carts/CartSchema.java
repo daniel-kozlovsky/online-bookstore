@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import dao.DataSchema;
-import dao.book.Book;
+import dao.beans.Book;
 
 public class CartSchema implements DataSchema{
 	private static final String ID="ID";
