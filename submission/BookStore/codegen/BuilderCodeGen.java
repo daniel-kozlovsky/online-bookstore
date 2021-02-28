@@ -1,36 +1,34 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import dao.book.Book;
-
-public class DAOGenerator {
+public class BuilderCodeGen {
 	public static final String relRoot="src";//+File.separator;
 	public static final String daoPath=relRoot+File.separator+"dao";
 	
 	
-	
-	
+	public static boolean notContainKeywords(String input,String ...exclusions) {
+		for(String exclusion:exclusions) {
+			if(input.contains(exclusion)) return false;
+		}
+		return true;
+	}
+	@Test
 	public void codeGenerator() {
 		
 		try {
 			Files.walk(Paths.get(daoPath))
 			.filter(Files::isRegularFile)
 			.map(path -> path.toString())
-			.filter(path->!path.contains("DAO")&&!path.contains("Schema")&&!path.contains("accessors")&&path.contains("Book"))
+			.filter(path->notContainKeywords(path,"DAO","Schema","accessors"))
 			.map(path -> new File(path))
 			.forEach(file->{
 				 FileInputStream fis =null;
@@ -42,8 +40,9 @@ public class DAOGenerator {
 				 try {
 					fis= new FileInputStream(file);
 					input = new BufferedReader(new InputStreamReader(fis));
-					writer = new FileWriter(file);
+//					writer = new FileWriter(file);
 					Class clazz=Class.forName(className);
+					String builderCodeGen=builderString(clazz);
 					String currentLine = "";
 					String sourceCode = "";
 				     while (currentLine != null) {	
@@ -53,7 +52,9 @@ public class DAOGenerator {
 				     
 				     //writer.write("testttttt");
 				     //writer.flush();
-				     //System.out.println(sourceCode.replaceFirst("\n}", "replace\n}"));
+				     System.out.println(sourceCode.replaceFirst("\n}", "replace\n}"));
+				     //String completeCodeGen=sourceCode.replaceFirst("\n}", builderCodeGen+"\n}");
+				    // System.out.println(completeCodeGen);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}catch (ClassNotFoundException e) {
@@ -117,7 +118,7 @@ public class DAOGenerator {
 			inputMethod+="\t\t\tthis."+field.getName()+"="+field.getName()+";\n";
 			inputMethod+="\t\t\treturn this;\n";
 			inputMethod+="\t\t}\n\n";
-			build+="\t\t\t"+clazz.getSimpleName().toLowerCase()+"=this."+field.getName()+";\n";
+			build+="\t\t\t"+clazz.getSimpleName().toLowerCase()+"."+field.getName()+"=this."+field.getName()+";\n";
 		}
 		build+="\t\t\treturn this;\n";
 		build+="\t\t}\n";
