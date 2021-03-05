@@ -13,7 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/MainPage")
 public class MainPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	private static final String CUSTOMER = "customer";
+	private static final String VISITOR = "visitor";
+    
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -27,7 +30,9 @@ public class MainPage extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		getServletContext().setAttribute("user", VISITOR);
+		request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);	
 	}
 
 	/**
