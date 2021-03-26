@@ -1,4 +1,5 @@
-package data.access.mutations;
+package data.update;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +14,6 @@ import javax.sql.DataSource;
 
 import java.util.Map.Entry;
 
-import data.access.mutations.UpdateCustomer.CustomerUpdater;
 import data.beans.Book;
 import data.beans.Cart;
 import data.beans.Customer;
