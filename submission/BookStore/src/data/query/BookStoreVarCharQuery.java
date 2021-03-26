@@ -1,4 +1,4 @@
-package data.access.queries;
+package data.query;
 
 import java.util.List;
 import java.util.Map;

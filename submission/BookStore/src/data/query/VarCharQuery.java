@@ -1,4 +1,4 @@
-package data.access.queries;
+package data.query;
 
 import java.util.ArrayList;
 import java.util.Map;

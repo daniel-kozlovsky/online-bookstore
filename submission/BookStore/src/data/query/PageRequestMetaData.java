@@ -1,4 +1,4 @@
-package data.access.queries;
+package data.query;
 
 public class PageRequestMetaData {
 	private static final String ASC="ASC";

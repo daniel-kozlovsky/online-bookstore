@@ -1,4 +1,4 @@
-package data.access.queries;
+package data.query;
 
 import data.schema.DataSchema;
 

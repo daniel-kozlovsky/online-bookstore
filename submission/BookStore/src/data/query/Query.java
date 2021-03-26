@@ -1,5 +1,4 @@
-package data.access.queries;
-
+package data.query;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,13 +19,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import data.access.DataAccessRequest;
-import data.access.queries.fetchers.BookDataFetcher;
-import data.access.queries.fetchers.CartDataFetcher;
-import data.access.queries.fetchers.CustomerDataFetcher;
-import data.access.queries.fetchers.DataFetcher;
-import data.access.queries.fetchers.PurchaseOrderDataFetcher;
-import data.access.queries.fetchers.VisitorDataFetcher;
 import data.beans.Bean;
 import data.beans.Book;
 import data.beans.Cart;

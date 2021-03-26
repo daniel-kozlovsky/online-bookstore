@@ -1,4 +1,4 @@
-package data.access.queries;
+package data.query;
 
 public interface NumberQueryable <T extends Query> extends Queryable<T>{	
 	
