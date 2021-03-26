@@ -1,4 +1,4 @@
-package data.access.queries.fetchers;
+package data.fetchers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,14 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import data.access.queries.Query;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
 import data.beans.Review;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
+import data.query.Query;
 import data.schema.BookSchema;
 import data.schema.CustomerSchema;
 import data.schema.ReviewSchema;

@@ -1,23 +1,18 @@
-package data.access.queries.fetchers;
+package data.fetchers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.AbstractMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-
-import data.access.queries.Query;
 import data.beans.Book;
 import data.beans.Cart;
 import data.beans.Customer;
 import data.beans.Id;
-import data.beans.PurchaseOrder;
 import data.beans.Visitor;
-import data.schema.BookSchema;
+import data.query.Query;
 import data.schema.CartSchema;
-import data.schema.ReviewSchema;
 
 public class CartDataFetcher  extends DataFetcher<Cart>{
 

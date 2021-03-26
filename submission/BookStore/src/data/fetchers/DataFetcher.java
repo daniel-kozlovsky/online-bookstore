@@ -1,14 +1,9 @@
-package data.access.queries.fetchers;
+package data.fetchers;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import data.access.queries.DataAccessString;
 import data.beans.Bean;
-import data.beans.Book;
 
 public abstract class DataFetcher<T extends Bean> {
 

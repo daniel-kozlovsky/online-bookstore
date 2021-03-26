@@ -1,4 +1,4 @@
-package data.access.queries.fetchers;
+package data.fetchers;
 
 import java.io.File;
 import java.sql.Connection;
@@ -13,16 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import data.access.queries.DataAccessString;
-import data.access.queries.Query;
 import data.beans.Book;
 import data.beans.Id;
 import data.beans.Review;
 import data.dao.ReviewDAO;
+import data.query.Query;
 import data.schema.BookSchema;
 import data.schema.CartSchema;
 import data.schema.DataSchema;
