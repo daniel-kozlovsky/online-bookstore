@@ -1,4 +1,4 @@
-package data.fetchers;
+package data.fetcher;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

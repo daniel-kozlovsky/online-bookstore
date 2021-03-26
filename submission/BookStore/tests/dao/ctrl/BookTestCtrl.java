@@ -24,13 +24,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-
-import data.access.mutations.UpdateBook;
-import data.access.queries.DataObjectCompiler;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
 import data.dao.BookDAO;
+import data.update.UpdateBook;
 
 /**
  * Servlet implementation class BookTestCtrl

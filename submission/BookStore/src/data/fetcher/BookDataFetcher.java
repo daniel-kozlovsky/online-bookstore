@@ -1,4 +1,4 @@
-package data.fetchers;
+package data.fetcher;
 
 import java.io.File;
 import java.sql.Connection;

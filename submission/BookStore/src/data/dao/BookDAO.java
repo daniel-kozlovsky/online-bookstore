@@ -16,7 +16,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import data.query.AttributeAccess;
+import data.query.BookStoreNumberQuery;
 import data.query.BookStoreQuery;
+import data.query.BookStoreVarCharQuery;
+import data.query.DataAccessString;
+import data.query.PageRequestMetaData;
 import data.beans.Book;
 import data.beans.Id;
 import data.beans.Review;

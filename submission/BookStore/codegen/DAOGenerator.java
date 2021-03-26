@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import dao.beans.Book;
 
 public class DAOGenerator {
 	public static final String relRoot="src";//+File.separator;

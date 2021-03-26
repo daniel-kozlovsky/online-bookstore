@@ -198,7 +198,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 		boolean hasReferences=this.dataAccessRequestsConjunction.keySet().size()>1 ||this.dataAccessRequestsDisjunction.keySet().size()>1;
 		this.attributesToIncludInResults.keySet().forEach(System.out::println);
 		String queryString="SELECT ";
-		if(this.attributesToIncludInResults.isEmpty() || this.attributesToIncludInResults.size()==1) {
+		if(this.attributesToIncludInResults.isEmpty() || (this.attributesToIncludInResults.keySet().size()==1 && this.attributesToIncludInResults.get(tableName).isEmpty())) {
 			queryString+=" *";
 		}else {	
 

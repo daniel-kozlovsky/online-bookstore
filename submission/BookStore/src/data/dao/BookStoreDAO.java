@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import data.access.queries.DataAccessString;
-import data.access.queries.Query;
+import data.query.DataAccessString;
+import data.query.Query;
 import data.schema.BookSchema;
 import data.schema.CartSchema;
 import data.schema.CustomerSchema;

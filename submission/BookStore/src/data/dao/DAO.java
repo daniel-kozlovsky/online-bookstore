@@ -4,14 +4,11 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+
 import javax.xml.transform.stream.StreamResult;
 
-import data.access.DataAccessRequest;
-import data.access.queries.Query;
 import data.beans.Bean;
+import data.query.Query;
 
 public abstract class DAO {
 //	public abstract T getById(T t);
@@ -23,23 +20,23 @@ public abstract class DAO {
 
 
 	
-	String toXML() {
-		JAXBContext jc=null;
-		try {
-			jc = JAXBContext.newInstance(this.getClass());
-			Marshaller marshaller = jc.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-			StringWriter sw = new StringWriter();
-			sw.write("\n");
-			marshaller.marshal(this, new StreamResult(sw));			
-			System.out.println("XML output: \n"+sw.toString()); // for debugging
-			return sw.toString();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "";
-	}
+//	String toXML() {
+//		JAXBContext jc=null;
+//		try {
+//			jc = JAXBContext.newInstance(this.getClass());
+//			Marshaller marshaller = jc.createMarshaller();
+//			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+//			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+//			StringWriter sw = new StringWriter();
+//			sw.write("\n");
+//			marshaller.marshal(this, new StreamResult(sw));			
+//			System.out.println("XML output: \n"+sw.toString()); // for debugging
+//			return sw.toString();
+//		} catch (JAXBException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return "";
+//	}
 
 }
