@@ -1,10 +1,6 @@
 package data.beans;
 
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import javax.xml.transform.stream.StreamResult;
+
 // extends IdObject<String>
 public interface Bean {
 	public abstract String toJson();
