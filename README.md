@@ -9,6 +9,7 @@ let me know if there are any bugs, I didnt have time test everything
 There is a video on the google drive, its about 10 mins and i give a quick demo.
 
 DAOs were made to be flexible, you can chain up the methods however you want
+
 Example: lets say you want all the books from an author, all the reviews of those books with 5 stars, and all the customer who wrote the reviews Then you want all those results to be ordered by best selling books of the authors, and give at most 50 results per page, and the results for the 3rd page
 
 ```
