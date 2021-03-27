@@ -62,15 +62,35 @@ public class VisitorDAO implements DAO{
 			super(dataSchema);
 //			this.dataAccessRequests.
 		}
-		public BookStoreVisitorQuery includeCustomerPasswordInResult(){
+		public BookStoreVisitorQuery includeVisitorCreatedAtEpochInResult(){
 			if(!this.attributesToIncludInResults.containsKey(visitorSchema.tableName())) this.attributesToIncludInResults.put(visitorSchema.tableName(), new HashSet<String>());
 				this.attributesToIncludInResults.get(visitorSchema.tableName()).add(visitorSchema.ID);
 			return this;
 		}
-		public BookStoreVisitorQuery excludeCustomerGivenNameInResult(){
-			if(this.attributesToIncludInResults.containsKey(visitorSchema.tableName())) this.attributesToIncludInResults.get(visitorSchema.tableName()).remove(visitorSchema.ID);
+		
+		
+
+		
+		public BookStoreVisitorQuery includeVisitorCartInResult(){
+			if(!this.attributesToIncludInResults.containsKey(visitorSchema.tableName())) this.attributesToIncludInResults.put(visitorSchema.tableName(), new HashSet<String>());
+			if(!this.attributesToIncludInResults.containsKey(new CartSchema().tableName())) this.attributesToIncludInResults.put(new CartSchema().tableName(), new HashSet<String>());
+			if (!isDisjunctionMode) {
+				if(!this.dataAccessRequestsConjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsConjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());		
+			}else {
+				if(!this.dataAccessRequestsDisjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsDisjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());
+			}
+			includeKeyInResults();
 			return this;
 		}
+		
+		
+		private void includeKeyInResults() {
+			if(!this.attributesToIncludInResults.containsKey(visitorSchema.tableName())) this.attributesToIncludInResults.put(visitorSchema.tableName(), new HashSet<String>());
+			if(!this.attributesToIncludInResults.get(visitorSchema.tableName()).contains(visitorSchema.ID)) this.attributesToIncludInResults.get(visitorSchema.tableName()).add(visitorSchema.ID);
+			if(!this.attributesToIncludInResults.get(visitorSchema.tableName()).contains(visitorSchema.USER_TYPE)) this.attributesToIncludInResults.get(visitorSchema.tableName()).add(visitorSchema.USER_TYPE);
+		}
+		
+
 		public BookStoreCartQuery queryCart() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));

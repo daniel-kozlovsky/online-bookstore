@@ -26,6 +26,7 @@ import data.beans.Book;
 import data.beans.Id;
 import data.beans.Review;
 import data.dao.CartDAO.CartAttributeAccess;
+import data.dao.CustomerDAO.BookStoreCustomerQuery;
 import data.dao.ReviewDAO.BookStoreReviewQuery;
 import data.schema.BookSchema;
 import data.schema.CartSchema;
@@ -129,6 +130,21 @@ public class BookDAO implements DAO{
 			includeKeyInResults();
 			return this;
 		}
+
+		
+		public BookStoreBookQuery includeBookReviewsInResult(){
+			if(!this.attributesToIncludInResults.containsKey(bookSchema.tableName())) this.attributesToIncludInResults.put(bookSchema.tableName(), new HashSet<String>());
+			if(!this.attributesToIncludInResults.containsKey(new ReviewSchema().tableName())) this.attributesToIncludInResults.put(new ReviewSchema().tableName(), new HashSet<String>());
+			if (!isDisjunctionMode) {
+				if(!this.dataAccessRequestsConjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsConjunction.put(new ReviewSchema().tableName(),new ArrayList<DataAccessString>());		
+			}else {
+				if(!this.dataAccessRequestsDisjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsDisjunction.put(new ReviewSchema().tableName(), new ArrayList<DataAccessString>());
+			}
+			includeKeyInResults();
+			return this;
+		}
+
+		
 		
 		public BookStoreBookQuery excludeBookTitleInResult() {
 			if(this.attributesToIncludInResults.containsKey(bookSchema.tableName())) this.attributesToIncludInResults.get(bookSchema.tableName()).remove(bookSchema.TITLE);

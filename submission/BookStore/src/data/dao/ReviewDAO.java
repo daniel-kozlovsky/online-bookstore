@@ -97,6 +97,31 @@ public class ReviewDAO implements DAO{
 				return this;
 		}
 		
+		
+		public BookStoreReviewQuery includeReviewCustomerInResult(){
+			if(!this.attributesToIncludInResults.containsKey(reviewSchema.tableName())) this.attributesToIncludInResults.put(reviewSchema.tableName(), new HashSet<String>());
+			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());
+			if (!isDisjunctionMode) {
+				if(!this.dataAccessRequestsConjunction.containsKey(new CustomerSchema().tableName())) this.dataAccessRequestsConjunction.put(new CustomerSchema().tableName(),new ArrayList<DataAccessString>());		
+			}else {
+				if(!this.dataAccessRequestsDisjunction.containsKey(new CustomerSchema().tableName())) this.dataAccessRequestsDisjunction.put(new CustomerSchema().tableName(), new ArrayList<DataAccessString>());
+			}
+			includeKeyInResults();
+			return this;
+		}
+		
+		public BookStoreReviewQuery includeReviewBooksInResult(){
+			if(!this.attributesToIncludInResults.containsKey(reviewSchema.tableName())) this.attributesToIncludInResults.put(reviewSchema.tableName(), new HashSet<String>());
+			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());
+			if (!isDisjunctionMode) {
+				if(!this.dataAccessRequestsConjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsConjunction.put(new BookSchema().tableName(),new ArrayList<DataAccessString>());		
+			}else {
+				if(!this.dataAccessRequestsDisjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsDisjunction.put(new BookSchema().tableName(), new ArrayList<DataAccessString>());
+			}
+			includeKeyInResults();
+			return this;
+		}
+		
 		public BookStoreReviewQuery excludeReviewBodyInResult(){
 			if(this.attributesToIncludInResults.containsKey(reviewSchema.tableName())) this.attributesToIncludInResults.get(reviewSchema.tableName()).remove(reviewSchema.BODY);
 			return this;

@@ -28,6 +28,7 @@ import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
 import data.dao.BookDAO;
+import data.dao.CustomerDAO;
 import data.dao.UpdateBook;
 import data.dao.UpdateCustomer;
 import data.dao.UpdateReview;
@@ -123,6 +124,7 @@ public class BookTestCtrl extends HttpServlet {
 		.insertBookWithISBN(getServletInfo())
 		.executeBookInsertion();
 		
+
 
 
 

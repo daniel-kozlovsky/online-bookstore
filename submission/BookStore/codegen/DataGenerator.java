@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,6 +47,8 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import data.beans.Customer;
+import data.schema.PurchaseOrderSchema;
+import data.schema.UserTypes;
 
 
 public class DataGenerator {
@@ -96,7 +100,481 @@ public class DataGenerator {
 	
 	}
 	
+//	@Test
+	public void delimPoTest() {
+
+		List<String> pos2=new ArrayList<String>();
+
+
+		try {
+			pos2=Files.readAllLines(new File("insertPOsPt2.sql").toPath());
+			for(String line:pos2) {
+				String[] att = line.split(",");
+				System.out.println(att[1]);
+				return;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
+	public void formatReviews() {
+		List<String> reviews=new ArrayList<String>();
+
+		try {
+			reviews=Files.readAllLines(new File("insertReviews1by1.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		FileWriter writer=null;
+		try {
+//			  ID varchar(100) not null,
+//			  BOOK varchar (100) not null,
+//			  AMOUNT int not null,
+//			  USER_TYPE varchar(20) not null,
+			writer = new FileWriter("formatedReviews.txt"); 
+			String command ="INSERT INTO REVIEW (CUSTOMER,BOOK,RATING,TITLE,BODY,CREATED_AT_EPOCH ) VALUES  ";
+			writer.write(command);
+			for(String line:reviews) {
+				String newLine=line.replace(command, "").replace(";", ",\n");
+
+				writer.write(newLine);
+				
+				
+
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+//	@Test
+	public void addCreditCardToPOs() {
+		List<String> inserts= new ArrayList<String>();
+		List<String> bookIds= new ArrayList<String>();
+		List<String> pos1= new ArrayList<String>();
+		List<String> pos2=new ArrayList<String>();
+		List<String> customers= new ArrayList<String>();
+		List<String> visitorIds=new ArrayList<String>();
+		Map<String,String[]> custIdToCard=new LinkedHashMap<String, String[]>();
+
+		try {
+			pos2=Files.readAllLines(new File("insertPOsPt2.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			pos1=Files.readAllLines(new File("insertPOsPt2.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			customers=Files.readAllLines(new File("insertCustomers.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(String line:customers) {
+			String[] atts=line.split(",");
+			String customerId=atts[1];
+			String cardType=atts[14];
+			String cardNumber=atts[15];
+			String cardExpiry=atts[16];
+			String cardCvv2=atts[17].replace(")", "");		
+			String[] card= {cardType,cardNumber,cardExpiry,cardCvv2};
+			custIdToCard.put(customerId, card);
+//			System.out.println(customerId);
+			
+		}
+
+		FileWriter writer=null;
+		try {
+//			  ID varchar(100) not null,
+//			  BOOK varchar (100) not null,
+//			  AMOUNT int not null,
+//			  USER_TYPE varchar(20) not null,
+			writer = new FileWriter("CLEANinsertPOsPt2WithCC.txt"); 
+//			writer.write("INSERT INTO PURCHASE_ORDER (ID, BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH) VALUES "+"\n");
+			writer.write("INSERT INTO PURCHASE_ORDER (ID,BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES 	");
+//			String command="INSERT INTO PURCHASE_ORDER (ID,BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES 	";
+			String[] status= {PurchaseOrderSchema.DELIVERED_STATUS,
+					PurchaseOrderSchema.ORDERED_STATUS,
+					PurchaseOrderSchema.PROCESSED_STATUS,
+					PurchaseOrderSchema.SHIPPED_STATUS,
+					PurchaseOrderSchema.DENIED_STATUS};
+			List<String> ids = new ArrayList<String>();
+			for(String line:pos1) {
+//				System.out.println(line.split(",")[0].replace("(", ""));
+//				System.out.println(line.split(",")[4].replace(")", ""));
+				String id=line.split(",")[0].replace("(", "")+line.split(",")[1]+line.split(",")[4].replace(")", "");
+				System.out.println(id);
+				if(ids.contains(id)) {
+					System.out.println("NOT EQUAL");
+					continue;
+				}else {
+					ids.add(id);
+				}
+				String[] cardArr=custIdToCard.get(line.split(",")[0].replace("(", ""));
+				String card=
+				","+cardArr[0]+","+
+				cardArr[1]+","+
+				cardArr[2]+","+
+				cardArr[3]+
+				"),\n";
+				String newLine = line.replace("),", card);
+
+				writer.write(newLine);
+				
+				
+
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	@Test
+	public void generateCarts() {
+		List<String> inserts= new ArrayList<String>();
+		List<String> bookIds= new ArrayList<String>();
+		List<String> customerIds= new ArrayList<String>();
+		List<String> visitorIds=new ArrayList<String>();
+		List<String> key=new ArrayList<String>();
+		try {
+			bookIds=Files.readAllLines(new File("bookIdsFINAL.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			customerIds=Files.readAllLines(new File("customerIds.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			visitorIds=Files.readAllLines(new File("visitorIds.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		FileWriter writer=null;
+		try {
+//			  ID varchar(100) not null,
+//			  BOOK varchar (100) not null,
+//			  AMOUNT int not null,
+//			  USER_TYPE varchar(20) not null,
+			writer = new FileWriter("insertCarts.txt"); 
+			writer.write("INSERT INTO CART (ID,BOOK,AMOUNT,USER_TYPE) VALUES "+"\n");
+			for(String customerId:customerIds) {
+				int numberBooks=((int)(Math.random()*8)+1);
+
+				for(int i=0;i< numberBooks;i++) {
+					int bookIndex=(int)(Math.random()*bookIds.size());
+					String bookId=bookIds.get(bookIndex);
+					if(key.contains(customerId+bookId)) {
+						continue;
+					}
+					key.add(customerId+bookId);
+					String amount=Integer.toString((int)(Math.random()*5)+1);
+					writer.write("('"+customerId+"','"+bookIds.get(bookIndex)+"',"+amount+",'"+UserTypes.CUSTOMER+"'),\n");	
+				}
+			}
+			
+			for(String visitorId:visitorIds) {
+				int numberBooks=((int)(Math.random()*8)+1);
+				for(int i=0;i< numberBooks;i++) {
+					int bookIndex=(int)(Math.random()*bookIds.size());
+					String bookId=bookIds.get(bookIndex);
+					if(key.contains(visitorId+bookId)) {
+						continue;
+					}
+					key.add(visitorId+bookId);
+					String amount=Integer.toString((int)(Math.random()*5)+1);
+					writer.write("('"+visitorId+"','"+bookIds.get(bookIndex)+"',"+amount+",'"+UserTypes.VISITOR+"'),\n");	
+				}
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+//		try {
+//			  ID varchar(100) not null,
+//			  BOOK varchar (100) not null,
+//			  AMOUNT int not null,
+//			  USER_TYPE varchar(20) not null,
+//			writer = new FileWriter("insertVisitorSiteUsers.txt"); 
+//			writer.write("INSERT INTO SITE_USER (USER_TYPE,ID) VALUES "+"\n");
+//			for(String visitorId:visitorIds) {
+//				writer.write("('"+UserTypes.VISITOR+"','"+visitorId+"'),\n");
+//			}
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}finally {
+//			if(writer!=null) {
+//				try {
+//					writer.close();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+		
+	}
+	
+//	@Test
+	public void testCustomerDelim() {
+		List<String> customers= new ArrayList<String>();
+		try {
+			customers=Files.readAllLines(new File("insertCustomers.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(String line:customers) {
+			String[] atts = line.split(",");
+			for(String att:atts) {
+//				System.out.println(att);
+				
+			}
+			System.out.println("card");
+			System.out.println(atts[1]);
+			System.out.println(atts[14]);
+			System.out.println(atts[15]);
+			System.out.println(atts[16]);
+			System.out.println(atts[17].replace(")", ""));
+			return;
+		}
+	}
+	
+//	@Test
+	public void generatePO() {
+		List<String> inserts= new ArrayList<String>();
+		List<String> bookIds= new ArrayList<String>();
+		List<String> customers= new ArrayList<String>();
+		List<String> visitorIds=new ArrayList<String>();
+
+		try {
+			bookIds=Files.readAllLines(new File("bookIdsFINAL.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			customers=Files.readAllLines(new File("insertCustomers.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			visitorIds=Files.readAllLines(new File("visitorIds.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		FileWriter writer=null;
+		try {
+//			  ID varchar(100) not null,
+//			  BOOK varchar (100) not null,
+//			  AMOUNT int not null,
+//			  USER_TYPE varchar(20) not null,
+			writer = new FileWriter("insertPOsPt3.txt"); 
+//			writer.write("INSERT INTO PURCHASE_ORDER (ID, BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH) VALUES "+"\n");
+			writer.write("INSERT INTO PURCHASE_ORDER (ID,BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES 	");
+			String[] status= {PurchaseOrderSchema.DELIVERED_STATUS,
+					PurchaseOrderSchema.ORDERED_STATUS,
+					PurchaseOrderSchema.PROCESSED_STATUS,
+					PurchaseOrderSchema.SHIPPED_STATUS,
+					PurchaseOrderSchema.DENIED_STATUS};
+			for(String line:customers) {
+				int numberPos=((int)(Math.random()*8)+1);
+				String[] atts=line.split(",");
+				String customerId=atts[1];
+				String cardType=atts[14];
+				String cardNumber=atts[15];
+				String cardExpiry=atts[16];
+				String cardCvv2=atts[17].replace(")", "");
+				
+				
+				for(int j=0;j< numberPos;j++) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					int poDay=(int)(Math.random()*(27))+1;
+					String poDayString = Integer.toString(poDay);
+					int poMonth=(int)(Math.random()*11)+1;
+					String poMonthString = Integer.toString(poMonth);
+					String poDateString = ("2020-"+poMonthString+"-"+poDayString).stripLeading().stripTrailing();
+					dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));			
+				    Date date=null;
+				    long poEpoch =0;
+					try {
+						date = dateFormat.parse(poDateString);
+						poEpoch = date.getTime();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					String postatus=status[((int)(Math.random()*5))];
+					int numberBooks=((int)(Math.random()*8)+1);
+					for(int i=0;i< numberBooks;i++) {
+						int bookIndex=(int)(Math.random()*bookIds.size());
+						String amount=Integer.toString((int)(Math.random()*5)+1);
+						writer.write("("+customerId+",'"+bookIds.get(bookIndex)+"','"+postatus+"',"+amount+","+Long.toString(poEpoch)+
+								","+cardType+","+
+								","+cardNumber+","+
+								","+cardExpiry+","+
+								","+cardCvv2+
+								"),\n");	
+					}
+				}
+
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+	
+//	@Test
+	public void generateVisitors() {
+		List<String> customerIds= new ArrayList<String>();
+		List<String> visitorIds=new ArrayList<String>();
+		try {
+			customerIds=Files.readAllLines(new File("customerIds.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		INSERT INTO SITE_USER(USER_TYPE,ID) VALUES
+		FileWriter writer=null;
+		try {
+			writer = new FileWriter("visitorIds.txt"); 
+//			writer.write("INSERT INTO SITE_USER (USER_TYPE,ID) VALUES "+"\n");
+			for(String customerId:customerIds) {
+				String id =UUID.nameUUIDFromBytes(new StringBuilder(customerId).reverse().toString().getBytes()).toString().stripLeading().stripTrailing();
+				writer.write(id+"\n");
+//				writer.write("'"+UserTypes.VISITOR+"','"+new StringBuilder(customerId).reverse()+"'");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		try {
+			visitorIds=Files.readAllLines(new File("visitorIds.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			writer = new FileWriter("insertVisitors.txt"); 
+			writer.write("INSERT INTO VISITOR (USER_TYPE,ID,CREATED_AT_EPOCH) VALUES "+"\n");
+			for(String visitorId:visitorIds) {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				int poDay=(int)(Math.random()*(27))+1;
+				String poDayString = Integer.toString(poDay);
+				int poMonth=(int)(Math.random()*11)+1;
+				String poMonthString = Integer.toString(poMonth);
+				String poDateString = ("2020-"+poMonthString+"-"+poDayString).stripLeading().stripTrailing();
+				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));			
+			    Date date=null;
+			    long poEpoch =0;
+				try {
+					date = dateFormat.parse(poDateString);
+					poEpoch = date.getTime();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				writer.write("('"+UserTypes.VISITOR+"','"+visitorId+"',"+Long.toString(poEpoch)+"),\n");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+
+	}
+	
+	
+	
+//	@Test
 	public void formatBookInserts() {
 //		Set<String> ids;
 		List<String> inserts= new ArrayList<String>();

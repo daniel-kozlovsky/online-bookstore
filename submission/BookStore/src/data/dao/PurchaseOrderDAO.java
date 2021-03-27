@@ -70,7 +70,44 @@ public class PurchaseOrderDAO implements DAO{
 			includeKeyInResults();
 			return this;
 		}
+		public BookStorePurchaseOrderQuery includeCustomerInResults(){
+			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
+			includeKeyInResults();
+			if(!this.attributesToIncludInResults.containsKey(new CustomerSchema().tableName())) this.attributesToIncludInResults.put(new CustomerSchema().tableName(), new HashSet<String>());	
+			return this;
+		}
 		
+		public BookStorePurchaseOrderQuery includeBookInResults(){
+			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
+			includeKeyInResults();
+			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());	
+			return this;
+		}
+		
+		public BookStorePurchaseOrderQuery includePurchaseOrderCustomerInResult(){
+			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
+			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());
+			if (!isDisjunctionMode) {
+				if(!this.dataAccessRequestsConjunction.containsKey(new CustomerSchema().tableName())) this.dataAccessRequestsConjunction.put(new CustomerSchema().tableName(),new ArrayList<DataAccessString>());		
+			}else {
+				if(!this.dataAccessRequestsDisjunction.containsKey(new CustomerSchema().tableName())) this.dataAccessRequestsDisjunction.put(new CustomerSchema().tableName(), new ArrayList<DataAccessString>());
+			}
+			includeKeyInResults();
+			return this;
+		}
+		
+		public BookStorePurchaseOrderQuery includePurchaseOrderBooksInResult(){
+			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
+			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());
+			if (!isDisjunctionMode) {
+				if(!this.dataAccessRequestsConjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsConjunction.put(new BookSchema().tableName(),new ArrayList<DataAccessString>());		
+			}else {
+				if(!this.dataAccessRequestsDisjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsDisjunction.put(new BookSchema().tableName(), new ArrayList<DataAccessString>());
+			}
+			includeKeyInResults();
+			return this;
+		}
+
 		public BookStorePurchaseOrderQuery excludePurchaseOrderAmountInResult(){
 			if(this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).remove(purchaseOrderSchema.AMOUNT);
 			return this;
