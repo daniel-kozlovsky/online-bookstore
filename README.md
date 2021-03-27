@@ -23,9 +23,9 @@ Example: lets say you want all the books from an author, all the reviews of thos
 		.varCharContains("Tolkien")
 		.queryAttribute()
 		.whereBookAmountSold()
-		.withAscendingOrderOf()
+		.withAscendingOrderOf() 
 		.withResultLimit(50)
-		.withPageNumber(3)
+		.withPageNumber(3) //ordering, limit and page number applies to the latest whereAttribute, in this case it is whereBookAmountSold()
 		.queryReviews()
 		.includeAllAttributesInResultFromSchema()
 		.queryAttribute()
@@ -72,7 +72,8 @@ whereBookTitle()
 ```
 
 After you select the attribute the set of methods that you can query will come up, you can add as many as you want, it will all apply to the lastest call of 
-queryAttribute() chained with the whereAttribute(). They will be all conjunctions unless you explicitly state it to be a disjunction.
+queryAttribute() chained with the whereAttribute(). They will be all conjunctions unless you explicitly state it to be a disjunction. Any query parameters you set will
+apply to that currently selected whereAttribute, this includes pagination and page limints and ordering
 
 # Ecommerce-EECS4413
 
