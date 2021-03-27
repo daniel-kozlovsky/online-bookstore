@@ -1,4 +1,4 @@
-package data.update;
+package data.dao;
 
 import java.time.Instant;
 
@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import data.schema.UserTypes;
 
 public class UpdateVisitor extends DataUpdate{
+	UpdateVisitor(){}
 	public void executeInsertNewVisitor(HttpServletRequest request) {
 		if(request==null) return;
 		String id=request.getSession().getId();

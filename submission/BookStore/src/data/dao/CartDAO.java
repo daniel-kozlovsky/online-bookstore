@@ -43,11 +43,16 @@ import data.schema.PurchaseOrderSchema;
 import data.schema.ReviewSchema;
 import data.schema.UserTypes;
 import data.schema.VisitorSchema;
-public class CartDAO extends BookStoreDAO{
+public class CartDAO implements DAO{
 	private CartSchema cartSchema;
 	public CartDAO(){
 		this.cartSchema=new CartSchema();
 	}
+	@Override
+	public UpdateCart newUpdateRequest() {
+		return new UpdateCart();
+	}
+	
 	@Override
 	public BookStoreCartQuery newQueryRequest(){
 		BookStoreCartQuery bookStoreCartQuery= new BookStoreCartQuery(cartSchema);

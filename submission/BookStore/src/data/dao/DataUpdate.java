@@ -1,4 +1,4 @@
-package data.update;
+package data.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public abstract class DataUpdate {
+
 	protected void sendUpdateToDatabase(String updateString) {
 		
 		Connection connection= null;

@@ -35,11 +35,17 @@ import data.schema.DataSchema;
 import data.schema.ReviewSchema;
 import data.schema.UserTypes;
 import data.schema.VisitorSchema;
-public class VisitorDAO extends BookStoreDAO{
+public class VisitorDAO implements DAO{
 	private VisitorSchema visitorSchema;
 	public VisitorDAO(){
 		this.visitorSchema=new VisitorSchema();
 	}
+	
+	@Override
+	public UpdateVisitor newUpdateRequest() {
+		return new UpdateVisitor();
+	}
+	
 	@Override
 	public BookStoreVisitorQuery newQueryRequest(){
 		BookStoreVisitorQuery bookStoreVisitorQuery= new BookStoreVisitorQuery(visitorSchema);

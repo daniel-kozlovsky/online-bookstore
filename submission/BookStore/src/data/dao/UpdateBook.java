@@ -1,4 +1,4 @@
-package data.update;
+package data.dao;
 
 
 import java.io.File;
@@ -11,8 +11,9 @@ import data.beans.Book;
 import data.beans.Customer;
 import data.schema.BookSchema;
 
-public class UpdateBook {
-	public UpdateBook() {	
+public class UpdateBook extends DataUpdate{
+	
+	UpdateBook() {	
 		
 	}
 	
@@ -26,7 +27,7 @@ public class UpdateBook {
 	}
 
 	public class InsertBookTitle extends BookInsert{
-		InsertBookTitle(Book book){
+		private InsertBookTitle(Book book){
 			super(book);
 		}
 		
@@ -37,7 +38,7 @@ public class UpdateBook {
 	
 
 	public class InsertBookSeries extends BookInsert{
-		InsertBookSeries(Book book){
+		private InsertBookSeries(Book book){
 			super(book);
 		}
 		
@@ -47,7 +48,7 @@ public class UpdateBook {
 	}
 	
 	public class InsertBookCategory extends BookInsert {
-		InsertBookCategory(Book book) {
+		private InsertBookCategory(Book book) {
 			super(book);
 		}
 
@@ -57,7 +58,7 @@ public class UpdateBook {
 	}
 	
 	public class InsertBookAuthor extends BookInsert{
-		InsertBookAuthor(Book book) {
+		private InsertBookAuthor(Book book) {
 			super(book);
 			// TODO Auto-generated constructor stub
 		}
@@ -70,7 +71,7 @@ public class UpdateBook {
 	
 	
 	public class InsertBookDescription extends BookInsert{
-		InsertBookDescription(Book book){
+		private InsertBookDescription(Book book){
 			super(book);
 		}
 		
@@ -81,7 +82,7 @@ public class UpdateBook {
 	}
 	
 	public class InsertBookPublishYear extends BookInsert{
-		InsertBookPublishYear(Book book){
+		private InsertBookPublishYear(Book book){
 			super(book);
 		}
 		
@@ -94,7 +95,7 @@ public class UpdateBook {
 	
 	
 	public class InsertBookCover extends BookInsert{
-		InsertBookCover(Book book) {
+		private InsertBookCover(Book book) {
 			super(book);
 			// TODO Auto-generated constructor stub
 		}
@@ -109,7 +110,7 @@ public class UpdateBook {
 	
 	
 	public class InsertBookPrice extends BookInsert{
-		InsertBookPrice(Book book) {
+		private InsertBookPrice(Book book) {
 			super(book);
 			// TODO Auto-generated constructor stub
 		}
@@ -121,7 +122,7 @@ public class UpdateBook {
 	}
 	
 	public class InsertBookISBN extends BookInsert{
-		InsertBookISBN(Book book) {
+		private InsertBookISBN(Book book) {
 			super(book);
 			// TODO Auto-generated constructor stub
 		}
@@ -133,7 +134,7 @@ public class UpdateBook {
 	}
 	
 	public class ExecuteBookInsertion extends BookInsert{
-		ExecuteBookInsertion(Book book) {
+		private ExecuteBookInsertion(Book book) {
 			super(book);
 			// TODO Auto-generated constructor stub
 		}
@@ -158,7 +159,7 @@ public class UpdateBook {
 		Map<String,String> updateRequest;
 		private Book book;
 		private BookSchema bookSchema = new BookSchema();
-		BookUpdater(Book book){
+		private BookUpdater(Book book){
 			this.updateRequest=new LinkedHashMap<String, String>();
 			this.book=book;
 		}

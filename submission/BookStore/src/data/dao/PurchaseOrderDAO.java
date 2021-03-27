@@ -31,11 +31,17 @@ import data.schema.DataSchema;
 import data.schema.PurchaseOrderSchema;
 import data.schema.UserTypes;
 
-public class PurchaseOrderDAO extends BookStoreDAO{
+public class PurchaseOrderDAO implements DAO{
 	private PurchaseOrderSchema purchaseOrderSchema;
 	public PurchaseOrderDAO(){
 		this.purchaseOrderSchema=new PurchaseOrderSchema();
 	}
+	
+	@Override
+	public UpdatePurchaseOrder newUpdateRequest() {
+		return new UpdatePurchaseOrder();
+	}
+	
 	@Override
 	public BookStorePurchaseOrderQuery newQueryRequest(){
 		BookStorePurchaseOrderQuery bookStorePurchaseOrderQuery= new BookStorePurchaseOrderQuery(purchaseOrderSchema);

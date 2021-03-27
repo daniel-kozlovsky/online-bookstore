@@ -37,11 +37,16 @@ import data.schema.DataSchema;
 import data.schema.PurchaseOrderSchema;
 import data.schema.ReviewSchema;
 import data.schema.UserTypes;
-public class CustomerDAO extends BookStoreDAO{
+public class CustomerDAO implements DAO{
 	private CustomerSchema customerSchema;
 	public CustomerDAO(){
 		this.customerSchema=new CustomerSchema();
 	}
+	@Override
+	public UpdateCustomer newUpdateRequest() {
+		return new UpdateCustomer();
+	}
+	
 	@Override
 	public BookStoreCustomerQuery newQueryRequest(){
 		BookStoreCustomerQuery bookStoreCustomerQuery= new BookStoreCustomerQuery(customerSchema);

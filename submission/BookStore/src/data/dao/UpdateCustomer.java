@@ -1,4 +1,4 @@
-package data.update;
+package data.dao;
 
 
 import java.io.File;
@@ -17,7 +17,11 @@ import data.schema.BookSchema;
 import data.schema.CustomerSchema;
 import data.schema.UserTypes;
 
-public class UpdateCustomer {	
+public class UpdateCustomer extends DataUpdate{	
+	
+	UpdateCustomer(){
+		
+	}
 	
 	public CustomerUpdater requestUpdateExistingCustomer(Customer customer) {
 		return new CustomerUpdater(customer);
@@ -36,7 +40,7 @@ public class UpdateCustomer {
 	}
 	
 	public class InsertCustomerGivenName extends CustomerInsert{
-		InsertCustomerGivenName(Customer customer) {
+		private InsertCustomerGivenName(Customer customer) {
 			super(customer);
 		}
 		public InsertCustomerSurname  insertCustomerWithGivenName(String givenName){
@@ -47,7 +51,7 @@ public class UpdateCustomer {
 	
 	public class InsertCustomerSurname extends CustomerInsert{
 
-		InsertCustomerSurname(Customer customer) {
+		private InsertCustomerSurname(Customer customer) {
 			super(customer);
 		}
 		
@@ -58,7 +62,7 @@ public class UpdateCustomer {
 	}
 	public class InsertCustomerUserName extends CustomerInsert{
 
-		InsertCustomerUserName (Customer customer) {
+		private InsertCustomerUserName (Customer customer) {
 			super(customer);
 		}
 		
@@ -69,7 +73,7 @@ public class UpdateCustomer {
 	}
 	public class InsertCustomerPassWord extends CustomerInsert{
 
-		InsertCustomerPassWord(Customer customer) {
+		private InsertCustomerPassWord(Customer customer) {
 			super(customer);
 		}
 		
@@ -80,7 +84,7 @@ public class UpdateCustomer {
 	}	
 	public class InsertCustomerEmail extends CustomerInsert{
 
-		InsertCustomerEmail (Customer customer) {
+		private InsertCustomerEmail (Customer customer) {
 			super(customer);
 		}
 		
@@ -91,7 +95,7 @@ public class UpdateCustomer {
 	}	
 	public class InsertCustomerStreetNumber extends CustomerInsert{
 
-		InsertCustomerStreetNumber (Customer customer) {
+		private InsertCustomerStreetNumber (Customer customer) {
 			super(customer);
 		}
 		
@@ -102,7 +106,7 @@ public class UpdateCustomer {
 	}	
 	public class InsertCustomerStreet extends CustomerInsert{
 
-		InsertCustomerStreet (Customer customer) {
+		private InsertCustomerStreet (Customer customer) {
 			super(customer);
 		}
 		
@@ -113,7 +117,7 @@ public class UpdateCustomer {
 	}	
 	public class InsertCustomerPostalCode extends CustomerInsert{
 
-		InsertCustomerPostalCode (Customer customer) {
+		private InsertCustomerPostalCode (Customer customer) {
 			super(customer);
 		}
 		
@@ -124,7 +128,7 @@ public class UpdateCustomer {
 	}	
 	public class InsertCustomerCity extends CustomerInsert{
 
-		InsertCustomerCity (Customer customer) {
+		private InsertCustomerCity (Customer customer) {
 			super(customer);
 		}
 		
@@ -135,7 +139,7 @@ public class UpdateCustomer {
 	}	
 	public class InsertCustomerProvince extends CustomerInsert{
 
-		InsertCustomerProvince (Customer customer) {
+		private InsertCustomerProvince (Customer customer) {
 			super(customer);
 		}
 		public InsertCustomerCountry insertCustomerWithProvince(String province){
@@ -144,7 +148,7 @@ public class UpdateCustomer {
 	}	
 	public class InsertCustomerCountry extends CustomerInsert{
 
-		InsertCustomerCountry (Customer customer) {
+		private InsertCustomerCountry (Customer customer) {
 			super(customer);
 		}
 		
@@ -155,7 +159,7 @@ public class UpdateCustomer {
 	}	
 	class ExecuteCustomerInsert extends CustomerInsert{
 
-		ExecuteCustomerInsert (Customer customer) {
+		private ExecuteCustomerInsert (Customer customer) {
 			super(customer);
 		}
 		public 	void executeCustomerInsertion(){
@@ -176,7 +180,7 @@ public class UpdateCustomer {
 		Map<String,String> updateRequest;
 		private Customer customer;
 		private CustomerSchema customerSchema = new CustomerSchema();
-		CustomerUpdater(Customer customer){
+		private CustomerUpdater(Customer customer){
 			this.updateRequest=new LinkedHashMap<String, String>();
 			this.customer=customer;
 		}

@@ -1,4 +1,4 @@
-package data.update;
+package data.dao;
 
 
 import java.sql.Connection;
@@ -24,7 +24,9 @@ import data.schema.CustomerSchema;
 
 public class UpdateCart extends DataUpdate{
 	
-	
+	UpdateCart() {
+		
+	}
 	public void executeClearCart(Visitor visitor){
 		if(!visitor.getCart().isEmpty()) return;
 		String update="DELETE FROM CART WHERE ID='"+visitor.getId().toString()+"' AND  USER_TYPE='"+visitor.getUserType()+"'";
@@ -98,16 +100,4 @@ public class UpdateCart extends DataUpdate{
 
 	
 	
-		
-
-	
-//	CREATE  TABLE CART (
-//			  ID varchar(100) not null,
-//			  BOOK varchar (100) not null,
-//			  AMOUNT int not null,
-//			  USER_TYPE varchar(20) not null,
-//			  PRIMARY KEY(ID,BOOK),
-//			  CONSTRAINT type_check_cart CHECK (USER_TYPE IN('VISITOR','CUSTOMER')),
-//			  FOREIGN KEY (ID,USER_TYPE) REFERENCES SITE_USER(ID,USER_TYPE)
-//			  );
 }

@@ -28,9 +28,9 @@ import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
 import data.dao.BookDAO;
-import data.update.UpdateBook;
-import data.update.UpdateCustomer;
-import data.update.UpdateReview;
+import data.dao.UpdateBook;
+import data.dao.UpdateCustomer;
+import data.dao.UpdateReview;
 
 /**
  * Servlet implementation class BookTestCtrl
@@ -111,7 +111,7 @@ public class BookTestCtrl extends HttpServlet {
 
 		out.flush();
 		
-		new UpdateBook().requestNewBookInsertion()
+		bookDAO.newUpdateRequest().requestNewBookInsertion()
 		.insertBookWithTitle(getServletInfo())
 		.insertBookWithSeries(getServletInfo())
 		.insertBookWithCategory(getServletInfo())
@@ -122,7 +122,6 @@ public class BookTestCtrl extends HttpServlet {
 		.insertBookWithPrice(serialVersionUID)
 		.insertBookWithISBN(getServletInfo())
 		.executeBookInsertion();
-		new UpdateReview().requestNewReviewInsertion(null, book).insertReviewWithTitle(getServletInfo()).insertReviewWithBody(getServletInfo()).insertReviewWithRating(0).executeReviewInsertion();
 		
 
 

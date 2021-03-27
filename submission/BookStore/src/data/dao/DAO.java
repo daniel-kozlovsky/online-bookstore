@@ -10,9 +10,10 @@ import javax.xml.transform.stream.StreamResult;
 import data.beans.Bean;
 import data.query.Query;
 
-public abstract class DAO {
+public interface DAO{
 //	public abstract T getById(T t);
 	public abstract Query newQueryRequest();	
+	public abstract DataUpdate newUpdateRequest();	
 //	public abstract Query newUpdateRequest();
 //	public abstract Query newDeleteRequest();
 //	public abstract Query newInsertRequest();

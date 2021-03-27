@@ -44,11 +44,17 @@ import data.schema.DataSchema;
 import data.schema.PurchaseOrderSchema;
 import data.schema.ReviewSchema;
 
-public class ReviewDAO extends BookStoreDAO{
+public class ReviewDAO implements DAO{
 	private ReviewSchema reviewSchema;
 	public ReviewDAO(){
 		this.reviewSchema=new ReviewSchema();
 	}
+	
+	@Override
+	public UpdateReview newUpdateRequest() {
+		return new UpdateReview();
+	}
+	
 	@Override
 	public BookStoreReviewQuery newQueryRequest(){
 		BookStoreReviewQuery bookStoreReviewQuery= new BookStoreReviewQuery(reviewSchema);

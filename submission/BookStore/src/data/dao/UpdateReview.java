@@ -1,4 +1,4 @@
-package data.update;
+package data.dao;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -9,13 +9,17 @@ import java.util.Map.Entry;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Review;
+import data.dao.UpdateBook.BookInsert;
+import data.dao.UpdateBook.InsertBookSeries;
+import data.dao.UpdateBook.InsertBookTitle;
 import data.schema.BookSchema;
 import data.schema.ReviewSchema;
-import data.update.UpdateBook.BookInsert;
-import data.update.UpdateBook.InsertBookSeries;
-import data.update.UpdateBook.InsertBookTitle;
 
 public class UpdateReview extends DataUpdate{
+	UpdateReview(){
+		
+	}
+	
 	public void executeDeleteReview(Customer customer, Review review) {
 		if(customer.getId().isEmpty() || review.getBook().getId().isEmpty()|| !review.getCustomer().getId().equals(customer.getId())) return;
 		String update="DELETE FROM REVIEW WHERE CUSTOMER='"+customer.getId().toString()+"' AND  BOOK='"+review.getBook().getId().toString()+"'";
@@ -32,7 +36,7 @@ public class UpdateReview extends DataUpdate{
 	}
 
 	public class InsertReviewTitle extends ReviewInsert{
-		InsertReviewTitle(Review review){
+		private InsertReviewTitle(Review review){
 			super(review);
 		}
 		
@@ -42,7 +46,7 @@ public class UpdateReview extends DataUpdate{
 	}
 	
 	public class InsertReviewBody extends ReviewInsert{
-		InsertReviewBody(Review review){
+		private InsertReviewBody(Review review){
 			super(review);
 		}
 		
@@ -52,7 +56,7 @@ public class UpdateReview extends DataUpdate{
 	}
 	
 	public class InsertReviewRating extends ReviewInsert{
-		InsertReviewRating(Review review){
+		private InsertReviewRating(Review review){
 			super(review);
 		}
 		
@@ -68,7 +72,7 @@ public class UpdateReview extends DataUpdate{
 		}
 	}
 	public class ExecuteReviewInsertion extends ReviewInsert{
-		ExecuteReviewInsertion(Review review) {
+		private ExecuteReviewInsertion(Review review) {
 			super(review);
 			// TODO Auto-generated constructor stub
 		}
@@ -86,7 +90,7 @@ public class UpdateReview extends DataUpdate{
 		Map<String,String> updateRequest;
 		private Review review;
 		private ReviewSchema reviewSchema = new ReviewSchema();
-		ReviewUpdater(Review review){
+		private ReviewUpdater(Review review){
 			this.updateRequest=new LinkedHashMap<String, String>();
 			this.review=review;
 		}
