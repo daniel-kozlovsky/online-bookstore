@@ -111,13 +111,13 @@ public class DataObjectCompiler {
 		reviewDataFetcher= new ReviewDataFetcher(this.attributesIncludedInResults);
 	}
 	
-	public List<Review> compileReviewsFromBook(Book book){
+	protected List<Review> compileReviewsFromBook(Book book){
 		List<Review> results = new ArrayList<Review>();
 		
 		return results;
 	}
 	
-	public List<Review> compileReviewsFromCustomer(Customer customer){
+	protected List<Review> compileReviewsFromCustomer(Customer customer){
 		List<Review> results = new ArrayList<Review>();
 		
 		return results;
@@ -407,14 +407,14 @@ public class DataObjectCompiler {
 			}
 
 		}
-		bookReviewResults.entrySet().stream().map(entry->entry.getValue()).flatMap(a->a.stream()).map(review->review.getBook().getId().toString()).forEach(System.out::println);
-		customerReviewResults.entrySet().stream().map(entry->entry.getValue()).flatMap(a->a.stream()).map(review->review.getCustomer().getId().toString()).forEach(System.out::println);
+//		bookReviewResults.entrySet().stream().map(entry->entry.getValue()).flatMap(a->a.stream()).map(review->review.getBook().getId().toString()).forEach(System.out::println);
+//		customerReviewResults.entrySet().stream().map(entry->entry.getValue()).flatMap(a->a.stream()).map(review->review.getCustomer().getId().toString()).forEach(System.out::println);
 //		reviewResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
-		purchaseOrderResults.entrySet().stream().map(entry->entry.getValue()).flatMap(a->a.stream()).map(po->po.toJson()).forEach(System.out::println);
-		customerResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
-		bookResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
-		cartResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
-		visitorResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
+//		purchaseOrderResults.entrySet().stream().map(entry->entry.getValue()).flatMap(a->a.stream()).map(po->po.toJson()).forEach(System.out::println);
+//		customerResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
+//		bookResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
+//		cartResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
+//		visitorResults.entrySet().stream().map(entry->entry.getValue()).map(review->review.toJson()).forEach(System.out::println);
 		return this;
 //		while(!buildQueue.isEmpty()) {
 //			String currentBuildRequest=buildQueue.poll();
@@ -498,24 +498,24 @@ public class DataObjectCompiler {
 //		
 //	}
 	
-	public List<Cart> buildCarts() {
+	protected List<Cart> buildCarts() {
 		List<Cart> result= new ArrayList<Cart>();
 		return result;
 	}
-	public List<Customer> buildCustomers() {
+	protected List<Customer> buildCustomers() {
 		List<Customer> result= new ArrayList<Customer>();
 		//if has book, if has review po cart the all get put int
 		return result;
 	}
-	public List<Visitor> buildVisitors() {
+	protected List<Visitor> buildVisitors() {
 		List<Visitor> result= new ArrayList<Visitor>();
 		return result;
 	}
-	public List<PurchaseOrder> buildPurchaseOrders() {
+	protected List<PurchaseOrder> buildPurchaseOrders() {
 		List<PurchaseOrder> result= new ArrayList<PurchaseOrder>();
 		return result;
 	}
-	public List<Review> buildReviews() {
+	protected List<Review> buildReviews() {
 		List<Review> result= new ArrayList<Review>();
 		return result;
 	}

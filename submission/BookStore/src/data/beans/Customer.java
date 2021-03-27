@@ -22,6 +22,7 @@ public class Customer extends User{
 	private  PurchaseOrder[] purchaseOrders;
 	private  long createdAtEpoch;
 	private boolean isLoggedOn;
+	private CreditCard creditCard;
 
 	private boolean _isWithinReview;
 	
@@ -46,6 +47,10 @@ public class Customer extends User{
 
 	public String getSurName() {
 		return surName;
+	}
+	
+	public CreditCard getCreditCard() {
+		return creditCard;
 	}
 
 	public Address getAddress() {

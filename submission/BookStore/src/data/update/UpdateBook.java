@@ -16,7 +16,7 @@ public class UpdateBook {
 		
 	}
 	
-	public BookUpdater requestUpdateExistingBook(Book book) {
+	public BookUpdater requestUpdateBook(Book book) {
 		return new BookUpdater(book);
 	}
 	
@@ -199,9 +199,6 @@ public class UpdateBook {
 			return this;
 		}
 		
-		private String surroundWithQuotes(String word) {
-			return "'"+word+"'";
-		}
 		
 		public BookUpdater updateBookPrice(double price){
 			this.updateRequest.put(bookSchema.PRICE, Double.toString(price));
@@ -216,9 +213,10 @@ public class UpdateBook {
 		public void executeUpdate() {
 			String update = "UPDATE BOOK SET ";
 			for(Entry<String,String> entry:this.updateRequest.entrySet()) {
-				update+=entry.getKey()+"="+entry.getValue();
+				update+=entry.getKey()+"="+entry.getValue()+",";
 			}
-			update+="WHERE ID='"+book.getId().toString()+"'";
+			update=update.substring(0,update.length()-1);
+			update+=" WHERE ID='"+book.getId().toString()+"'";
 			sendUpdateToDatabase(update);
 		}
 	}

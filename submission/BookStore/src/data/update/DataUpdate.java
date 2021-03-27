@@ -42,4 +42,9 @@ public abstract class DataUpdate {
 		}
 	}
 	
+
+	protected String surroundWithQuotes(String word) {
+		return "'"+word+"'";
+	}
+	
 }

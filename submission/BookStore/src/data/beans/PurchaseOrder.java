@@ -46,6 +46,10 @@ public class PurchaseOrder implements Bean{
 		return books.get(book)!=null &&books.get(book)>0;		
 	}
 	
+	public boolean isEmpty() {
+		return books.isEmpty() || createdAtEpoch==0;
+	}
+	
 	public Customer getCustomer() {
 		return this.customer;	
 	}

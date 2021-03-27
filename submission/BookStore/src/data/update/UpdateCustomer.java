@@ -35,7 +35,7 @@ public class UpdateCustomer {
 		}
 	}
 	
-	class InsertCustomerGivenName extends CustomerInsert{
+	public class InsertCustomerGivenName extends CustomerInsert{
 		InsertCustomerGivenName(Customer customer) {
 			super(customer);
 		}
@@ -45,7 +45,7 @@ public class UpdateCustomer {
 		
 	}
 	
-	class InsertCustomerSurname extends CustomerInsert{
+	public class InsertCustomerSurname extends CustomerInsert{
 
 		InsertCustomerSurname(Customer customer) {
 			super(customer);
@@ -56,7 +56,7 @@ public class UpdateCustomer {
 		}
 		
 	}
-	class InsertCustomerUserName extends CustomerInsert{
+	public class InsertCustomerUserName extends CustomerInsert{
 
 		InsertCustomerUserName (Customer customer) {
 			super(customer);
@@ -67,7 +67,7 @@ public class UpdateCustomer {
 		}
 		
 	}
-	class InsertCustomerPassWord extends CustomerInsert{
+	public class InsertCustomerPassWord extends CustomerInsert{
 
 		InsertCustomerPassWord(Customer customer) {
 			super(customer);
@@ -78,7 +78,7 @@ public class UpdateCustomer {
 		}
 		
 	}	
-	class InsertCustomerEmail extends CustomerInsert{
+	public class InsertCustomerEmail extends CustomerInsert{
 
 		InsertCustomerEmail (Customer customer) {
 			super(customer);
@@ -89,7 +89,7 @@ public class UpdateCustomer {
 		}
 		
 	}	
-	class InsertCustomerStreetNumber extends CustomerInsert{
+	public class InsertCustomerStreetNumber extends CustomerInsert{
 
 		InsertCustomerStreetNumber (Customer customer) {
 			super(customer);
@@ -100,7 +100,7 @@ public class UpdateCustomer {
 		}
 		
 	}	
-	class InsertCustomerStreet extends CustomerInsert{
+	public class InsertCustomerStreet extends CustomerInsert{
 
 		InsertCustomerStreet (Customer customer) {
 			super(customer);
@@ -111,7 +111,7 @@ public class UpdateCustomer {
 		}
 		
 	}	
-	class InsertCustomerPostalCode extends CustomerInsert{
+	public class InsertCustomerPostalCode extends CustomerInsert{
 
 		InsertCustomerPostalCode (Customer customer) {
 			super(customer);
@@ -122,7 +122,7 @@ public class UpdateCustomer {
 		}
 		
 	}	
-	class InsertCustomerCity extends CustomerInsert{
+	public class InsertCustomerCity extends CustomerInsert{
 
 		InsertCustomerCity (Customer customer) {
 			super(customer);
@@ -133,7 +133,7 @@ public class UpdateCustomer {
 		}
 		
 	}	
-	class InsertCustomerProvince extends CustomerInsert{
+	public class InsertCustomerProvince extends CustomerInsert{
 
 		InsertCustomerProvince (Customer customer) {
 			super(customer);
@@ -142,7 +142,7 @@ public class UpdateCustomer {
 			return new InsertCustomerCountry(new Customer.Builder(customer).withProvince(province).build());
 		}
 	}	
-	class InsertCustomerCountry extends CustomerInsert{
+	public class InsertCustomerCountry extends CustomerInsert{
 
 		InsertCustomerCountry (Customer customer) {
 			super(customer);
@@ -162,10 +162,13 @@ public class UpdateCustomer {
 
 		    String epoch =Long.toString(Instant.now().getEpochSecond());
 			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString().stripLeading().stripTrailing();
-			String update="INSERT INTO CUSTOMER (USER_TYPE,ID,GIVENNAME,SURNAME,USERNAME,PASSWORD ,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,UTC) VALUES "+
+			String userTablesUpdate = "INSERT INTO SITE_USER (ID,USER_TYPE) VALUES ('"+id+"','"+UserTypes.CUSTOMER+"')";
+			sendUpdateToDatabase(userTablesUpdate);
+			String update="INSERT INTO CUSTOMER (USER_TYPE,ID,GIVENNAME,SURNAME,USERNAME,PASSWORD ,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,CREATED_AT_EPOCH) VALUES "+
 					"('"+UserTypes.CUSTOMER+"','"+id+"','"+customer.getGivenName()+"','"+customer.getSurName()+"','"+customer.getUserName()+"','"+customer.getPassword()+"','"+customer.getEmail()+"','"+
 					customer.getAddress().getNumber()+"',"+customer.getAddress().getStreet()+"','"+customer.getAddress().getPostalCode()+"','"+customer.getAddress().getCity()+"','"+customer.getAddress().getProvince()+"','"+customer.getAddress().getCountry()+"',"+epoch+")";
 			sendUpdateToDatabase(update);
+			
 		}
 	}
 	
@@ -257,19 +260,13 @@ public class UpdateCustomer {
 		}
 		
 		
-	
-		private String surroundWithQuotes(String word) {
-			return "'"+word+"'";
-		}
-		
-		
 		public void executeUpdate() {
 			String update = "UPDATE CUSTOMER SET ";
 			for(Entry<String,String> entry:this.updateRequest.entrySet()) {
 				update+=entry.getKey()+"="+entry.getValue() + ",";
 			}
 			update=update.substring(0,update.length()-1);
-			update+="WHERE ID='"+customer.getId().toString()+"'";
+			update+=" WHERE ID='"+customer.getId().toString()+"'";
 			sendUpdateToDatabase(update);
 		}
 	}

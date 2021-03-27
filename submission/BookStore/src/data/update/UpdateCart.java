@@ -96,9 +96,6 @@ public class UpdateCart extends DataUpdate{
 
 	
 
-	private String surroundWithQuotes(String word) {
-		return "'"+word+"'";
-	}
 	
 	
 		
