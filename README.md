@@ -1,3 +1,8 @@
+# UPDATE
+
+video in the google docs how to use my DAO's
+let me know if there are any bugs, I didnt have time test everything
+
 # Ecommerce-EECS4413
 
 Our actual source code is in the submission folder
