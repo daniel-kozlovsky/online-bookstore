@@ -18,13 +18,17 @@ public class PurchaseOrderSchema extends DataSchema{
 	public static final String DENIED_STATUS="DENIED";
 	public static final String DELIVERED_STATUS="DELIVERED";
 	public static final String ORDERED_STATUS="ORDERED";
+	public static final String CREDIT_CARD="CREDIT_CARD";
+	public static final String  CREDIT_CARD_NUMBER="CREDIT_CARD_NUMBER";
+	public static final String  CREDIT_CARD_EXPIRY="CREDIT_CARD_EXPIRY";
+	public static final String  CREDIT_CARD_CVV2="CREDIT_CARD_CVV2";
 //	'PROCESSED','SHIPPED','DENIED','DELIVERED','ORDERED'
 
 	public PurchaseOrderSchema() {
 		super();
 		this.TABLE_NAME="PURCHASE_ORDER";
 		VARCHAR_ATTRIBUTE_LABELS = new String[]{ID,BOOK,AMOUNT,CREATED_AT_EPOCH};
-		ATTRIBUTE_LABELS = new String[]{ID,BOOK,AMOUNT,CREATED_AT_EPOCH};
+		ATTRIBUTE_LABELS = new String[]{ID,BOOK,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2};
 		WORD_ATTRIBUTE_LABELS = new String[]{STATUS};
 		NUMBER_ATTRIBUTE_LABELS = new String[]{};
 		OBJECT_ATTRIBUTE_LABELS =  new String[]{};		
