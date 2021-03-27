@@ -76,56 +76,80 @@ public class BookTestCtrl extends HttpServlet {
 //		attributesIncludedInResults.get("REVIEW").add("TITLE");
 //		attributesIncludedInResults.get("REVIEW").add("BODY");
 		
-		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
-		PrintWriter out = response.getWriter();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        
-        System.out.println("get req:");
-        
-		BookDAO bookDAO= new BookDAO();
-		bookDAO.newQueryRequest()
-		.includeAllAttributesInResultFromSchema()
-		.excludeBookDescriptionInResult()
-		.excludeBookPriceInResult()
-		.queryAttribute()
-		.whereBook()
-		.isBook(book)
-		.queryReviews()
-		.includeAllAttributesInResultFromSchema()
-		.excludeReviewCreatedAtEpochInResult()
-		.queryCustomers()
-		.includeAllAttributesInResultFromSchema()
-		.excludeCustomerPasswordInResult()
-		.executeQuery()
-		.executeCompilation()
-		.compileBooks()
-		.stream().map(abook->abook.toJson()).forEach(json->out.print(json));
-		
-		
-
-		
-		
-		
-
-
-
-		out.flush();
-		
-		bookDAO.newUpdateRequest().requestNewBookInsertion()
-		.insertBookWithTitle(getServletInfo())
-		.insertBookWithSeries(getServletInfo())
-		.insertBookWithCategory(getServletInfo())
-		.insertBookWithAuthor(getServletInfo())
-		.insertBookWithDescription(getServletInfo())
-		.insertBookWithPublishYear(0)
-		.insertBookWithCover(null)
-		.insertBookWithPrice(serialVersionUID)
-		.insertBookWithISBN(getServletInfo())
-		.executeBookInsertion();
-		
-
-
+//		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
+//		PrintWriter out = response.getWriter();
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        
+//        System.out.println("get req:");
+//        
+//		BookDAO bookDAO= new BookDAO();
+//		bookDAO.newQueryRequest()
+//		.includeAllAttributesInResultFromSchema()
+//		.excludeBookDescriptionInResult()
+//		.excludeBookPriceInResult()
+//		.queryAttribute()
+//		.whereBookAuthor()
+//		.varCharContains("Tolkien")
+//		.queryAttribute()
+//		.whereBookAmountSold()
+//		.withAscendingOrderOf()
+//		.withResultLimit(50)
+//		.withPageNumber(3)
+//		.queryReviews()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryAttribute()
+//		.whereReviewRating()
+//		.numberAtLeast("5")
+//		.queryCustomers()
+//		.includeAllAttributesInResultFromSchema()
+//		.excludeCustomerPasswordInResult()
+//		.executeQuery()
+//		.executeCompilation()
+//		.compileBooks()
+//		.stream().map(abook->abook.toJson()).forEach(json->out.print(json));
+//		
+//		new CustomerDAO().newQueryRequest()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryReviews()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryAttribute()
+//		.whereReviewRating()
+//		.numberAtLeast("3")
+//		.queryCustomers()
+//		.queryPurchaseOrder()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryAttribute()
+//		.wherePurchaseOrderStatus()
+//		.isOrdered()
+//		.executeQuery()
+//		.executeCompilation()
+//		.compileBooks();
+//		
+//		
+//
+//		
+//		
+//		
+//
+//
+//
+//		out.flush();
+//		
+//		bookDAO.newUpdateRequest().requestNewBookInsertion()
+//		.insertBookWithTitle(getServletInfo())
+//		.insertBookWithSeries(getServletInfo())
+//		.insertBookWithCategory(getServletInfo())
+//		.insertBookWithAuthor(getServletInfo())
+//		.insertBookWithDescription(getServletInfo())
+//		.insertBookWithPublishYear(0)
+//		.insertBookWithCover(null)
+//		.insertBookWithPrice(serialVersionUID)
+//		.insertBookWithISBN(getServletInfo())
+//		.executeBookInsertion();
+//		
+//
+//
 
 
 

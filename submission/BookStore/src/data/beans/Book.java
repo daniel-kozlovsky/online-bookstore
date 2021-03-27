@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+
 public class Book extends IdObject{
 	private String title;
 	private String description;
@@ -18,8 +20,8 @@ public class Book extends IdObject{
 	private double rating;
 	private int amountSold;
 	private int publishYear;
+	private static final String relativeImageFolderPath=".."+File.separator+".."+File.separator+"database"+File.separator+"book_images"+File.separator+"covers"+File.separator;
 
-	
 	private Book(){
 		
 	}
