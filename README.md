@@ -3,6 +3,76 @@
 video in the google docs how to use my DAO's
 let me know if there are any bugs, I didnt have time test everything
 
+
+# Quick DAO GUIDE:
+
+There is a video on the google drive, its about 10 mins and i give a quick demo.
+
+DAOs were made to be flexible, you can chain up the methods however you want
+Example: lets say you want all the books from an author, all the reviews of those books with 5 stars, and all the customer who wrote the reviews Then you want all those results to be ordered by best selling books of the authors, and give at most 50 results per page, and the results for the 3rd page
+
+```
+		BookDAO bookDAO= new BookDAO();
+		bookDAO.newQueryRequest()
+		.includeAllAttributesInResultFromSchema()
+		.excludeBookDescriptionInResult()
+		.excludeBookPriceInResult()
+		.queryAttribute()
+		.whereBookAuthor()
+		.varCharContains("Tolkien")
+		.queryAttribute()
+		.whereBookAmountSold()
+		.withAscendingOrderOf()
+		.withResultLimit(50)
+		.withPageNumber(3)
+		.queryReviews()
+		.includeAllAttributesInResultFromSchema()
+		.queryAttribute()
+		.whereReviewRating()
+		.numberAtLeast("5")
+		.queryCustomers()
+		.includeAllAttributesInResultFromSchema()
+		.excludeCustomerPasswordInResult()
+		.executeQuery()
+		.executeCompilation()
+		.compileBooks()
+```
+A few things to note. you may have to query back and forth between tables to properly set up your search for example you may need to go from customer-> to review, but now to get the purchase orders, you have to go back to customer to access the method
+
+Example: get customer, with reviews rating at least 3, and purchase orders of that customer where the status is ordered
+```
+		new CustomerDAO().newQueryRequest()
+		.includeAllAttributesInResultFromSchema()
+		.queryReviews()  //to reviews
+		.includeAllAttributesInResultFromSchema()
+		.queryAttribute()
+		.whereReviewRating()
+		.numberAtLeast("3")
+		.queryCustomers() //back to customers
+		.queryPurchaseOrder() //so purchase orders can be accessed
+		.includeAllAttributesInResultFromSchema()
+		.queryAttribute()
+		.wherePurchaseOrderStatus()
+		.isOrdered()
+		.executeQuery()
+		.executeCompilation()
+		.compileBooks();
+		
+```
+
+You can only chain query properties to one attribute at a time any time you call the following method it will give you a list of all the attributes related to the object
+```
+queryAttribute()
+```
+
+from here you must pick one of the attributes they are always prefixed with keyword "where" ex for book Title 
+```
+whereBookTitle()
+```
+
+After you select the attribute the set of methods that you can query will come up, you can add as many as you want, it will all apply to the lastest call of 
+queryAttribute() chained with the whereAttribute(). They will be all conjunctions unless you explicitly state it to be a disjunction.
+
 # Ecommerce-EECS4413
 
 Our actual source code is in the submission folder
