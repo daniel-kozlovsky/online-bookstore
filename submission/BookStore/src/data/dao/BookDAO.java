@@ -8,9 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -23,8 +27,12 @@ import data.query.BookStoreVarCharQuery;
 import data.query.DataAccessString;
 import data.query.PageRequestMetaData;
 import data.beans.Book;
+import data.beans.Cart;
+import data.beans.Customer;
 import data.beans.Id;
+import data.beans.PurchaseOrder;
 import data.beans.Review;
+import data.beans.Visitor;
 import data.dao.CartDAO.CartAttributeAccess;
 import data.dao.CustomerDAO.BookStoreCustomerQuery;
 import data.dao.ReviewDAO.BookStoreReviewQuery;
@@ -56,6 +64,57 @@ public class BookDAO implements DAO{
 		return bookStoreQuery;
 	}
 	
+	public int getNumberBooks() {
+		int total=0;
+		for(Entry<String,Integer> entry: getCountPerCategory().entrySet()) {
+			total=total+entry.getValue();
+		}
+		return total;
+	}
+	
+	
+	
+	public Map<String, Integer> getCountPerCategory(){
+		String queryString="SELECT COUNT(CATEGORY) AS CATEGORY_COUNT, CATEGORY FROM BOOK GROUP BY CATEGORY";
+		Map<String, Integer> results= new LinkedHashMap<String, Integer>();
+		Connection connection= null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		try {
+			DataSource dataSource=(DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			connection= dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(queryString);
+			resultSet= preparedStatement.executeQuery();
+			while(resultSet.next()) {				
+				results.put(resultSet.getString("CATEGORY"), resultSet.getInt("CATEGORY_COUNT"));
+			}
+			return results;
+
+			
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(preparedStatement!=null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		return results;
+	}
 
 //	private static BookStoreReviewQuery queryReviews(Map<String,Set<String>> attributesToIncludInResults, Map<String,List<DataAccessString>> dataAccessRequests,PageRequestMetaData pageRequestMetaData,List<DataAccessString> references) {
 //		

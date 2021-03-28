@@ -78,11 +78,11 @@ public class BookDataFetcher extends DataFetcher<Book>{
 			
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.PRICE)) {
-				book = new Book.Builder(book).withPrice(Double.parseDouble(resultSet.getString(prefix+schema.PRICE))).build();
+				book = new Book.Builder(book).withPrice(resultSet.getDouble(prefix+schema.PRICE)).build();
 			}
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.AMOUNT_SOLD)) {
-				book = new Book.Builder(book).withPrice(Integer.parseInt(resultSet.getString(prefix+schema.AMOUNT_SOLD))).build();
+				book = new Book.Builder(book).withPrice(resultSet.getInt(prefix+schema.AMOUNT_SOLD)).build();
 			}
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.ISBN)) {

@@ -260,8 +260,14 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 		}else {
 			queryString+=" FROM "+this.tableName+" ";
 		}
-		
-		if(!queryString.contains("WHERE")) queryString+=" WHERE ";
+		int queryCount=0;
+		for(Entry<String,List<DataAccessString>> entry : this.dataAccessRequestsDisjunction.entrySet()) {
+			queryCount=queryCount+entry.getValue().size();
+		}
+		for(Entry<String,List<DataAccessString>> entry : this.dataAccessRequestsConjunction.entrySet()) {
+			queryCount=queryCount+entry.getValue().size();
+		}
+		if(!queryString.contains("WHERE") && queryCount>=1) queryString+=" WHERE ";
 		
 		String queryParameters=getQueryParameterString();	
 		if(queryString.contains("AND") && !queryParameters.isEmpty())
