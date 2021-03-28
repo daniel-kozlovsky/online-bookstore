@@ -77,9 +77,9 @@ public class BookTestCtrl extends HttpServlet {
 //		attributesIncludedInResults.get("REVIEW").add("BODY");
 		
 //		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
-//		PrintWriter out = response.getWriter();
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 //        
 //        System.out.println("get req:");
 //        
@@ -116,6 +116,7 @@ public class BookTestCtrl extends HttpServlet {
 //		.queryAttribute()
 //		.whereReviewRating()
 //		.numberAtLeast("3")
+//		.withAscendingOrderOf()
 //		.queryCustomers()
 //		.queryPurchaseOrder()
 //		.includeAllAttributesInResultFromSchema()
@@ -125,6 +126,14 @@ public class BookTestCtrl extends HttpServlet {
 //		.executeQuery()
 //		.executeCompilation()
 //		.compileBooks();
+        new BookDAO().newQueryRequest()
+        .includeBookCoverInResult()
+        .includeBookPriceInResult()
+        .executeQuery()
+        .executeCompilation()
+        .compileBooks()
+        .stream().map(abook->abook.toJson()).forEach(json->out.print(json));
+        ;
 //		
 //		
 //
