@@ -64,6 +64,15 @@ public class BookDAO implements DAO{
 		return bookStoreQuery;
 	}
 	
+	public int getNumberBooks() {
+		int total=0;
+		for(Entry<String,Integer> entry: getCountPerCategory().entrySet()) {
+			total=total+entry.getValue();
+		}
+		return total;
+	}
+	
+	
 	
 	public Map<String, Integer> getCountPerCategory(){
 		String queryString="SELECT COUNT(CATEGORY) AS CATEGORY_COUNT, CATEGORY FROM BOOK GROUP BY CATEGORY";
