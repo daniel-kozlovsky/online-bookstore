@@ -7,7 +7,7 @@
 var slideIndexDeal = 1;			// index for today's deals
 var slideIndexTop = 1;			// index for best sellers
 var slideIndexRating = 1;		// index for top rating books
-var slideIndexProfile = 1;		// inex for profile recommendation
+var slideIndexProfile = 1;		// index for profile recommendation
 var slideIndexComedy = 1;		// index for comedy genre
 var slideIndexDrama = 1;		// index for drama genre
 var slideIndexFiction = 1;		// index for fiction genre
@@ -283,8 +283,11 @@ function showSlidesNonFiction(n) {
 		
 		if (slideNum > slides.length) {slideNum = 1;}
 	    if (slideNum < 1) {slideNum = slides.length; }
-
-		slides[slideNum-1].style.display = "inline";
+		
+		try {
+			slides[slideNum-1].style.display = "inline";
+		} catch(err) {}
+		
 		slideNum++;
 	}
 }
