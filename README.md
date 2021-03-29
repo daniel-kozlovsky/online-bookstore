@@ -38,28 +38,10 @@ Example: lets say you want all the books from an author, all the reviews of thos
 		.executeCompilation()
 		.compileBooks()
 ```
-A few things to note. you may have to query back and forth between tables to properly set up your search for example you may need to go from customer-> to review, but now to get the purchase orders, you have to go back to customer to access the method
+Queries are one way, do not make circular query. If you need to refer to a previous queried table, just do a new query instead.
+Ex, if you want a customers reviews, and a customers purchase orders. you would have to make two queries. one for customer->reviews another for customer->purchase order. then 
+link the results. Doing the circular requests will either give you the empty set or an absurd amount of redundant/irrelavant info.  The dao object is essential your root query.
 
-Example: get customer, with reviews rating at least 3, and purchase orders of that customer where the status is ordered
-```
-		new CustomerDAO().newQueryRequest()
-		.includeAllAttributesInResultFromSchema()
-		.queryReviews()  //to reviews
-		.includeAllAttributesInResultFromSchema()
-		.queryAttribute()
-		.whereReviewRating()
-		.numberAtLeast("3")
-		.queryCustomers() //back to customers
-		.queryPurchaseOrder() //so purchase orders can be accessed
-		.includeAllAttributesInResultFromSchema()
-		.queryAttribute()
-		.wherePurchaseOrderStatus()
-		.isOrdered()
-		.executeQuery()
-		.executeCompilation()
-		.compileBooks();
-		
-```
 
 You can only chain query properties to one attribute at a time any time you call the following method it will give you a list of all the attributes related to the object
 ```
