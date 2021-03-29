@@ -25,3 +25,4 @@ function handler(request){
 		target.innerHTML = request.responseText; 
 	}
 }
+

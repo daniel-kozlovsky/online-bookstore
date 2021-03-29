@@ -10,26 +10,40 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import data.beans.Book;
 import data.dao.BookDAO;
+import model.MainPageModel;
 
 /**
  * Servlet implementation class MainPage
  */
-@WebServlet("/MainPage")
+@WebServlet({"/MainPage","/MainPage/*"})
 public class MainPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String CUSTOMER = "customer";
 	private static final String VISITOR = "visitor";
     private static final String COMM = "COMM";
     private static final String AJAX = "AJAX";
-	
+    private static final String MODEL = "model";
+    private static final String AUTHOR = "AUTHOR";
+    private static final String TITLE = "TITLE";
+    private static final String YEAR = "YEAR";
+    private static final String ISBN = "ISBN";
+    private static final String CATEGORY = "CATEGORY";
+    private static final String RATING = "RATING";
+    private static final String PRICE = "PRICE";
+    private static final String ID = "ID";
+    private static final String COVER = "COVER";
+    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -38,19 +52,53 @@ public class MainPage extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
+    @Override
+    public void init(ServletConfig config) throws ServletException { 
+    	super.init(config);
+
+	    ServletContext context = getServletContext();
+	    
+	    try {
+		    MainPageModel model = MainPageModel.getInstance();
+		    
+		    context.setAttribute(MODEL, model);
+	    }
+	    catch (Exception e) {
+	    	System.out.println("ERROR initializeing main page model!");
+	    }
+    }
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ServletContext context = getServletContext();
+		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
 		getServletContext().setAttribute("user", VISITOR);
 		
 		if (request.getParameter(COMM) != null && request.getParameter(COMM).equals(AJAX))
 		{
 			System.out.println("THis is the AJAX Section!");
+			if (request.getParameter(ID) != null) {
+				String prodID = request.getParameter(ID);
+				try {
+					response.setContentType("application/json");
+//					PrintWriter out = response.getWriter();
+//					out.printf(" test "); 
+//					out.flush();
+//					
+					preparePageRedirection (request, prodID, model);
+					request.getRequestDispatcher("html/ProductPage.jspx").forward(request, response);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			} else {
+				System.out.println("No ID was recieved");
+			}
 		}
 		else {
-			loadPage(request);
+			loadPage(request, model);
 			System.out.println("THis is the NON AJAX Section!");
 			request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
 		}
@@ -72,20 +120,28 @@ public class MainPage extends HttpServlet {
 	 * @param request
 	 * @param prodID
 	 * 			the product identification value
+	 * @param model
+	 * 			a model instance for MainPage
 	 */
-	private void preparePageRedirection (HttpServletRequest request, String prodID) {
-		List<Book> b = book.newQueryRequest()
-						 .includeAllAttributesInResultFromSchema()
-						 .queryAttribute()
-						 .whereBookISBN()
-						 .varCharEquals(prodID)
-						 .executeQuery()
-						 .executeCompilation()
-						 .compileBooks();
+	private void preparePageRedirection (HttpServletRequest request, String prodID, MainPageModel model) throws Exception{
+		HttpSession h = request.getSession();
 		
-		System.out.println("returned size = " + b.size());
-		
-		
+		try {
+			Book b = model.getBookByID(prodID);
+			h.setAttribute(ID, prodID);
+			h.setAttribute(AUTHOR, b.getAuthor());
+			h.setAttribute(TITLE, b.getTitle());
+			h.setAttribute(YEAR, b.getPublishYear());
+			h.setAttribute(ISBN, b.getISBN());
+			h.setAttribute(CATEGORY, b.getCategory());
+			h.setAttribute(RATING, b.getRating());
+			h.setAttribute(PRICE, b.getPrice());
+			h.setAttribute(COVER, b.getCover());
+			
+		    
+		} catch (Exception e) {
+			throw new Exception (e.getMessage());
+		}
 	}
 	
 	/**
@@ -93,9 +149,11 @@ public class MainPage extends HttpServlet {
 	 * in a dynamic manner. 
 	 * 
 	 * @param request
+	 * @param model
+	 * 			a model instance for MainPage
 	 */
-	private void loadPage (HttpServletRequest request) {
-		Map <String, Integer> category_count = book.getCountPerCategory();
+	private void loadPage (HttpServletRequest request, MainPageModel model) {
+		Map <String, Integer> category_count = model.getBestSellerBooksByCategory();
 		Iterator iterator = category_count.entrySet().iterator(); 
 		
 		System.out.println(category_count.size());
@@ -120,18 +178,7 @@ public class MainPage extends HttpServlet {
 			String category = (String) me.getKey();
 			if (category.equals("science-fiction")) category = "science_fiction"; 
 			
-			List<Book> l = book.newQueryRequest()
-				.includeAllAttributesInResultFromSchema()
-				.queryAttribute()
-				.whereBookCategory()
-				.varCharEquals((String) me.getKey())
-				.queryAttribute()
-				.whereBookRating()
-				.withDescendingOrderOf()
-				.withResultLimit(20)
-				.executeQuery()
-				.executeCompilation()
-				.compileBooks();
+			List<Book> l = model.getBooksInThisCategory((String)me.getKey());
 			
 			css_value += ".slides_"+category+" {display: none;}\n";
 			
@@ -201,9 +248,9 @@ public class MainPage extends HttpServlet {
 		
 		for (int index = 0; index < l.size(); index++) {
 			
-			String func_call = "pageHandler('/BookStore/MainPage?"
-									+ "ID="+l.get(index).getISBN()
-									+ "');return false; ";
+			String func_call = "pageHandler('/BookStore/MainPage/?COMM=AJAX&"
+									+ "ID="+l.get(index).getId()
+									+ "');return true; ";
 			
 			if (index < 7) {
 				result_html += "	<div class=\"column slides_"+category+"\" style=\"display:inline;\" >\n"

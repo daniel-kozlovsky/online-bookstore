@@ -77,7 +77,11 @@
 	<header>Online Book Store</header>
 	
 	<!-- Suggestion Section -->
-	${requestScope['HTML_SUGGST_MAIN']}
+	<form action='MainPage' method='POST'>
+	
+		${requestScope['HTML_SUGGST_MAIN']}
+	
+	</form>
 	
 	<!-- footer -->
 	<footer>
