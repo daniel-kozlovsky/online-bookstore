@@ -56,6 +56,7 @@ public class CartDataFetcher  extends DataFetcher<Cart>{
 			return new Cart.Builder()
 					.withId(new Id(resultSet.getString(prefix+schema.ID)))
 					.withBookAmount(book,resultSet.getInt(prefix+schema.AMOUNT))
+					.withUserType(resultSet.getString(prefix+schema.USER_TYPE))
 					.build();	
 						
 			

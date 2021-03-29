@@ -50,8 +50,11 @@ public class Book extends IdObject{
 	@Override
 	public boolean equals(Object object){
 		Book book = (Book)object;
-		return object==object||this.id.equals(book.id);		
+		return this.id.equals(book.id);		
 	}
+
+	
+
 
 
 	public String getTitle() {
@@ -126,10 +129,10 @@ public class Book extends IdObject{
 		}
 		reviewJson+="]";
 
-		return "{"+Bean.jsonMapVarChar("title",this.title)+","+
-				Bean.jsonMapVarChar("series",this.series)+","+
-				Bean.jsonMapVarChar("description",this.description)+","+
-				Bean.jsonMapVarChar("category",this.category)+","+
+		return "{"+Bean.jsonMapVarChar("title",this.title.replaceAll("[\"]", ""))+","+
+				Bean.jsonMapVarChar("series",this.series.replaceAll("[\"]", ""))+","+
+				Bean.jsonMapVarChar("description",this.description.replaceAll("[\"]", ""))+","+
+				Bean.jsonMapVarChar("category",this.category.replaceAll("[\"]", ""))+","+
 				Bean.jsonMapVarChar("author",this.author)+","+
 				Bean.jsonMapVarChar("cover",this.cover.getPath())+","+
 				Bean.jsonMapVarChar("ISBN",this.ISBN)+","+

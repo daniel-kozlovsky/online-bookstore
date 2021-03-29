@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,13 +18,16 @@ import javax.xml.validation.Schema;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
+import data.beans.PurchaseOrder;
 import data.beans.Review;
 import data.dao.BookDAO.BookAttributeAccess;
+import data.dao.BookDAO.BookKeyQuery;
 import data.dao.BookDAO.BookNumberQuery;
 import data.dao.BookDAO.BookStoreBookQuery;
 import data.dao.CartDAO.BookStoreCartQuery;
 import data.dao.PurchaseOrderDAO.BookStorePurchaseOrderQuery;
 import data.dao.ReviewDAO.BookStoreReviewQuery;
+import data.fetcher.CustomerDataFetcher;
 import data.query.AttributeAccess;
 import data.query.BookStoreNumberQuery;
 import data.query.BookStoreQuery;
@@ -45,6 +49,130 @@ public class CustomerDAO implements DAO{
 	@Override
 	public UpdateCustomer newUpdateRequest() {
 		return new UpdateCustomer();
+	}
+	
+	public Customer loginCustomer(String userName, String passWord) {
+		Customer customer = new Customer.Builder().withUserName(userName).build();
+		String queryString="SELECT *  FROM CUSTOMER WHERE USERNAME='"+userName+"' AND PASSWORD='"+passWord+"'" ;
+		Connection connection= null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		try {
+			DataSource dataSource=(DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			connection= dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(queryString);
+			resultSet= preparedStatement.executeQuery();
+			if(!resultSet.next()) return new Customer.Builder().withUserName(userName).build();
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new Customer.Builder().withUserName(userName).build();	
+		}finally {
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(preparedStatement!=null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+
+		List<Customer> customers=
+		newQueryRequest()
+		.includeAllAttributesInResultFromSchema()
+		.queryAttribute()
+		.whereCustomerUserName()
+		.varCharEquals(userName)
+		.queryAttribute()
+		.whereCustomerPassword()
+		.varCharEquals(passWord)
+		.executeQuery()
+		.executeCompilation()
+		.compileCustomers();
+		customer=new Customer.Builder().withUserName(userName).build();	
+		if(customers.size()>0) {
+			for(Customer customerInQuery:customers) {
+
+				customer=customerInQuery;
+			}
+		}else {
+			return new Customer.Builder().withUserName(userName).build();	
+		}
+		List<Customer> customersCart= newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryCart()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereCartCustomer()
+				.isCustomer(customer)
+				.queryBook()
+				.includeAllAttributesInResultFromSchema()
+				.executeQuery()
+				.executeCompilation()
+				.compileCustomers();
+//		Customer customerCart =new Customer.Builder().withUserName(userName).build();	
+		if(customersCart.size()>0) {
+		
+			for(Customer customerInCartQuery:customersCart) {
+				 
+				 customer=new Customer.Builder(customer).withCart(customerInCartQuery.getCart()).build();
+			}
+			
+		}
+		List<Customer> customersPurchaseOrder= newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryPurchaseOrder()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.wherePurchaseOrderCustomer()
+				.isCustomer(customer)
+				.queryBook()
+				.includeAllAttributesInResultFromSchema()
+				.executeQuery()
+				.executeCompilation()
+				.compileCustomers();
+//		Customer customerPurchaseOrder =new Customer.Builder().withUserName(userName).build();
+		if(customersPurchaseOrder.size()>0) {
+//			customersPurchaseOrder.get(0).toJson();
+			for(Customer customerInPOQuery:customersPurchaseOrder) {
+				customer=new Customer.Builder(customer).withPurchaseOrders(customerInPOQuery.getPurchaseOrders()).build();
+			}
+	
+		}
+
+		List<Customer> customersReviews= newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryReviews()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereReviewCustomer()
+				.isCustomer(customer)
+				.queryBook()
+				.includeAllAttributesInResultFromSchema()
+				.executeQuery()
+				.executeCompilation()
+				.compileCustomers();
+//		Customer customerReview =new Customer.Builder().withUserName(userName).build();
+		if(customersReviews.size()>0) {
+//			customersReviews.get(0).toJson();
+			for(Customer customerInReviewQuery:customersReviews) {
+				customer=new Customer.Builder(customer).withReviews(customerInReviewQuery.getReviews()).build();			
+			}
+			
+		}
+//		System.out.println(customer.toJson());
+		return customer;
+//		return new Customer.Builder(customer).withCart(customerCart.getCart()).withPurchaseOrders(customerPurchaseOrder.getPurchaseOrders()).withReviews(customerReview.getReviews()).withLoggedOn().build();
 	}
 	
 	@Override
@@ -101,44 +229,58 @@ public class CustomerDAO implements DAO{
 		}
 		
 		
-		public BookStoreCustomerQuery includeCustomerCartInResult(){
-			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
-			if(!this.attributesToIncludInResults.containsKey(new CartSchema().tableName())) this.attributesToIncludInResults.put(new CartSchema().tableName(), new HashSet<String>());
-			if (!isDisjunctionMode) {
-				if(!this.dataAccessRequestsConjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsConjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());		
-			}else {
-				if(!this.dataAccessRequestsDisjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsDisjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());
-			}
-			includeKeyInResults();
-			return this;
-		}
-		
-		public BookStoreCustomerQuery includeCustomerPurchaseOrdersInResult(){
-			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
-			if(!this.attributesToIncludInResults.containsKey(new PurchaseOrderSchema().tableName())) this.attributesToIncludInResults.put(new PurchaseOrderSchema().tableName(), new HashSet<String>());
-			if (!isDisjunctionMode) {
-				if(!this.dataAccessRequestsConjunction.containsKey(new PurchaseOrderSchema().tableName())) this.dataAccessRequestsConjunction.put(new PurchaseOrderSchema().tableName(), new ArrayList<DataAccessString>());		
-			}else {
-				if(!this.dataAccessRequestsDisjunction.containsKey(new PurchaseOrderSchema().tableName())) this.dataAccessRequestsDisjunction.put(new PurchaseOrderSchema().tableName(), new ArrayList<DataAccessString>());
-			}
-			includeKeyInResults();
-			return this;
-		}
-		
-		public BookStoreCustomerQuery includeCustomerReviewsInResult(){
-			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
-			if(!this.attributesToIncludInResults.containsKey(new ReviewSchema().tableName())) this.attributesToIncludInResults.put(new ReviewSchema().tableName(), new HashSet<String>());
-			if (!isDisjunctionMode) {
-				if(!this.dataAccessRequestsConjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsConjunction.put(new ReviewSchema().tableName(),new ArrayList<DataAccessString>());		
-			}else {
-				if(!this.dataAccessRequestsDisjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsDisjunction.put(new ReviewSchema().tableName(), new ArrayList<DataAccessString>());
-			}
-			includeKeyInResults();
-			return this;
-		}
-
-		
-		
+//		public BookStoreCustomerQuery includeCustomerCartInResult(){
+//			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
+//			if(!this.attributesToIncludInResults.containsKey(new CartSchema().tableName())) this.attributesToIncludInResults.put(new CartSchema().tableName(), new HashSet<String>());
+//			 this.attributesToIncludInResults.get(new CartSchema().tableName()).addAll(new CartSchema().getAttributeLabels());
+//			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());
+//			 this.attributesToIncludInResults.get(new BookSchema().tableName()).addAll(new BookSchema().getAttributeLabels());
+//			if (!isDisjunctionMode) {
+//				if(!this.dataAccessRequestsConjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsConjunction.put(new CartSchema().tableName(),new ArrayList<DataAccessString>());		
+//				if(!this.dataAccessRequestsConjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsConjunction.put(new BookSchema().tableName(),new ArrayList<DataAccessString>());		
+//			}else {
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsDisjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsDisjunction.put(new BookSchema().tableName(), new ArrayList<DataAccessString>());
+//			}
+//			includeKeyInResults();
+//			return this;
+//		}
+//		
+//		public BookStoreCustomerQuery includeCustomerPurchaseOrdersInResult(){
+//			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
+//			if(!this.attributesToIncludInResults.containsKey(new PurchaseOrderSchema().tableName())) this.attributesToIncludInResults.put(new PurchaseOrderSchema().tableName(), new HashSet<String>());
+//			 this.attributesToIncludInResults.get(new PurchaseOrderSchema().tableName()).addAll(new PurchaseOrderSchema().getAttributeLabels());
+//			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());
+//			 this.attributesToIncludInResults.get(new BookSchema().tableName()).addAll(new BookSchema().getAttributeLabels());
+//			if (!isDisjunctionMode) {
+//				if(!this.dataAccessRequestsConjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsConjunction.put(new PurchaseOrderSchema().tableName(),new ArrayList<DataAccessString>());		
+//				if(!this.dataAccessRequestsConjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsConjunction.put(new BookSchema().tableName(),new ArrayList<DataAccessString>());		
+//			}else {
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsDisjunction.put(new PurchaseOrderSchema().tableName(), new ArrayList<DataAccessString>());
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsDisjunction.put(new BookSchema().tableName(), new ArrayList<DataAccessString>());
+//			}
+//			includeKeyInResults();
+//			return this;
+//		}
+//		
+//		public BookStoreCustomerQuery includeCustomerReviewsInResult(){
+//			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
+//			if(!this.attributesToIncludInResults.containsKey(new ReviewSchema().tableName())) this.attributesToIncludInResults.put(new ReviewSchema().tableName(), new HashSet<String>());
+//			 this.attributesToIncludInResults.get(new ReviewSchema().tableName()).addAll(new ReviewSchema().getAttributeLabels());
+//			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());
+//			 this.attributesToIncludInResults.get(new BookSchema().tableName()).addAll(new BookSchema().getAttributeLabels());
+//			if (!isDisjunctionMode) {
+//				if(!this.dataAccessRequestsConjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsConjunction.put(new ReviewSchema().tableName(),new ArrayList<DataAccessString>());		
+//				if(!this.dataAccessRequestsConjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsConjunction.put(new BookSchema().tableName(),new ArrayList<DataAccessString>());		
+//			}else {
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsDisjunction.put(new ReviewSchema().tableName(), new ArrayList<DataAccessString>());
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new BookSchema().tableName())) this.dataAccessRequestsDisjunction.put(new BookSchema().tableName(), new ArrayList<DataAccessString>());
+//			}
+//			includeKeyInResults();
+//			return this;
+//		}
+//
+//		
 
 
 		
@@ -210,40 +352,55 @@ public class CustomerDAO implements DAO{
 		}
 		
 		public BookStoreReviewQuery queryReviews() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
-		}
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+	}
 		
 		public BookStoreCartQuery queryCart() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));
-//			this.dataAccessRequests.get(tableName)
-//			.add(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-//			this.addDataAccessString(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CartSchema.USER_TYPE)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(UserTypes.CUSTOMER)
+					.build()
+					);
+			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
 		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new PurchaseOrderSchema().tableName()));
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 	}
 	public class CustomerVarCharQuery extends BookStoreVarCharQuery<CustomerVarCharQuery,CustomerAttributeAccess,BookStoreCustomerQuery>{
@@ -261,40 +418,55 @@ public class CustomerDAO implements DAO{
 			return customerAttributeAccess;
 		}
 		public BookStoreReviewQuery queryReviews() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
-		}
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+	}
 		
 		public BookStoreCartQuery queryCart() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));
-//			this.dataAccessRequests.get(tableName)
-//			.add(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-//			this.addDataAccessString(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CartSchema.USER_TYPE)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(UserTypes.CUSTOMER)
+					.build()
+					);
+			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
 		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new PurchaseOrderSchema().tableName()));
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 
 	}
@@ -314,40 +486,55 @@ public class CustomerDAO implements DAO{
 		}		
 		
 		public BookStoreReviewQuery queryReviews() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
-		}
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+	}
 		
 		public BookStoreCartQuery queryCart() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));
-//			this.dataAccessRequests.get(tableName)
-//			.add(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-//			this.addDataAccessString(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CartSchema.USER_TYPE)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(UserTypes.CUSTOMER)
+					.build()
+					);
+			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
 		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new PurchaseOrderSchema().tableName()));
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 	}
 	
@@ -366,71 +553,85 @@ public class CustomerDAO implements DAO{
 			return customerAttributeAccess;
 		}		
 		
-		public BookStoreReviewQuery queryReviews() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
-		}
-		
-		public BookStoreCartQuery queryCart() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));
-//			this.dataAccessRequests.get(tableName)
-//			.add(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-//			this.addDataAccessString(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
-		}
-		
-		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new PurchaseOrderSchema().tableName()));
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
-		}
-		
 		public CustomerKeyQuery isCustomer(Customer customer) {
-//			if(!this.attributesToIncludInResults.containsKey(tableName) || this.attributesToIncludInResults.get(tableName)==null) this.dataAccessRequests.put(tableName, new ArrayList<DataAccessString>());
-//
 //			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
 //				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
 //			}
-//			this.dataAccessRequests.get(this.dataSchema.tableName())
-//			.add(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(customerSchema.ID)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(customer.getId().toString())
-//					.build()
-//					);
+//			this.addDataAccessString(null);
 			this.addDataAccessString(new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(customerSchema.ID)
+					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("="+"'")
 					.withDataAccessParameterSuffix("'")
 					.withDataAccessParameter(customer.getId().toString())
 					.build()
 					);
+//			.add(new DataAccessString.Builder()
+//					.withTableName(this.dataSchema.tableName())
+//					.withReferenceOperator(this.referenceOperator)
+//					.withAttributeName(BookSchema.ID)
+//					.withDataAccessParameterPrefix("="+"'")
+//					.withDataAccessParameterSuffix("'")
+//					.withDataAccessParameter(book.getId().toString())
+//					.build()
+//					);
 			return  this;
 		}
+	
+
 		
+		public BookStoreReviewQuery queryReviews() {
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+	}
+		
+		public BookStoreCartQuery queryCart() {
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CartSchema.USER_TYPE)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(UserTypes.CUSTOMER)
+					.build()
+					);
+			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+		}
+		
+		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(CustomerSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+		}
 	}
 	public class CustomerAttributeAccess extends AttributeAccess<BookStoreCustomerQuery>{
 		protected BookStoreCustomerQuery bookStoreCustomerQuery;

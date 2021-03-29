@@ -105,6 +105,18 @@ public class VisitorDAO implements DAO{
 //					.withDataAccessParameter(UserTypes.VISITOR)
 //					.build()
 //					);
+
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("="+"")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
 			this.addDataAccessString(new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
@@ -135,6 +147,7 @@ public class VisitorDAO implements DAO{
 		public BookStoreCartQuery queryCart() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));
+//			if(!this.dataAccessRequests.containsKey(tableName)) this.dataAccessRequests.put(tableName, new ArrayList<DataAccessString>());
 //			this.dataAccessRequests.get(this.dataSchema.tableName())
 //			.add(new DataAccessString.Builder()
 //					.withTableName(this.dataSchema.tableName())
@@ -145,6 +158,18 @@ public class VisitorDAO implements DAO{
 //					.withDataAccessParameter(UserTypes.VISITOR)
 //					.build()
 //					);
+
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("="+"")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
 			this.addDataAccessString(new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
@@ -156,7 +181,6 @@ public class VisitorDAO implements DAO{
 					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
-		
 	}
 	public class VisitorNumberQuery extends BookStoreNumberQuery<VisitorNumberQuery,VisitorAttributeAccess,BookStoreVisitorQuery>{
 		private VisitorAttributeAccess visitorAttributeAccess;
@@ -175,6 +199,7 @@ public class VisitorDAO implements DAO{
 		public BookStoreCartQuery queryCart() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));
+//			if(!this.dataAccessRequests.containsKey(tableName)) this.dataAccessRequests.put(tableName, new ArrayList<DataAccessString>());
 //			this.dataAccessRequests.get(this.dataSchema.tableName())
 //			.add(new DataAccessString.Builder()
 //					.withTableName(this.dataSchema.tableName())
@@ -185,6 +210,18 @@ public class VisitorDAO implements DAO{
 //					.withDataAccessParameter(UserTypes.VISITOR)
 //					.build()
 //					);
+
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("="+"")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
 			this.addDataAccessString(new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
@@ -215,6 +252,7 @@ public class VisitorDAO implements DAO{
 		public BookStoreCartQuery queryCart() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new CartSchema().tableName()));
+//			if(!this.dataAccessRequests.containsKey(tableName)) this.dataAccessRequests.put(tableName, new ArrayList<DataAccessString>());
 //			this.dataAccessRequests.get(this.dataSchema.tableName())
 //			.add(new DataAccessString.Builder()
 //					.withTableName(this.dataSchema.tableName())
@@ -225,6 +263,18 @@ public class VisitorDAO implements DAO{
 //					.withDataAccessParameter(UserTypes.VISITOR)
 //					.build()
 //					);
+
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("="+"")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
+					.build()
+					);
+			
 			this.addDataAccessString(new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)

@@ -12,9 +12,9 @@ CREATE  TABLE CUSTOMER (
   USER_TYPE varchar(20) not null,
   GIVENNAME varchar (100) not null,
   SURNAME varchar (100),
-  USERNAME varchar (20) not null,
+  USERNAME varchar (20) not null constraint unique_username unique,
   PASSWORD varchar (20) not null,
-  EMAIL varchar (50) not null,
+  EMAIL varchar (50) not null constraint unique_email unique,
   STREET_NUMBER varchar (20) not null,
   STREET varchar (100) not null,
   POSTAL_CODE varchar (10) not null,
@@ -27,8 +27,7 @@ CREATE  TABLE CUSTOMER (
   CREDIT_CARD_EXPIRY varchar (10),
   CREDIT_CARD_CVV2 varchar (10),
   PRIMARY KEY(ID),
-  FOREIGN KEY (ID,USER_TYPE) REFERENCES SITE_USER(ID,USER_TYPE),
-  UNIQUE(USERNAME,EMAIL)
+  FOREIGN KEY (ID,USER_TYPE) REFERENCES SITE_USER(ID,USER_TYPE)
   );	
 
 CREATE TABLE VISITOR (

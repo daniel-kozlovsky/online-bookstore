@@ -21,8 +21,8 @@ public class Customer extends User{
 	private  Cart cart;
 	private  PurchaseOrder[] purchaseOrders;
 	private  long createdAtEpoch;
-	private boolean isLoggedOn;
 	private CreditCard creditCard;
+	private boolean _isLoggedOn;
 
 	private boolean _isWithinReview;
 	
@@ -64,8 +64,8 @@ public class Customer extends User{
 	public String getEmail() {
 		return userName;
 	}
-	public boolean getIsLoggedOn() {
-		return isLoggedOn;
+	public boolean isLoggedOn() {
+		return _isLoggedOn;
 	}
 	
 	public String getPassword() {
@@ -163,6 +163,7 @@ public class Customer extends User{
 		private String province;
 		private String country;
 		private String city;
+		private boolean _isLoggedOn;
 
 		private  long createdAtEpoch;
 		private boolean _isWithinReview;
@@ -183,10 +184,17 @@ public class Customer extends User{
 			this.email="";
 			this.address=new Address.Builder().build();
 			this.reviews=new Review[]{};
-			this.cart=new Cart.Builder().build();
+			this.cart=new Cart.Builder().withId(this.id).build();
 			this.purchaseOrders=new PurchaseOrder[] {};
 			this.createdAtEpoch=0;
 			this._isWithinReview=false;
+			this.streetNumber="";
+			this.street="";
+			this.city="";
+			this.province="";
+			this.country="";
+			this.postalCode="";
+			this._isLoggedOn=false;
 		}
 		
 		
@@ -205,6 +213,14 @@ public class Customer extends User{
 			this.purchaseOrders=customer.purchaseOrders;
 			this.createdAtEpoch=customer.createdAtEpoch;
 			this._isWithinReview=customer._isWithinReview;
+			this.streetNumber=customer.getAddress().getNumber();
+			this.street=customer.getAddress().getStreet();
+			this.city=customer.getAddress().getCity();
+			this.province=customer.getAddress().getProvince();
+			this.country=customer.getAddress().getCountry();
+			this.postalCode=customer.getAddress().getPostalCode();
+			this._isLoggedOn=customer._isLoggedOn;
+			
 		}
 		public Builder withCreatedAtEpoch(long createdAtEpoch){
 			this.createdAtEpoch=createdAtEpoch;
@@ -283,6 +299,11 @@ public class Customer extends User{
 			return this;
 		}
 		
+		public Builder withLoggedOn(){
+			this._isLoggedOn=true;
+			return this;
+		}
+		
 		public Builder withReviews(List<Review> reviews){
 			Review[] reviewsArr = new Review[reviews.size()];
 			return withReviews(reviews.toArray(reviewsArr));
@@ -346,14 +367,14 @@ public class Customer extends User{
 			customer.id=this.id;
 			customer.givenName=this.givenName;
 			customer.surName=this.surName;
-			Address address =this.address.isEmpty()?new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build():this.address;
+			Address address =new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
 			customer.address=address;
 			customer.userName=this.userName;
 			customer.password=this.password;
 			customer.reviews=this.reviews;
 			customer.cart=this.cart;
 			customer.purchaseOrders=this.purchaseOrders;
-			customer.isLoggedOn=this.isLoggedOn;
+			customer._isLoggedOn=this._isLoggedOn;
 			customer.email=this.email;
 			customer.createdAtEpoch=this.createdAtEpoch;
 			customer._isWithinReview=this._isWithinReview;

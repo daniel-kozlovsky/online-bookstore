@@ -27,11 +27,13 @@ import javax.sql.DataSource;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
+import data.beans.PurchaseOrder;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
 import data.dao.UpdateBook;
 import data.dao.UpdateCustomer;
 import data.dao.UpdateReview;
+import data.query.DataObjectCompiler;
 
 /**
  * Servlet implementation class BookTestCtrl
@@ -59,6 +61,7 @@ public class BookTestCtrl extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("do get");
 //		String query ="SELECT BOOK.ID AS BOOK_ID,BOOK.TITLE AS BOOK_TITLE, BOOK.ISBN AS BOOK_ISBN,REVIEW.TITLE AS REVIEW_TITLE,REVIEW.BODY AS REVIEW_BODY, REVIEW.CUSTOMER AS REVIEW_CUSTOMER, REVIEW.BOOK AS REVIEW_BOOK, CUSTOMER.ID AS CUSTOMER_ID, CUSTOMER.GIVENNAME AS CUSTOMER_GIVENNAME, CUSTOMER.SURNAME AS CUSTOMER_SURNAME FROM BOOK,REVIEW,CUSTOMER WHERE  BOOK.ID=REVIEW.BOOK AND REVIEW.CUSTOMER=CUSTOMER.ID AND REVIEW.BOOK='b7441b2a-0739-3641-a78f-1d973daee854'";
 //
 //		Map<String,Set<String>> attributesIncludedInResults = new LinkedHashMap<String, Set<String>>();
@@ -77,9 +80,34 @@ public class BookTestCtrl extends HttpServlet {
 //		attributesIncludedInResults.get("REVIEW").add("BODY");
 		
 //		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
+		//http://localhost:8080/BookStore/BookTestCtrl
 //		PrintWriter out = response.getWriter();
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
+		Customer customer = new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build();
+        CustomerDAO customerDAO = new CustomerDAO();
+//        DataObjectCompiler customerResults=
+//        customerDAO.newQueryRequest()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryPurchaseOrder()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryAttribute()
+//		.wherePurchaseOrderCustomer()
+//		.isCustomer(customer)
+//		.queryBook()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryReviews()
+//		.includeAllAttributesInResultFromSchema()
+//		.executeQuery()
+//		.executeCompilation()
+//        ;
+//        customerResults.compileCustomers();
+//        System.out.println(customerResults.getCompiledCustomersJson());
+        
+        Customer loggedCustomer =customerDAO.loginCustomer("SPhillips4588","Scottpassword");
+        System.out.println(Boolean.toString(loggedCustomer.isLoggedOn()));
+        System.out.println(loggedCustomer.toJson());
+//        out.write(customerResults.getCompiledCustomersJson());
 //        
 //        System.out.println("get req:");
 //        
@@ -116,6 +144,7 @@ public class BookTestCtrl extends HttpServlet {
 //		.queryAttribute()
 //		.whereReviewRating()
 //		.numberAtLeast("3")
+//		.withAscendingOrderOf()
 //		.queryCustomers()
 //		.queryPurchaseOrder()
 //		.includeAllAttributesInResultFromSchema()
@@ -125,6 +154,19 @@ public class BookTestCtrl extends HttpServlet {
 //		.executeQuery()
 //		.executeCompilation()
 //		.compileBooks();
+//        BookDAO bookDAO =  new BookDAO();
+//        DataObjectCompiler bookQueryDOC = 
+//        bookDAO.newQueryRequest()
+//        .includeBookCoverInResult()
+//        .includeBookPriceInResult()
+//        .executeQuery()
+//        .executeCompilation(); 
+        //THIS METHOD RETURNS A DataObjectCompiler object associated with your query. It is useful to assign a variable for it
+        //so you can use your query results multiple times without making additional queries
+//        
+//        bookQueryDOC.compileBooks(); //ex: a list of books
+//        out.write(bookQueryDOC.getCompiledBooksJson()); //ex: that compiled results to JSON, books have to be compiled first to get results
+
 //		
 //		
 //
