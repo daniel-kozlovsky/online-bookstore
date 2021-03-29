@@ -140,7 +140,7 @@ public class ReviewDAO implements DAO{
 			return this;
 		}
 		
-		public BookStoreBookQuery queryBook() {
+		public BookStoreBookQuery queryBooks() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())

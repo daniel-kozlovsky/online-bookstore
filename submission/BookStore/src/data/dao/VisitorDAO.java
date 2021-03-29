@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import data.beans.Book;
 import data.beans.Customer;
@@ -46,6 +47,31 @@ public class VisitorDAO implements DAO{
 		return new UpdateVisitor();
 	}
 	
+	public Visitor getVisitor(HttpServletRequest request) {
+		List<Visitor> visitors=newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereVisitor()
+				.isVisitor(request.getSession().getId())
+				.queryCart()
+				.includeAllAttributesInResultFromSchema()
+				.queryBook()
+				.includeAllAttributesInResultFromSchema()
+				.queryReview()
+				.includeAllAttributesInResultFromSchema()
+				.executeQuery()
+				.compileVisitors(); 
+		Visitor visitor=null;
+		if(visitors.size()>0) {
+			for(Visitor visitorQuery:visitors) {
+				visitor=visitorQuery;
+			}
+		}else {
+			visitor=newUpdateRequest().executeInsertNewVisitor(request);
+		}
+		 return visitor;
+	}
+	
 	@Override
 	public BookStoreVisitorQuery newQueryRequest(){
 		BookStoreVisitorQuery bookStoreVisitorQuery= new BookStoreVisitorQuery(visitorSchema);
@@ -70,18 +96,18 @@ public class VisitorDAO implements DAO{
 		
 		
 
-		
-		public BookStoreVisitorQuery includeVisitorCartInResult(){
-			if(!this.attributesToIncludInResults.containsKey(visitorSchema.tableName())) this.attributesToIncludInResults.put(visitorSchema.tableName(), new HashSet<String>());
-			if(!this.attributesToIncludInResults.containsKey(new CartSchema().tableName())) this.attributesToIncludInResults.put(new CartSchema().tableName(), new HashSet<String>());
-			if (!isDisjunctionMode) {
-				if(!this.dataAccessRequestsConjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsConjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());		
-			}else {
-				if(!this.dataAccessRequestsDisjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsDisjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());
-			}
-			includeKeyInResults();
-			return this;
-		}
+//		
+//		public BookStoreVisitorQuery includeVisitorCartInResult(){
+//			if(!this.attributesToIncludInResults.containsKey(visitorSchema.tableName())) this.attributesToIncludInResults.put(visitorSchema.tableName(), new HashSet<String>());
+//			if(!this.attributesToIncludInResults.containsKey(new CartSchema().tableName())) this.attributesToIncludInResults.put(new CartSchema().tableName(), new HashSet<String>());
+//			if (!isDisjunctionMode) {
+//				if(!this.dataAccessRequestsConjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsConjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());		
+//			}else {
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new CartSchema().tableName())) this.dataAccessRequestsDisjunction.put(new CartSchema().tableName(), new ArrayList<DataAccessString>());
+//			}
+//			includeKeyInResults();
+//			return this;
+//		}
 		
 		
 		private void includeKeyInResults() {
@@ -308,6 +334,32 @@ public class VisitorDAO implements DAO{
 					.withDataAccessParameterPrefix("="+"'")
 					.withDataAccessParameterSuffix("'")
 					.withDataAccessParameter(visitor.getId().toString())
+					.build()
+					);
+			return  this;
+		}
+		
+		private VisitorKeyQuery isVisitor(String visitorId) {
+//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
+//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
+//			}
+//			this.dataAccessRequests.get(this.dataSchema.tableName())
+//			.add(new DataAccessString.Builder()
+//					.withTableName(this.dataSchema.tableName())
+//					.withReferenceOperator(this.referenceOperator)
+//					.withAttributeName(visitorSchema.ID)
+//					.withDataAccessParameterPrefix("="+"'")
+//					.withDataAccessParameterSuffix("'")
+//					.withDataAccessParameter(visitor.getId().toString())
+//					.build()
+//					);
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(visitorSchema.ID)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(visitorId)
 					.build()
 					);
 			return  this;

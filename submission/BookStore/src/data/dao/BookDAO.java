@@ -196,19 +196,19 @@ public class BookDAO implements DAO{
 		}
 
 		
-		public BookStoreBookQuery includeBookReviewsInResult(){
-			if(!this.attributesToIncludInResults.containsKey(bookSchema.tableName())) this.attributesToIncludInResults.put(bookSchema.tableName(), new HashSet<String>());
-			if(!this.attributesToIncludInResults.containsKey(new ReviewSchema().tableName())) this.attributesToIncludInResults.put(new ReviewSchema().tableName(), new HashSet<String>());
-			if (!isDisjunctionMode) {
-				if(!this.dataAccessRequestsConjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsConjunction.put(new ReviewSchema().tableName(),new ArrayList<DataAccessString>());		
-			}else {
-				if(!this.dataAccessRequestsDisjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsDisjunction.put(new ReviewSchema().tableName(), new ArrayList<DataAccessString>());
-			}
-			includeKeyInResults();
-			return this;
-		}
-
-		
+//		public BookStoreBookQuery includeBookReviewsInResult(){
+//			if(!this.attributesToIncludInResults.containsKey(bookSchema.tableName())) this.attributesToIncludInResults.put(bookSchema.tableName(), new HashSet<String>());
+//			if(!this.attributesToIncludInResults.containsKey(new ReviewSchema().tableName())) this.attributesToIncludInResults.put(new ReviewSchema().tableName(), new HashSet<String>());
+//			if (!isDisjunctionMode) {
+//				if(!this.dataAccessRequestsConjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsConjunction.put(new ReviewSchema().tableName(),new ArrayList<DataAccessString>());		
+//			}else {
+//				if(!this.dataAccessRequestsDisjunction.containsKey(new ReviewSchema().tableName())) this.dataAccessRequestsDisjunction.put(new ReviewSchema().tableName(), new ArrayList<DataAccessString>());
+//			}
+//			includeKeyInResults();
+//			return this;
+//		}
+//
+//		
 		
 		public BookStoreBookQuery excludeBookTitleInResult() {
 			if(this.attributesToIncludInResults.containsKey(bookSchema.tableName())) this.attributesToIncludInResults.get(bookSchema.tableName()).remove(bookSchema.TITLE);
@@ -250,7 +250,7 @@ public class BookDAO implements DAO{
 		}
 		
 		
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
 			this.tableJoins.add(
@@ -298,7 +298,7 @@ public class BookDAO implements DAO{
 			return bookAttributeAccess;
 		}
 		
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
 			this.tableJoins.add(
@@ -318,7 +318,7 @@ public class BookDAO implements DAO{
 	}
 	
 
-	public class BookVarCharQuery<T extends BookVarCharQuery> extends BookStoreVarCharQuery<T,BookAttributeAccess,BookStoreBookQuery>{
+	public class BookVarCharQuery extends BookStoreVarCharQuery<BookVarCharQuery,BookAttributeAccess,BookStoreBookQuery>{
 		private BookAttributeAccess bookAttributeAccess;
 		private BookDAO bookDAO;
 		
@@ -338,7 +338,7 @@ public class BookDAO implements DAO{
 		}
 		
 		
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
@@ -373,7 +373,7 @@ public class BookDAO implements DAO{
 		public BookAttributeAccess queryBookAttribute() {		
 			return bookAttributeAccess;
 		}
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
@@ -416,7 +416,7 @@ public class BookDAO implements DAO{
 		}
 	}
 	
-	public class BookCategoryQuery extends BookVarCharQuery<BookCategoryQuery>{
+	public class BookCategoryQuery extends BookVarCharQuery{
 		private BookAttributeAccess bookAttributeAccess;
 		private BookDAO bookDAO;
 		BookCategoryQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess) {
