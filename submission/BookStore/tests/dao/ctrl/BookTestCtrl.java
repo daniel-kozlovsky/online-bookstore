@@ -32,6 +32,7 @@ import data.dao.CustomerDAO;
 import data.dao.UpdateBook;
 import data.dao.UpdateCustomer;
 import data.dao.UpdateReview;
+import data.query.DataObjectCompiler;
 
 /**
  * Servlet implementation class BookTestCtrl
@@ -126,14 +127,19 @@ public class BookTestCtrl extends HttpServlet {
 //		.executeQuery()
 //		.executeCompilation()
 //		.compileBooks();
-        new BookDAO().newQueryRequest()
+        BookDAO bookDAO =  new BookDAO();
+        DataObjectCompiler bookQueryDOC = 
+        bookDAO.newQueryRequest()
         .includeBookCoverInResult()
         .includeBookPriceInResult()
         .executeQuery()
-        .executeCompilation()
-        .compileBooks()
-        .stream().map(abook->abook.toJson()).forEach(json->out.print(json));
-        ;
+        .executeCompilation(); 
+        //THIS METHOD RETURNS A DataObjectCompiler object associated with your query. It is useful to assign a variable for it
+        //so you can use your query results multiple times without making additional queries
+        
+        bookQueryDOC.compileBooks(); //ex: a list of books
+        out.write(bookQueryDOC.getCompiledBooksJson()); //ex: that compiled results to JSON, books have to be compiled first to get results
+
 //		
 //		
 //

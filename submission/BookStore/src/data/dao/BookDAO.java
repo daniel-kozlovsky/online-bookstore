@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -253,7 +254,8 @@ public class BookDAO implements DAO{
 		}
 		
 		private void includeKeyInResults() {
-			if(!this.attributesToIncludInResults.containsKey(bookSchema.tableName()) && !this.attributesToIncludInResults.get(bookSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(bookSchema.tableName()).contains(bookSchema.ID))
+			if(this.attributesToIncludInResults.get(bookSchema.tableName())==null||!this.attributesToIncludInResults.containsKey(bookSchema.tableName())) this.attributesToIncludInResults.put(bookSchema.tableName(),new LinkedHashSet<String>());
+			if(!this.attributesToIncludInResults.get(bookSchema.tableName()).isEmpty() || !this.attributesToIncludInResults.get(bookSchema.tableName()).contains(bookSchema.ID))
 			this.attributesToIncludInResults.get(bookSchema.tableName()).add(bookSchema.ID);
 
 

@@ -16,6 +16,8 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import data.beans.Bean;
 import data.beans.Book;
 import data.beans.Cart;
 import data.beans.Customer;
@@ -23,6 +25,7 @@ import data.beans.Id;
 import data.beans.PurchaseOrder;
 import data.beans.Review;
 import data.beans.Visitor;
+import data.dao.DAO;
 import data.fetcher.BookDataFetcher;
 import data.fetcher.CartDataFetcher;
 import data.fetcher.CustomerDataFetcher;
@@ -92,6 +95,7 @@ public class DataObjectCompiler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.compileBookResults=new LinkedList<Book>();
 		this.queryString=queryString;
 		this.attributesIncludedInResults=attributesIncludedInResults;
 		this.buildOrder="";
@@ -127,7 +131,7 @@ public class DataObjectCompiler {
 		return null;
 	}
 	
-	
+	private List<Customer> compileCustomerResults;
 	public List<Customer> compileCustomers(){
 		List<Customer> results = new ArrayList<Customer>();
 		for(Entry<Id,Customer> entry:this.customerResults.entrySet()) {
@@ -190,8 +194,11 @@ public class DataObjectCompiler {
 		return results;
 	}
 
-	
+	private List<Book> compileBookResults;
 	public List<Book> compileBooks(){
+		if(this.compileBookResults!=null && !compileBookResults.isEmpty()) {
+			return compileBookResults;
+		}
 		List<Book> results = new ArrayList<Book>();
 		
 //		if(attributesIncludedInResults.containsKey(bookTableName)) {
@@ -229,8 +236,45 @@ public class DataObjectCompiler {
 		for(Entry<Id,Book> entry:compiledBookResults.entrySet()) {
 			results.add(entry.getValue());
 		}
+		this.compileBookResults=results;
 		return results;
 	}
+	
+	
+
+	
+	public String getCompiledBooksJson() {
+		List<Bean> beans = new LinkedList<Bean>();
+		for(Book book : compileBookResults) {
+			beans.add(book);
+		}
+
+		return getBeanJson("books",beans);
+	}
+	
+	public String getCompiledCustomersJson() {
+		List<Bean> beans = new LinkedList<Bean>();
+		for(Customer customer : compileCustomerResults) {
+			beans.add(customer);
+		}
+
+		return getBeanJson("customers",beans);
+	}
+
+	
+	private String getBeanJson(String beanType,List<Bean> beans) {
+		String result= "{"+"\""+beanType+"\""+":"+"[";
+		int count=0;
+		for(Bean bean:beans) {
+			count++;
+			result+=bean.toJson();
+			if(count<beans.size()) {
+				result+=",";
+			}
+		}
+		result+= "]"+"}";
+		return result;
+	};
 	
 //	public Map<Id,Review> buildCustomerReview(){
 //		Map<Id,Review> result = new LinkedHashMap<Id, Review>();
