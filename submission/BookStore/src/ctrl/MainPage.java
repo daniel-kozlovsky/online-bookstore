@@ -30,8 +30,6 @@ public class MainPage extends HttpServlet {
     private static final String COMM = "COMM";
     private static final String AJAX = "AJAX";
 	
-	BookDAO book = new BookDAO();
-	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -66,8 +64,16 @@ public class MainPage extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
-	private void preparePageRedirection (String prodID) {
+	
+	/**
+	 * Sets all the appropriate values of the given product in the
+	 * session scope and prepares for redirection
+	 * 
+	 * @param request
+	 * @param prodID
+	 * 			the product identification value
+	 */
+	private void preparePageRedirection (HttpServletRequest request, String prodID) {
 		List<Book> b = book.newQueryRequest()
 						 .includeAllAttributesInResultFromSchema()
 						 .queryAttribute()
@@ -77,7 +83,7 @@ public class MainPage extends HttpServlet {
 						 .executeCompilation()
 						 .compileBooks();
 		
-		System.out.println("b.size() = " + b.size());
+		System.out.println("returned size = " + b.size());
 		
 		
 	}
@@ -196,7 +202,7 @@ public class MainPage extends HttpServlet {
 		for (int index = 0; index < l.size(); index++) {
 			
 			String func_call = "pageHandler('/BookStore/MainPage?"
-									+ "ID="+l.get(index).getId()
+									+ "ID="+l.get(index).getISBN()
 									+ "');return false; ";
 			
 			if (index < 7) {
