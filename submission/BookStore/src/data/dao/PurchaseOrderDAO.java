@@ -275,18 +275,18 @@ public class PurchaseOrderDAO implements DAO{
 	}
 	
 	
-	public class PurchaseOrderUserQuery extends PurchaseOrderObjectQuery<PurchaseOrderUserQuery>{
-		PurchaseOrderUserQuery(BookStorePurchaseOrderQuery bookStorePurchaseOrderQuery, String currentAttributeAccess) {
+	public class PurchaseOrderCustomerQuery extends PurchaseOrderObjectQuery<PurchaseOrderCustomerQuery>{
+		PurchaseOrderCustomerQuery(BookStorePurchaseOrderQuery bookStorePurchaseOrderQuery, String currentAttributeAccess) {
 			super(bookStorePurchaseOrderQuery, currentAttributeAccess);
 			// TODO Auto-generated constructor stub
 		}
-		PurchaseOrderUserQuery(BookStorePurchaseOrderQuery bookStorePurchaseOrderQuery, String currentAttributeAccess,
+		PurchaseOrderCustomerQuery(BookStorePurchaseOrderQuery bookStorePurchaseOrderQuery, String currentAttributeAccess,
 				PageRequestMetaData pageRequestMetaData) {
 			super(bookStorePurchaseOrderQuery, currentAttributeAccess, pageRequestMetaData);
 			// TODO Auto-generated constructor stub
 		}
 
-		public PurchaseOrderUserQuery isCustomer(Customer customer) {
+		public PurchaseOrderCustomerQuery isCustomer(Customer customer) {
 //			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
 //				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
 //			}
@@ -524,7 +524,7 @@ public class PurchaseOrderDAO implements DAO{
 					.withAttributeName(purchaseOrderSchema.ID)
 					.withDataAccessParameterPrefix("="+"'")
 					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(purchaseOrder.getCustomer().getId().toString())
+					.withDataAccessParameter(purchaseOrder.getId().toString())
 					.build()
 					);
 //			this.dataAccessRequests.get(this.dataSchema.tableName())
@@ -589,8 +589,8 @@ public class PurchaseOrderDAO implements DAO{
 			return purchaseOrderBookQuery;
 		}
 		
-		public PurchaseOrderUserQuery wherePurchaseOrderUser(){
-			PurchaseOrderUserQuery purchaseOrderUserQuery= new PurchaseOrderUserQuery(this.bookStorePurchaseOrderQuery,PurchaseOrderSchema.ID);
+		public PurchaseOrderCustomerQuery wherePurchaseOrderCustomer(){
+			PurchaseOrderCustomerQuery purchaseOrderUserQuery= new PurchaseOrderCustomerQuery(this.bookStorePurchaseOrderQuery,PurchaseOrderSchema.ID);
 			purchaseOrderUserQuery.setAttribute(this);
 			return purchaseOrderUserQuery;
 		}

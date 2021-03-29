@@ -29,7 +29,7 @@ import data.dao.PurchaseOrderDAO.BookStorePurchaseOrderQuery;
 import data.dao.PurchaseOrderDAO.PurchaseOrderAttributeAccess;
 import data.dao.PurchaseOrderDAO.PurchaseOrderBookQuery;
 import data.dao.PurchaseOrderDAO.PurchaseOrderObjectQuery;
-import data.dao.PurchaseOrderDAO.PurchaseOrderUserQuery;
+import data.dao.PurchaseOrderDAO.PurchaseOrderCustomerQuery;
 import data.dao.ReviewDAO.BookStoreReviewQuery;
 import data.query.AttributeAccess;
 import data.query.BookStoreNumberQuery;

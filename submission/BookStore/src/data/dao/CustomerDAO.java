@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,7 @@ import data.dao.BookDAO.BookStoreBookQuery;
 import data.dao.CartDAO.BookStoreCartQuery;
 import data.dao.PurchaseOrderDAO.BookStorePurchaseOrderQuery;
 import data.dao.ReviewDAO.BookStoreReviewQuery;
+import data.fetcher.CustomerDataFetcher;
 import data.query.AttributeAccess;
 import data.query.BookStoreNumberQuery;
 import data.query.BookStoreQuery;
@@ -49,7 +51,42 @@ public class CustomerDAO implements DAO{
 		return new UpdateCustomer();
 	}
 	
-	private Customer loginCustomer(String userName, String passWord) {
+	public Customer loginCustomer(String userName, String passWord) {
+		Customer customer = new Customer.Builder().withUserName(userName).build();
+		String queryString="SELECT *  FROM CUSTOMER WHERE USERNAME='"+userName+"' AND PASSWORD='"+passWord+"'" ;
+		Connection connection= null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		try {
+			DataSource dataSource=(DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			connection= dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(queryString);
+			resultSet= preparedStatement.executeQuery();
+			if(!resultSet.next()) return new Customer.Builder().withUserName(userName).build();
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new Customer.Builder().withUserName(userName).build();	
+		}finally {
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(preparedStatement!=null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+
 		List<Customer> customers=
 		newQueryRequest()
 		.includeAllAttributesInResultFromSchema()
@@ -62,8 +99,15 @@ public class CustomerDAO implements DAO{
 		.executeQuery()
 		.executeCompilation()
 		.compileCustomers();
-		if(customers.isEmpty()) return new Customer.Builder().build();
-		Customer customer =customers.get(0);
+		customer=new Customer.Builder().withUserName(userName).build();	
+		if(customers.size()>0) {
+			for(Customer customerInQuery:customers) {
+
+				customer=customerInQuery;
+			}
+		}else {
+			return new Customer.Builder().withUserName(userName).build();	
+		}
 		List<Customer> customersCart= newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
 				.queryCart()
@@ -76,20 +120,36 @@ public class CustomerDAO implements DAO{
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
-		Customer customerCart =customersCart.get(0);
+//		Customer customerCart =new Customer.Builder().withUserName(userName).build();	
+		if(customersCart.size()>0) {
+		
+			for(Customer customerInCartQuery:customersCart) {
+				 
+				 customer=new Customer.Builder(customer).withCart(customerInCartQuery.getCart()).build();
+			}
+			
+		}
 		List<Customer> customersPurchaseOrder= newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
 				.queryPurchaseOrder()
 				.includeAllAttributesInResultFromSchema()
 				.queryAttribute()
-				.wherePurchaseOrder()
-				.isPurchaseOrder(new PurchaseOrder.Builder().withId(customer.getId()).build())
+				.wherePurchaseOrderCustomer()
+				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
-		Customer customerPurchaseOrder =customersPurchaseOrder.get(0);
+//		Customer customerPurchaseOrder =new Customer.Builder().withUserName(userName).build();
+		if(customersPurchaseOrder.size()>0) {
+//			customersPurchaseOrder.get(0).toJson();
+			for(Customer customerInPOQuery:customersPurchaseOrder) {
+				customer=new Customer.Builder(customer).withPurchaseOrders(customerInPOQuery.getPurchaseOrders()).build();
+			}
+	
+		}
+
 		List<Customer> customersReviews= newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
 				.queryReviews()
@@ -102,8 +162,17 @@ public class CustomerDAO implements DAO{
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
-		Customer customerReview =customersReviews.get(0);
-		return new Customer.Builder(customer).withCart(customerCart.getCart()).withPurchaseOrders(customerPurchaseOrder.getPurchaseOrders()).withReviews(customerReview.getReviews()).withLoggedOn().build();
+//		Customer customerReview =new Customer.Builder().withUserName(userName).build();
+		if(customersReviews.size()>0) {
+//			customersReviews.get(0).toJson();
+			for(Customer customerInReviewQuery:customersReviews) {
+				customer=new Customer.Builder(customer).withReviews(customerInReviewQuery.getReviews()).build();			
+			}
+			
+		}
+//		System.out.println(customer.toJson());
+		return customer;
+//		return new Customer.Builder(customer).withCart(customerCart.getCart()).withPurchaseOrders(customerPurchaseOrder.getPurchaseOrders()).withReviews(customerReview.getReviews()).withLoggedOn().build();
 	}
 	
 	@Override
@@ -288,8 +357,8 @@ public class CustomerDAO implements DAO{
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
 					.withAttributeName(CustomerSchema.ID)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
 					.build()
 					);
@@ -354,8 +423,8 @@ public class CustomerDAO implements DAO{
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
 					.withAttributeName(CustomerSchema.ID)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
 					.build()
 					);
@@ -422,8 +491,8 @@ public class CustomerDAO implements DAO{
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
 					.withAttributeName(CustomerSchema.ID)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
 					.build()
 					);
@@ -518,8 +587,8 @@ public class CustomerDAO implements DAO{
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
 					.withAttributeName(CustomerSchema.ID)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
 					.build()
 					);

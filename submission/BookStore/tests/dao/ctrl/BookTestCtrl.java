@@ -27,6 +27,7 @@ import javax.sql.DataSource;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
+import data.beans.PurchaseOrder;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
 import data.dao.UpdateBook;
@@ -83,24 +84,29 @@ public class BookTestCtrl extends HttpServlet {
 //		PrintWriter out = response.getWriter();
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
+		Customer customer = new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build();
         CustomerDAO customerDAO = new CustomerDAO();
-        DataObjectCompiler customerResults=
-        customerDAO.newQueryRequest()
-        .includeAllAttributesInResultFromSchema()
-        .queryAttribute()
-        .whereCustomer()
-        .isCustomer(new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build())
-        .queryCart()
-        .includeAllAttributesInResultFromSchema()
-        .queryBook()
-        .includeAllAttributesInResultFromSchema()
-        .queryReviews()
-        .includeAllAttributesInResultFromSchema()
-        .executeQuery()
-        .executeCompilation()
-        ;
-        customerResults.compileCustomers();
-        System.out.println(customerResults.getCompiledCustomersJson());
+//        DataObjectCompiler customerResults=
+//        customerDAO.newQueryRequest()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryPurchaseOrder()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryAttribute()
+//		.wherePurchaseOrderCustomer()
+//		.isCustomer(customer)
+//		.queryBook()
+//		.includeAllAttributesInResultFromSchema()
+//		.queryReviews()
+//		.includeAllAttributesInResultFromSchema()
+//		.executeQuery()
+//		.executeCompilation()
+//        ;
+//        customerResults.compileCustomers();
+//        System.out.println(customerResults.getCompiledCustomersJson());
+        
+        Customer loggedCustomer =customerDAO.loginCustomer("SPhillips4588","Scottpassword");
+        System.out.println(Boolean.toString(loggedCustomer.isLoggedOn()));
+        System.out.println(loggedCustomer.toJson());
 //        out.write(customerResults.getCompiledCustomersJson());
 //        
 //        System.out.println("get req:");

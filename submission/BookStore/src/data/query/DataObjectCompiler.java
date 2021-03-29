@@ -58,7 +58,7 @@ public class DataObjectCompiler {
 	private Map<Id,Visitor>   visitorResults;
 	private Map<Id,Customer>   customerResults;
 	private Map<Id,Cart>   cartResults;
-	private Map<Id,List<PurchaseOrder>>   purchaseOrderResults;
+	private Map<Id,Map<Long,PurchaseOrder>>   purchaseOrderResults;
 	private BookDataFetcher bookDataFetcher;
 	private CartDataFetcher cartDataFetcher;
 	private CustomerDataFetcher customerDataFetcher;
@@ -107,7 +107,7 @@ public class DataObjectCompiler {
 		this.visitorResults= new LinkedHashMap<Id, Visitor>();
 		this.customerResults= new LinkedHashMap<Id, Customer>();
 		this.cartResults= new LinkedHashMap<Id, Cart>();
-		this.purchaseOrderResults= new LinkedHashMap<Id, List<PurchaseOrder>>();
+		this.purchaseOrderResults= new LinkedHashMap<Id, Map<Long,PurchaseOrder>>();
 		this.customerReviewResults=new LinkedHashMap<Id, List<Review>>();
 		this.bookReviewResults= new LinkedHashMap<Id, List<Review>>();
 		bookDataFetcher=new BookDataFetcher(this.attributesIncludedInResults);
@@ -140,10 +140,25 @@ public class DataObjectCompiler {
 		for(Entry<Id,Customer> entry:this.customerResults.entrySet()) {
 			List<PurchaseOrder> customerPo=new ArrayList<PurchaseOrder>();
 			if(this.purchaseOrderResults.containsKey(entry.getKey())) {
-				for(PurchaseOrder purchaseOrder:this.purchaseOrderResults.get(entry.getKey())) {
-					customerPo.add(new PurchaseOrder.Builder(purchaseOrder).withInCustomer().build()) ;	
+				for(Entry<Long,PurchaseOrder> purchaseOrderEntry:this.purchaseOrderResults.get(entry.getKey()).entrySet()) {
+					
+					Map<Book,Integer> poWithReviews = new LinkedHashMap<Book, Integer>();
+					for(Entry<Book,Integer> poBook:purchaseOrderEntry.getValue().getBooks().entrySet()) {
+						Book book =poBook.getKey();
+						
+						if(this.bookResults.containsKey(poBook.getKey().getId())) {
+							book=new Book.Builder(this.bookResults.get(poBook.getKey().getId())).build();
+						}
+						
+						if(this.bookReviewResults.containsKey(poBook.getKey().getId())) {
+							book=new Book.Builder(book).withReviews(this.bookReviewResults.get(poBook.getKey().getId())).build();
+						}
+						poWithReviews.put(book, poBook.getValue());
+					}
+					customerPo.add(new PurchaseOrder.Builder(purchaseOrderEntry.getValue()).withBooks(poWithReviews).build());
 				}
 			}
+			
 			List<Review> customerReviews=new ArrayList<Review>();
 			if(this.customerReviewResults.containsKey(entry.getKey())) {
 				for(Review review:this.customerReviewResults.get(entry.getKey())) {
@@ -409,15 +424,26 @@ public class DataObjectCompiler {
 				if(attributesIncludedInResults.containsKey(purchaseOrderTableName)) {
 					PurchaseOrder purchaseOrder=purchaseOrderDataFetcher.resultSetToBean(resultSet);
 					Book[] resultBook=new Book[1];
-					purchaseOrder.getBooks().keySet().toArray(resultBook);
-					String resultBookId =resultBook[0].getId().toString();
-					String epoch = Long.toString(purchaseOrder.getCreatedAtEpoch());
-					Id customerId= purchaseOrder.getCustomer().getId();
-					String purchaseOrderkey = customerId+resultBookId+epoch;
-					if(!purchaseOrderResults.containsKey(customerId)) {
-						this.purchaseOrderResults.put(customerId, new ArrayList<PurchaseOrder>());
+					if(this.purchaseOrderResults.get(purchaseOrder.getId())==null)
+						this.purchaseOrderResults.put(purchaseOrder.getId(), new LinkedHashMap<Long, PurchaseOrder>());
+					if(!this.purchaseOrderResults.get(purchaseOrder.getId()).containsKey(purchaseOrder.getCreatedAtEpoch())) {
+						this.purchaseOrderResults.get(purchaseOrder.getId()).put(purchaseOrder.getCreatedAtEpoch(), purchaseOrder);
+					}else {
+						for(Entry<Book,Integer> poEntry:purchaseOrder.getBooks().entrySet()) {
+							this.purchaseOrderResults.get(purchaseOrder.getId()).get(purchaseOrder.getCreatedAtEpoch()).addBookAmount(poEntry.getKey(),poEntry.getValue());	
+						}
+						
 					}
-					purchaseOrderResults.get(customerId).add(purchaseOrder);
+//						
+//					purchaseOrder.getBooks().keySet().toArray(resultBook);
+//					String resultBookId =resultBook[0].getId().toString();
+//					String epoch = Long.toString(purchaseOrder.getCreatedAtEpoch());
+//					Id customerId= purchaseOrder.getCustomer().getId();
+//					String purchaseOrderkey = customerId+resultBookId+epoch;
+//					if(!purchaseOrderResults.containsKey(customerId)) {
+//						this.purchaseOrderResults.put(customerId, new ArrayList<PurchaseOrder>());
+//					}
+//					purchaseOrderResults.get(customerId).add(purchaseOrder);
 					
 				}
 				
@@ -439,25 +465,25 @@ public class DataObjectCompiler {
 				}
 				
 			}
-			Map<Id,List<PurchaseOrder>> combinedPo = new LinkedHashMap<Id, List<PurchaseOrder>>();
-			for(Entry<Id,List<PurchaseOrder>> entry:purchaseOrderResults.entrySet()) {
-				Map<Long,PurchaseOrder> epochPo=new LinkedHashMap<Long, PurchaseOrder>();
-				for(PurchaseOrder purchaseOrder:entry.getValue()) {
-					if(epochPo.containsKey(purchaseOrder.getCreatedAtEpoch())){
-						PurchaseOrder purchaseOrderEpoch= epochPo.get(purchaseOrder.getCreatedAtEpoch());
-						epochPo.replace(purchaseOrder.getCreatedAtEpoch(), new PurchaseOrder.Builder(purchaseOrderEpoch).withAdditionalBooks(purchaseOrder.getBooks()).build());
-					}else {
-						epochPo.put(purchaseOrder.getCreatedAtEpoch(), purchaseOrder);
-					}
-				}
-				for(Entry<Long,PurchaseOrder> entryPoEpoch:epochPo.entrySet()) {
-					if(!combinedPo.containsKey(entry.getKey())||combinedPo.get(entry.getKey())==null) {
-						combinedPo.put(entry.getKey(), new LinkedList<PurchaseOrder>());
-					}
-					combinedPo.get(entry.getKey()).add(entryPoEpoch.getValue());
-				}
-				
-			}
+//			Map<Id,List<PurchaseOrder>> combinedPo = new LinkedHashMap<Id, List<PurchaseOrder>>();
+//			for(Entry<Id,List<PurchaseOrder>> entry:purchaseOrderResults.entrySet()) {
+//				Map<Long,PurchaseOrder> epochPo=new LinkedHashMap<Long, PurchaseOrder>();
+//				for(PurchaseOrder purchaseOrder:entry.getValue()) {
+//					if(epochPo.containsKey(purchaseOrder.getCreatedAtEpoch())){
+//						PurchaseOrder purchaseOrderEpoch= epochPo.get(purchaseOrder.getCreatedAtEpoch());
+//						epochPo.replace(purchaseOrder.getCreatedAtEpoch(), new PurchaseOrder.Builder(purchaseOrderEpoch).withAdditionalBooks(purchaseOrder.getBooks()).build());
+//					}else {
+//						epochPo.put(purchaseOrder.getCreatedAtEpoch(), purchaseOrder);
+//					}
+//				}
+//				for(Entry<Long,PurchaseOrder> entryPoEpoch:epochPo.entrySet()) {
+//					if(!combinedPo.containsKey(entry.getKey())||combinedPo.get(entry.getKey())==null) {
+//						combinedPo.put(entry.getKey(), new LinkedList<PurchaseOrder>());
+//					}
+//					combinedPo.get(entry.getKey()).add(entryPoEpoch.getValue());
+//				}
+//				
+//			}
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

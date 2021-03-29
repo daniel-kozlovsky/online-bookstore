@@ -416,7 +416,7 @@ public class BookStoreDAOTests {
 				.wherePurchaseOrder()
 				.isPurchaseOrder(new PurchaseOrder.Builder().withId(new Id("fakePO")).build())
 				.queryAttribute()
-				.wherePurchaseOrderUser()
+				.wherePurchaseOrderCustomer()
 				.isCustomer(new Customer.Builder().withId(new Id("fakecustrebv")).build())
 				.queryAttribute()
 				.wherePurchaseOrderBook()

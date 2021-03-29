@@ -185,6 +185,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 //		this.dataAccessRequestsConjunction.entrySet().stream().flatMap(entry->entry.getValue().stream()).map(das->das.getReferenceDataAcessString()).forEach(System.out::println);
 //		this.dataAccessRequestsDisjunction.entrySet().stream().map(entry->entry.getKey()).forEach(System.out::println);
 //		System.out.println("CONJ AND DISJ END");
+		String joins="";
 		BookSchema bookSchema = new BookSchema();
 		CartSchema cartSchema = new CartSchema();
 		CustomerSchema customerSchema = new CustomerSchema();
@@ -199,7 +200,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 		tableAttributes.put(reviewSchema.tableName(), reviewSchema.getAttributeLabels());
 		tableAttributes.put(visitorSchema.tableName(), visitorSchema.getAttributeLabels());
 		boolean hasReferences=this.dataAccessRequestsConjunction.keySet().size()>1 ||this.dataAccessRequestsDisjunction.keySet().size()>1;
-		this.attributesToIncludInResults.keySet().forEach(System.out::println);
+//		this.attributesToIncludInResults.keySet().forEach(System.out::println);
 		String queryString="SELECT ";
 		if(this.attributesToIncludInResults.isEmpty() || (this.attributesToIncludInResults.keySet().size()==1 && this.attributesToIncludInResults.get(tableName).isEmpty())) {
 			queryString+=" *";
@@ -255,7 +256,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 //					}
 //				}
 //				String orQuery=" AND ";
-				String joins="";
+				
 				for(DataAccessString referenceQuery:this.tableJoins) {
 
 					joins+=referenceQuery.getReferenceDataAcessString() + andQuery;
@@ -283,10 +284,10 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 		for(Entry<String,List<DataAccessString>> entry : this.dataAccessRequestsConjunction.entrySet()) {
 			queryCount=queryCount+entry.getValue().size();
 		}
-//		if(!queryString.contains("WHERE") && queryCount>=1) queryString+=" WHERE ";
+		if(!queryString.contains("WHERE") && queryCount>=1) queryString+=" WHERE ";
 		
 		String queryParameters=getQueryParameterString();	
-		if(queryString.contains("WHERE") && !queryParameters.isEmpty())
+		if(queryString.contains("WHERE") && !queryParameters.isEmpty() && !joins.isEmpty())
 			queryString+=andQuery;
 		queryString+=queryParameters;	
 		
@@ -548,7 +549,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 	}
 	
 	public DataObjectCompiler executeQuery() {
-		System.out.println("execuiote quire "+ getQueryString());
+//		System.out.println("execuiote quire "+ getQueryString());
 		return new DataObjectCompiler(getQueryString(), attributesToIncludInResults);
 	}
 	
