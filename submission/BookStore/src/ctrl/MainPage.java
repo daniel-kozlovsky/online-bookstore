@@ -27,7 +27,9 @@ public class MainPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String CUSTOMER = "customer";
 	private static final String VISITOR = "visitor";
-    
+    private static final String COMM = "COMM";
+    private static final String AJAX = "AJAX";
+	
 	BookDAO book = new BookDAO();
 	
     /**
@@ -45,8 +47,48 @@ public class MainPage extends HttpServlet {
 		
 		getServletContext().setAttribute("user", VISITOR);
 		
-		PrintWriter out = response.getWriter();
+		if (request.getParameter(COMM) != null && request.getParameter(COMM).equals(AJAX))
+		{
+			System.out.println("THis is the AJAX Section!");
+		}
+		else {
+			loadPage(request);
+			System.out.println("THis is the NON AJAX Section!");
+			request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
+		}
+
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+	private void preparePageRedirection (String prodID) {
+		List<Book> b = book.newQueryRequest()
+						 .includeAllAttributesInResultFromSchema()
+						 .queryAttribute()
+						 .whereBookISBN()
+						 .varCharEquals(prodID)
+						 .executeQuery()
+						 .executeCompilation()
+						 .compileBooks();
 		
+		System.out.println("b.size() = " + b.size());
+		
+		
+	}
+	
+	/**
+	 * This method loads all the html, css and javascript on the main page
+	 * in a dynamic manner. 
+	 * 
+	 * @param request
+	 */
+	private void loadPage (HttpServletRequest request) {
 		Map <String, Integer> category_count = book.getCountPerCategory();
 		Iterator iterator = category_count.entrySet().iterator(); 
 		
@@ -133,43 +175,40 @@ public class MainPage extends HttpServlet {
 		
 		//System.out.println(main_page_html);
 		System.out.println(request.getContextPath()+"/WebContent/");
-		request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
-		
-//		book.newQueryRequest()
-//			.includeBookCoverInResult()
-//			.includeBookPriceInResult()
-//			.executeQuery()
-//			.executeCompilation()
-//			.compileBooks()
-//			.stream().map(abook->abook.toJson()).forEach(json->out.print(json));
-//			;
-
 	}
-
+	
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * This mehtod creates html tags designated for the specified genre in `category`
+	 * 
+	 * @param l			
+	 * 			list of top 20 books in that category 
+	 * @param category
+	 * 			the given genre of the list of books
+	 * @return
+	 * 		the html portion for that genre of books
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 	private String addSuggestionSection(List<Book> l, String category) {
 		
 		String result_html = "<div class=\"container\" >\n"
 						   + "	<span class=\"title\"> Top 20 recommended books in "+category+"</span>\n"
 						   + "	<div class=\"row\">\n";
 		
-		
 		for (int index = 0; index < l.size(); index++) {
+			
+			String func_call = "pageHandler('/BookStore/MainPage?"
+									+ "ID="+l.get(index).getId()
+									+ "');return false; ";
+			
 			if (index < 7) {
 				result_html += "	<div class=\"column slides_"+category+"\" style=\"display:inline;\" >\n"
-							+ "			<button id=\"press\" class=\"book\" onClick=\"javascript:open_book_page()\" style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\"></button>\n"
+							+ "			<button id=\"press\" class=\"book\" onClick=\""+func_call + "\" "
+							+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\"></button>\n"
 							+ "		</div>\n";
 			} else {
 				result_html += "	<div class=\"column slides_"+category+"\" >\n"
-							+ "			<button id=\"press\" class=\"book\" onClick=\"javascript:open_book_page()\" style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\"></button>\n"
-							+ "		</div>\n";
+						+ "			<button id=\"press\" class=\"book\"  onClick=\""+func_call + "\" "
+						+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\"></button>\n"
+						+ "		</div>\n";
 			}
 		}
 		

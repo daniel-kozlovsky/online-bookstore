@@ -24,28 +24,6 @@ header
 
 
 /* ========= Containers ======== */
-/* .slides_deals {display: none;}
-.slides_top {display:none;}
-.slides_rating {display:none;}
-.slides_profile {display:none;}
-.slides_comedy {display:none;}
-.slides_drama {display:none;}
-.slides_horror {display:none;}
-.slides_fiction {display:none;}
-.slides_non_fiction {display:none;}
-.slides_science-fiction {display: none;}
- */
- 
-/*  .slides_adventure {display: none;}
-.slides_artists {display: none;}
-.slides_business {display: none;}
-.slides_comics {display: none;}
-.slides_dystopia {display: none;}
-.slides_entertainment {display: none;}
-.slides_historical {display: none;}
-.slides_horror {display: none;}
-.slides_romance {display: none;}
-.slides_science_fiction {display: none;} */
 
 .container {
 	background-color: white;
@@ -74,12 +52,6 @@ header
   height: 300px; /* Should be removed. Only for demonstration */
 }
 
-
-.book:hover {
-	opacity: 0.7;
-	cursor:pointer;
-}
-
 /* Clear floats after the columns */
 .row:after {
   content: "";
@@ -91,9 +63,6 @@ header
 	padding: 15px; 
 	height: 260px;
 	background-color:grey;
-/* 	background-image:url('../res/Queen_of_Air_and_Darkness_9781442468450.jpg');
-	background-position: center;
-	background-size: cover; */
 }
 
 /* Next & previous buttons */
@@ -114,4 +83,9 @@ header
 /* On hover, add a black background color with a little bit see-through */
 .prev:hover, .next:hover {
   background-color: #dedf7d;
+}
+
+.book:hover {
+	opacity: 0.7;
+	cursor:pointer;
 }

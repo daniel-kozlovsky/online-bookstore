@@ -16,6 +16,7 @@
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/bookPageHandler.js">;</script>
     
     <style type="text/css">	
  	${requestScope['CSS_MAIN']}

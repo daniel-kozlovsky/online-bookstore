@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" >
+	<jsp:directive.page contentType="text/html; charset=UTF-8" 
+		pageEncoding="UTF-8" session="false"/>
+	<jsp:output doctype-root-element="html"
+		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+		omit-xml-declaration="true" />
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ProdName</title>
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/ProdPage.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	
+</head>
+<body>
+	<!-- Navigation bar -->
+	<div class="nav_bar">
+		<a href="#main"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding active" href="#home">Home</a>
+		<c:choose>
+			<!-- customer -->
+		  	<c:when test="${applicationScope['user'] eq 'customer'}">
+				<a class="padding hovering" href="${pageContext.request.contextPath}/html/OrdersReturns.jspx">Orders &amp; Returns</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
+		  	</c:when>
+
+		  	<!-- visitor -->
+		  	<c:otherwise> 
+				<a class="padding hovering" href="${pageContext.request.contextPath}/html/SignIn.jspx">Sign In</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/html/Register.jspx">Register</a>
+	  		</c:otherwise>
+		  	
+	  	</c:choose>
+		
+		<!-- shopping cart -->
+	  	<a href="${pageContext.request.contextPath}/html/Cart.jspx" style="float:right;" >
+	  		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/shoppingCart.png" alt="checkout" />
+  		</a>
+	  	
+	  	<!-- search bar -->
+		<div class="search_bar">
+	  		<form action="MainPage">
+	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
+	    		<a href="${pageContext.request.contextPath}/html/SearchedResults.jspx" style="float:right;" >
+		    		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/magnifyingGlass.jpg" alt="search" />
+	    		</a>
+	    	</form>
+	  	</div>
+	</div>
+	
+	<!-- Prod Section -->
+	<div class="prod_section">
+		<div class="row">
+			<div class="column_1_3">
+				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/Queen_of_Air_and_Darkness_9781442468450.jpg" alt="search" /> 
+			</div>
+			<div class="column_2_3">
+				<div class="row">
+					<h2>Queen of Air and Darkness , 2018</h2>
+				</div>
+				<div class="row" >
+					<h3>by Cassandra Clare</h3>
+				</div>
+				<div class="row" >
+					ISBN: 9780545227247
+				</div>
+				<div class="row" >
+					<p style="margin-left:0px;">Genre: adventure</p>
+				</div>
+				<div class="row" style="margin-left:0px;">
+					<p style="margin-left:0px;">Rating: 0.0</p>
+				</div>
+				<div class="row">
+					<p style="color:red;font-weight:bold;margin-left:0px;">$19.99</p>
+				</div>
+				<div class="row">
+					<p style="margin-left:0px;"><button class="button addProduct" type="addProduct">add product</button></p>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="margin-top:100px;">
+			
+			<div class="container">
+				<div class="row ">
+					<div class="title">Sample reviews</div>
+					<div class="container_title ">Both familiar and new <br></br> some_user_name</div>
+					<p>
+						Wow. That was a lot of drama packed into 912 pages That said, I really enjoyed the end of Emma and Julien''s 
+						journey. They definitely had a lot of challenges in this story. From the beginning where Julian makes a choice 
+						that I was surprised by and definitely took the story to some interesting places. The same can be said with Ty, 
+						who I do find to be a complicated character and whose choice led to some heart-rending moments. The action and 
+						pacing were great, and it was excellent to see new and old characters overcome obstacles and come to terms with 
+						their emotions. The romances were an obvious draw and totally swoon-worthy. I enjoyed a lot of them, including 
+						side romances like Gwyn and Diana, but my favourites were Kit and Ty, and Christina, Mark. Kieran. But for me, 
+						the best parts were the world building and a section in part two that I won''t spoil, but takes the reader to a 
+						completely unexpected place that I can''t say I would want to be, but definitely found interesting, if horrifying. 
+						It breathed new life into a series that, while beloved, has become familiar in some aspects. I also loved all the 
+						massive changes that took place in the ShadowhunterDownworlder society, especially near the end when everything was 
+						wrapping up. It will certainly lead into another book, which leads me to my one teeny tiny gripe The epilogue. It 
+						came out of nowhere, might compel me to read the last Shadowhunter trilogy which I didn''t plan on, and nearly made 
+						me shout Just leave them alone Still... it would be interesting to see where it goes. But that''s more of a fangirl 
+						complaint than a story complaint. I did find QoAaD to be fast-paced, emotional, intense, and rich in its lore and 
+						thrills. Fans of this world will be satisfied with this particular finale, and even though I wish some characters 
+						would just be able to get their happy endings, I would be lying if I said I didn''t want to see more of them.
+					</p>
+				</div>
+				<div class="row" style="margin-top:50px;">
+					<div class="container_title ">Both familiar and new <br></br> some_user_name</div>
+					<p>
+						Wow. That was a lot of drama packed into 912 pages That said, I really enjoyed the end of Emma and Julien''s 
+						journey. They definitely had a lot of challenges in this story. From the beginning where Julian makes a choice 
+						that I was surprised by and definitely took the story to some interesting places. The same can be said with Ty, 
+						who I do find to be a complicated character and whose choice led to some heart-rending moments. The action and 
+						pacing were great, and it was excellent to see new and old characters overcome obstacles and come to terms with 
+						their emotions. The romances were an obvious draw and totally swoon-worthy. I enjoyed a lot of them, including 
+						side romances like Gwyn and Diana, but my favourites were Kit and Ty, and Christina, Mark. Kieran. But for me, 
+						the best parts were the world building and a section in part two that I won''t spoil, but takes the reader to a 
+						completely unexpected place that I can''t say I would want to be, but definitely found interesting, if horrifying. 
+						It breathed new life into a series that, while beloved, has become familiar in some aspects. I also loved all the 
+						massive changes that took place in the ShadowhunterDownworlder society, especially near the end when everything was 
+						wrapping up. It will certainly lead into another book, which leads me to my one teeny tiny gripe The epilogue. It 
+						came out of nowhere, might compel me to read the last Shadowhunter trilogy which I didn''t plan on, and nearly made 
+						me shout Just leave them alone Still... it would be interesting to see where it goes. But that''s more of a fangirl 
+						complaint than a story complaint. I did find QoAaD to be fast-paced, emotional, intense, and rich in its lore and 
+						thrills. Fans of this world will be satisfied with this particular finale, and even though I wish some characters 
+						would just be able to get their happy endings, I would be lying if I said I didn''t want to see more of them.
+					</p>
+				</div>
+				<div class="row" style="margin-top:50px;">
+					<div class="container_title ">Both familiar and new <br></br> some_user_name</div>
+					<p>
+						Wow. That was a lot of drama packed into 912 pages That said, I really enjoyed the end of Emma and Julien''s 
+						journey. They definitely had a lot of challenges in this story. From the beginning where Julian makes a choice 
+						that I was surprised by and definitely took the story to some interesting places. The same can be said with Ty, 
+						who I do find to be a complicated character and whose choice led to some heart-rending moments. The action and 
+						pacing were great, and it was excellent to see new and old characters overcome obstacles and come to terms with 
+						their emotions. The romances were an obvious draw and totally swoon-worthy. I enjoyed a lot of them, including 
+						side romances like Gwyn and Diana, but my favourites were Kit and Ty, and Christina, Mark. Kieran. But for me, 
+						the best parts were the world building and a section in part two that I won''t spoil, but takes the reader to a 
+						completely unexpected place that I can''t say I would want to be, but definitely found interesting, if horrifying. 
+						It breathed new life into a series that, while beloved, has become familiar in some aspects. I also loved all the 
+						massive changes that took place in the ShadowhunterDownworlder society, especially near the end when everything was 
+						wrapping up. It will certainly lead into another book, which leads me to my one teeny tiny gripe The epilogue. It 
+						came out of nowhere, might compel me to read the last Shadowhunter trilogy which I didn''t plan on, and nearly made 
+						me shout Just leave them alone Still... it would be interesting to see where it goes. But that''s more of a fangirl 
+						complaint than a story complaint. I did find QoAaD to be fast-paced, emotional, intense, and rich in its lore and 
+						thrills. Fans of this world will be satisfied with this particular finale, and even though I wish some characters 
+						would just be able to get their happy endings, I would be lying if I said I didn''t want to see more of them.
+					</p>
+				</div>
+				<button class="readMore" type="readMore">read more</button>
+			</div>
+		</div>
+	</div>
+	
+	<!-- footer -->
+	<footer>
+		<div class="footer_container">
+			<div class="footer_row">
+				<div class="footer_column">
+					<div class="footer_content">
+						<h2>some title 1</h2>
+						<p>Bla bla bla</p>
+					</div>
+				</div>
+				<div class="footer_column">
+					<div class="footer_content">
+						<h2>some title 2</h2>
+						<p>Bla bla bla</p>
+					</div>
+				</div>
+				<div class="footer_column">
+					<div class="footer_content">
+						<h2>some title 2</h2>
+						<p>Bla bla bla</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+		
+</body>
+</html>
+</jsp:root>
