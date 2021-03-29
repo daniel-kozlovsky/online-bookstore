@@ -414,6 +414,32 @@ public class BookDAO implements DAO{
 //					);
 			return  this;
 		}
+		
+		public BookKeyQuery isBook(String idString) {
+//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
+//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
+//			}
+//			this.addDataAccessString(null);
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.ID)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(idString)
+					.build()
+					);
+//			.add(new DataAccessString.Builder()
+//					.withTableName(this.dataSchema.tableName())
+//					.withReferenceOperator(this.referenceOperator)
+//					.withAttributeName(BookSchema.ID)
+//					.withDataAccessParameterPrefix("="+"'")
+//					.withDataAccessParameterSuffix("'")
+//					.withDataAccessParameter(book.getId().toString())
+//					.build()
+//					);
+			return  this;
+		}
 	}
 	
 	public class BookCategoryQuery extends BookVarCharQuery{
