@@ -152,7 +152,7 @@ public class CustomerDAO implements DAO{
 
 		List<Customer> customersReviews= newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
-				.queryReviews()
+				.queryReview()
 				.includeAllAttributesInResultFromSchema()
 				.queryAttribute()
 				.whereReviewCustomer()
@@ -351,7 +351,7 @@ public class CustomerDAO implements DAO{
 
 		}
 		
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
@@ -417,7 +417,7 @@ public class CustomerDAO implements DAO{
 		public CustomerAttributeAccess queryCustomerAttribute(){
 			return customerAttributeAccess;
 		}
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
@@ -485,7 +485,7 @@ public class CustomerDAO implements DAO{
 			return customerAttributeAccess;
 		}		
 		
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
@@ -581,7 +581,7 @@ public class CustomerDAO implements DAO{
 	
 
 		
-		public BookStoreReviewQuery queryReviews() {
+		public BookStoreReviewQuery queryReview() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())

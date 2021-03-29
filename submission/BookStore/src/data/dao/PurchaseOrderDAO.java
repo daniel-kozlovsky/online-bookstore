@@ -70,19 +70,19 @@ public class PurchaseOrderDAO implements DAO{
 			includeKeyInResults();
 			return this;
 		}
-		public BookStorePurchaseOrderQuery includeCustomerInResults(){
-			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
-			includeKeyInResults();
-			if(!this.attributesToIncludInResults.containsKey(new CustomerSchema().tableName())) this.attributesToIncludInResults.put(new CustomerSchema().tableName(), new HashSet<String>());	
-			return this;
-		}
-		
-		public BookStorePurchaseOrderQuery includeBookInResults(){
-			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
-			includeKeyInResults();
-			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());	
-			return this;
-		}
+//		public BookStorePurchaseOrderQuery includeCustomerInResults(){
+//			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
+//			includeKeyInResults();
+//			if(!this.attributesToIncludInResults.containsKey(new CustomerSchema().tableName())) this.attributesToIncludInResults.put(new CustomerSchema().tableName(), new HashSet<String>());	
+//			return this;
+//		}
+//		
+//		public BookStorePurchaseOrderQuery includeBookInResults(){
+//			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());
+//			includeKeyInResults();
+//			if(!this.attributesToIncludInResults.containsKey(new BookSchema().tableName())) this.attributesToIncludInResults.put(new BookSchema().tableName(), new HashSet<String>());	
+//			return this;
+//		}
 		
 //		public BookStorePurchaseOrderQuery includePurchaseOrderCustomerInResult(){
 //			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.put(purchaseOrderSchema.tableName(), new HashSet<String>());

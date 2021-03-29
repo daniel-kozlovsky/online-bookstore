@@ -194,7 +194,6 @@ public class BookStoreDAOTests {
 		CartDAO cartDAO = new CartDAO();
 		String query =cartDAO.newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
-				.excludeAmountInResult()
 				.queryAttribute()
 				.whereCartUserType()
 				.isVisitor()
@@ -258,8 +257,8 @@ public class BookStoreDAOTests {
 	void bookDAOReferenceEmptyResultIncludeHasCorrectQuery() {
 		BookDAO bookDAO = new BookDAO();
 		String query =bookDAO.newQueryRequest()
-				.queryReviews()
-				.queryCustomers()
+				.queryReview()
+				.queryCustomer()
 				.getQueryString();
 		String expectedResult="SELECT BOOK.ID AS BOOK_ID,BOOK.TITLE AS BOOK_TITLE,BOOK.DESCRIPTION AS BOOK_DESCRIPTION,BOOK.CATEGORY AS BOOK_CATEGORY,BOOK.AUTHOR AS BOOK_AUTHOR,BOOK.PRICE AS BOOK_PRICE,BOOK.COVER AS BOOK_COVER,BOOK.PUBLISH_YEAR AS BOOK_PUBLISH_YEAR,BOOK.ISBN AS BOOK_ISBN,BOOK.RATING AS BOOK_RATING,BOOK.AMOUNT_SOLD AS BOOK_AMOUNT_SOLD,REVIEW.BODY AS REVIEW_BODY,REVIEW.TITLE AS REVIEW_TITLE,REVIEW.CUSTOMER AS REVIEW_CUSTOMER,REVIEW.RATING AS REVIEW_RATING,REVIEW.BOOK AS REVIEW_BOOK,REVIEW.CREATED_AT_EPOCH AS REVIEW_CREATED_AT_EPOCH,CUSTOMER.ID AS CUSTOMER_ID,CUSTOMER.GIVENNAME AS CUSTOMER_GIVENNAME,CUSTOMER.SURNAME AS CUSTOMER_SURNAME,CUSTOMER.EMAIL AS CUSTOMER_EMAIL,CUSTOMER.USERNAME AS CUSTOMER_USERNAME,CUSTOMER.PASSWORD AS CUSTOMER_PASSWORD,CUSTOMER.STREET_NUMBER AS CUSTOMER_STREET_NUMBER,CUSTOMER.CREATED_AT_EPOCH AS CUSTOMER_CREATED_AT_EPOCH,CUSTOMER.STREET AS CUSTOMER_STREET,CUSTOMER.POSTAL_CODE AS CUSTOMER_POSTAL_CODE,CUSTOMER.CITY AS CUSTOMER_CITY,CUSTOMER.PROVINCE AS CUSTOMER_PROVINCE,CUSTOMER.COUNTRY AS CUSTOMER_COUNTRY,CUSTOMER.CREDIT_CARD AS CUSTOMER_CREDIT_CARD,CUSTOMER.CREDIT_CARD_NUMBER AS CUSTOMER_CREDIT_CARD_NUMBER,CUSTOMER.CREDIT_CARD_EXPIRY AS CUSTOMER_CREDIT_CARD_EXPIRY,CUSTOMER.CREDIT_CARD_CVV2 AS CUSTOMER_CREDIT_CARD_CVV2 FROM BOOK,REVIEW,CUSTOMER WHERE BOOK.ID=REVIEW.BOOK AND CUSTOMER.ID=REVIEW.CUSTOMER FETCH FIRST 20 ROWS ONLY";
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
@@ -277,7 +276,7 @@ public class BookStoreDAOTests {
 				.queryAttribute()
 				.whereBookAuthor()
 				.varCharContains("refauth")
-				.queryReviews()
+				.queryReview()
 				.includeAllAttributesInResultFromSchema()
 				.excludeReviewBodyInResult()
 				.queryAttribute()
@@ -289,7 +288,7 @@ public class BookStoreDAOTests {
 				.withAscendingOrderOf()
 				.withPageNumber(2)
 				.withResultLimit(93)
-				.queryCustomers()
+				.queryCustomer()
 				.includeAllAttributesInResultFromSchema()
 				.excludeCustomerPasswordInResult()
 				.queryAttribute()
@@ -362,9 +361,6 @@ public class BookStoreDAOTests {
 	void customerDAOFullQuery() {
 		CustomerDAO customerDAO = new CustomerDAO();
 		String query =customerDAO.newQueryRequest()
-				.includeCustomerCartInResult()
-				.includeCustomerPurchaseOrdersInResult()
-				.includeCustomerReviewsInResult()
 				.queryAttribute()
 				.whereCustomerCreatedAtEpoch()
 				.numberAtLeast("1")
