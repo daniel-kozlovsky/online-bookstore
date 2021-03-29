@@ -65,6 +65,8 @@ public class DataObjectCompiler {
 	private PurchaseOrderDataFetcher purchaseOrderDataFetcher;
 	private VisitorDataFetcher visitorDataFetcher;
 	private ReviewDataFetcher reviewDataFetcher;
+	private Map<Id,List<Review>>   customerToBooksWithReviews;
+	private Map<Id,List<Review>>   customerToReviewsWithBooks;
 	
 	private void writeBuildOrder(String name) {
 		this.buildOrder+=!buildOrder.contains(name)?name+DELIMITER:"";
@@ -95,6 +97,7 @@ public class DataObjectCompiler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.compileCustomerResults=new LinkedList<Customer>();
 		this.compileBookResults=new LinkedList<Book>();
 		this.queryString=queryString;
 		this.attributesIncludedInResults=attributesIncludedInResults;
@@ -136,13 +139,13 @@ public class DataObjectCompiler {
 		List<Customer> results = new ArrayList<Customer>();
 		for(Entry<Id,Customer> entry:this.customerResults.entrySet()) {
 			List<PurchaseOrder> customerPo=new ArrayList<PurchaseOrder>();
-			if(this.purchaseOrderResults.containsKey(results)) {
+			if(this.purchaseOrderResults.containsKey(entry.getKey())) {
 				for(PurchaseOrder purchaseOrder:this.purchaseOrderResults.get(entry.getKey())) {
 					customerPo.add(new PurchaseOrder.Builder(purchaseOrder).withInCustomer().build()) ;	
 				}
 			}
 			List<Review> customerReviews=new ArrayList<Review>();
-			if(this.customerReviewResults.containsKey(results)) {
+			if(this.customerReviewResults.containsKey(entry.getKey())) {
 				for(Review review:this.customerReviewResults.get(entry.getKey())) {
 					Book book = new Book.Builder(review.getBook()).build();
 					if(this.bookResults.containsKey(review.getBook().getId())) {
@@ -154,34 +157,49 @@ public class DataObjectCompiler {
 			}
 			
 			Cart customerCart=new Cart.Builder().withId(entry.getKey()).build();
-			if(this.cartResults.containsKey(results)) {
-				customerCart=new Cart.Builder(this.cartResults.get(entry.getKey())).withInCustomer().build();
-				Map<Book,Integer> cartBooks=new LinkedHashMap<Book, Integer>();
+			if(this.cartResults.containsKey(entry.getKey())) {
+				customerCart=new Cart.Builder(this.cartResults.get(entry.getKey())).build();
+				Map<Book,Integer> cartWithReviews = new LinkedHashMap<Book, Integer>();
 				for(Entry<Book,Integer> bookEntry:customerCart.getBooks().entrySet()) {
-					Book book = new Book.Builder(bookEntry.getKey()).withInReview().build();
-					List<Review> cartBookReviews=new ArrayList<Review>();
-					if(this.bookReviewResults.containsKey(results)) {
-						for(Review review:this.bookReviewResults.get(bookEntry.getKey())) {
-							cartBookReviews.add(new Review.Builder(review).withinCustomer().withinBook().build());
-						}
-					}
+					Book book =bookEntry.getKey();
 					if(this.bookResults.containsKey(bookEntry.getKey().getId())) {
-						book=this.bookResults.get(bookEntry.getKey().getId());
-						book = new Book.Builder(book).build();
-						if(!cartBookReviews.isEmpty()) {
-							book= new Book.Builder(book).withReviews(cartBookReviews).build();
-						}
-						cartBooks.put(book, customerCart.getBooks().get(book));
+						book=new Book.Builder(this.bookResults.get(bookEntry.getKey().getId())).build();
 					}
 					
-				}	
-
-				if(!cartBooks.isEmpty()) {
-					customerCart= new Cart.Builder(customerCart).withBooks(cartBooks).withInCustomer().build();
+					if(this.bookReviewResults.containsKey(bookEntry.getKey().getId())) {
+						book=new Book.Builder(book).withReviews(this.bookReviewResults.get(bookEntry.getKey().getId())).build();
+					}
+					cartWithReviews.put(book, bookEntry.getValue());
 				}
+				customerCart=new Cart.Builder(customerCart).withBooks(cartWithReviews).build();
+				
+//				customerCart=new Cart.Builder(this.cartResults.get(entry.getKey())).withInCustomer().build();
+//				Map<Book,Integer> cartBooks=new LinkedHashMap<Book, Integer>();
+//				for(Entry<Book,Integer> bookEntry:customerCart.getBooks().entrySet()) {
+//					Book book = new Book.Builder(bookEntry.getKey()).withInReview().build();
+//					List<Review> cartBookReviews=new ArrayList<Review>();
+//					if(this.bookReviewResults.containsKey(bookEntry.getKey())) {
+//						for(Review review:this.bookReviewResults.get(bookEntry.getKey())) {
+//							cartBookReviews.add(new Review.Builder(review).withinCustomer().withinBook().build());
+//						}
+//					}
+//					if(this.bookResults.containsKey(bookEntry.getKey().getId())) {
+//						book=this.bookResults.get(bookEntry.getKey().getId());
+//						book = new Book.Builder(book).build();
+//						if(!cartBookReviews.isEmpty()) {
+//							book= new Book.Builder(book).withReviews(cartBookReviews).build();
+//						}
+//						cartBooks.put(book, customerCart.getBooks().get(book));
+//					}
+//					
+//				}	
+//
+//				if(!cartBooks.isEmpty()) {
+//					customerCart= new Cart.Builder(customerCart).withBooks(cartBooks).withInCustomer().build();
+//				}
 			}
 			
-			
+			System.out.println("asdf");
 			
 			results.add(new Customer.Builder(entry.getValue())
 					.withCart(customerCart)
@@ -190,6 +208,7 @@ public class DataObjectCompiler {
 					.build()
 					);
 		}
+		this.compileCustomerResults=results;
 
 		return results;
 	}
@@ -347,6 +366,7 @@ public class DataObjectCompiler {
 		Connection connection= null;
 		PreparedStatement preparedStatement=null;
 		ResultSet resultSet=null;
+		Map<Id,Cart>   cartResultsCurrent= new LinkedHashMap<Id, Cart>();
 		try {
 			connection= this.dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(queryString);
@@ -354,31 +374,41 @@ public class DataObjectCompiler {
 			while(resultSet.next()) {
 				if(attributesIncludedInResults.containsKey(bookTableName)) {
 					Book book=bookDataFetcher.resultSetToBean(resultSet);
+					if(!bookResults.containsKey(book.getId()))
 					bookResults.put(book.getId(), book);
 				}
 				if(attributesIncludedInResults.containsKey(customerTableName)) {
 					Customer customer=customerDataFetcher.resultSetToBean(resultSet);
+					if(!customerResults.containsKey(customer.getId()))
 					customerResults.put(customer.getId(), customer);
 				}
 				if(attributesIncludedInResults.containsKey(visitorTableName)) {
 					Visitor visitor=visitorDataFetcher.resultSetToBean(resultSet);
+					if(!visitorResults.containsKey(visitor.getId()))
 					visitorResults.put(visitor.getId(), visitor);
 					
 				}
 				if(attributesIncludedInResults.containsKey(cartTableName)) {
 					Cart cart=cartDataFetcher.resultSetToBean(resultSet);
-					if(cartResults.containsKey(cart.getId())) {
-						Cart oldCart = cartResults.get(cart.getId());
-						cartResults.replace(cart.getId(),new Cart.Builder(oldCart).withAdditionalBooks(cart.getBooks()).build());
+					if(this.cartResults.containsKey(cart.getId())) {
+						for(Entry<Book,Integer> cartEntry:cart.getBooks().entrySet()) {
+							if(!this.cartResults.get(cart.getId()).isBookInCart(cartEntry.getKey())) {
+								this.cartResults.get(cart.getId()).addBookAmount(cartEntry.getKey(), cartEntry.getValue());
+
+							}
+						}
+						
+
+
 					}else {
-						cartResults.put(cart.getId(), cart);	
+						this.cartResults.put(cart.getId(), cart);
 					}
 					
 				}
 				
 				if(attributesIncludedInResults.containsKey(purchaseOrderTableName)) {
 					PurchaseOrder purchaseOrder=purchaseOrderDataFetcher.resultSetToBean(resultSet);
-					Book[] resultBook=new Book[0];
+					Book[] resultBook=new Book[1];
 					purchaseOrder.getBooks().keySet().toArray(resultBook);
 					String resultBookId =resultBook[0].getId().toString();
 					String epoch = Long.toString(purchaseOrder.getCreatedAtEpoch());

@@ -68,7 +68,12 @@ public class BookDataFetcher extends DataFetcher<Book>{
 			
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.DESCRIPTION)) {
-				book = new Book.Builder(book).withCategory(resultSet.getString(prefix+schema.DESCRIPTION)).build();
+				book = new Book.Builder(book).withDescription(resultSet.getString(prefix+schema.DESCRIPTION)).build();
+			}
+			
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.SERIES)) {
+				book = new Book.Builder(book).withSeries(resultSet.getString(prefix+schema.SERIES)).build();
 			}
 			
 			
@@ -82,7 +87,11 @@ public class BookDataFetcher extends DataFetcher<Book>{
 			}
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.AMOUNT_SOLD)) {
-				book = new Book.Builder(book).withPrice(resultSet.getInt(prefix+schema.AMOUNT_SOLD)).build();
+				book = new Book.Builder(book).withAmountSold(resultSet.getInt(prefix+schema.AMOUNT_SOLD)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.RATING)) {
+				book = new Book.Builder(book).withRating(resultSet.getDouble(prefix+schema.RATING)).build();
 			}
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.ISBN)) {

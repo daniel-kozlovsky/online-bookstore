@@ -52,7 +52,7 @@ public class Visitor extends User {
 
 		public Builder(){
 			super();
-			this.cart=new Cart.Builder().build();
+			this.cart=null;
 			this.id=new Id("");
 			createdAtEpoch=0;
 			lastAccessedAtEpoch=0;

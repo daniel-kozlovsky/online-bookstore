@@ -14,8 +14,8 @@ public class Cart extends IdObject{
 	private Map<Book,Integer> books;
 	private User user;
 	private String userType;
-	private Customer customer;
-	private Visitor visitor;
+//	private Customer customer;
+//	private Visitor visitor;
 
 	private boolean _isWithinCustomer;
 	private boolean _isWithinVisitor;
@@ -40,7 +40,11 @@ public class Cart extends IdObject{
 	}
 	
 	public boolean isBookInCart(Book book) {
-		return books.get(book)!=null &&books.get(book)>0;		
+		boolean result=false;
+		for(Entry<Book,Integer> entry :this.books.entrySet()) {
+			if(book.getId().equals(entry.getKey().getId())) result=true;
+		}
+		return result;		
 	}
 	
 	public int numberOfBook(Book book) {
@@ -51,23 +55,28 @@ public class Cart extends IdObject{
 		return books;
 	}
 	
-	public void combineBooks(Map<Book,Integer> books) {
-		for(Entry<Book,Integer> entry:books.entrySet()) {
-			if(!this.books.containsKey(entry.getKey())) {
-				this.books.put(entry.getKey(), entry.getValue());
-			}else {
-				int currentCount = this.books.get(entry.getKey());
-				this.books.remove(entry.getKey());
-				this.books.put(entry.getKey(), currentCount+entry.getValue());
-			}
-		}
+	public void setBooks(Map<Book,Integer> books) {
+		this.books=books;
 	}
 	
-	public void combineCarts(Cart cart) {
-		combineBooks(cart.getBooks());
-	}
 	
-	public void withBookAmountReplace(Book book,int amount){
+//	public void combineBooks(Map<Book,Integer> books) {
+//		for(Entry<Book,Integer> entry:books.entrySet()) {
+//			if(!this.books.containsKey(entry.getKey())) {
+//				this.books.put(entry.getKey(), entry.getValue());
+//			}else {
+//				int currentCount = this.books.get(entry.getKey());
+//				this.books.remove(entry.getKey());
+//				this.books.put(entry.getKey(), currentCount+entry.getValue());
+//			}
+//		}
+//	}
+	
+//	public void combineCartContents(Cart cart) {
+//		combineBooks(cart.getBooks());
+//	}
+	
+	public void addBookAmount(Book book,int amount){
 	this.books.put(book, amount);
 	}
  
@@ -96,10 +105,10 @@ public class Cart extends IdObject{
 	public static class Builder extends IdObjectBuilder<Builder>{
 
 		private Map<Book,Integer> books;
-		private User user;
+//		private User user;
 		private String userType;
-		private Customer customer;
-		private Visitor visitor;
+//		private Customer customer;
+//		private Visitor visitor;
 
 		private boolean _isWithinCustomer;
 		private boolean _isWithinVisitor;
@@ -107,45 +116,53 @@ public class Cart extends IdObject{
 
 		
 		public Builder(Cart cart){
-			this.user=cart.user;
+//			this.user=cart.user;
 			this.books=cart.books;
 			this._isWithinVisitor=cart._isWithinVisitor;
 			this._isWithinCustomer=cart._isWithinCustomer;
-			if(cart.customer!=null) {
-				this.customer=cart.customer;
-				this.visitor=null;
-			}else if(cart.visitor!=null) {
-				this.visitor=cart.visitor;
-				this.customer=null;
-			}
+			this.userType=cart.userType;
+//			if(cart.customer!=null) {
+//				this.customer=cart.customer;
+//				this.visitor=null;
+//			}else if(cart.visitor!=null) {
+//				this.visitor=cart.visitor;
+//				this.customer=null;
+//			}
 		}
 		
 		public Builder(){
 			super();
 			this.books=new HashMap<Book, Integer>();
-			this.user=null;
+//			this.user=null;
 			this.userType=UserTypes.VISITOR;
-			this.customer=null;
-			this.visitor=null;
+//			this.customer=null;
+//			this.visitor=null;
 			this._isWithinVisitor=false;
 			this._isWithinCustomer=false;
 		}
 
 		
 		public Builder withUser(Visitor visitor){
-			this.user=visitor;
+//			this.user=visitor;
 			this.userType=UserTypes.VISITOR;
-			this.visitor=visitor;
+			this.id=visitor.id;
 			return this;
 		}
 		
 		public Builder withUser(Customer customer){
-			this.user=customer;
+//			this.user=customer;
 			this.userType=UserTypes.CUSTOMER;
-			this.customer=customer;
+			this.id=customer.getId();
 			
 			return this;
 		}
+		
+		public Builder withUserType(String userType){
+			this.userType=userType;
+			
+			return this;
+		}
+
 
 
 		public Builder withBooks(Map<Book,Integer> books){
@@ -213,19 +230,27 @@ public class Cart extends IdObject{
 
 		public Cart build(){
 			Cart cart=new Cart();
-			cart.user=this.user;
+//			cart.user=this.user;
 			cart.books=this.books;
 			cart.userType=this.userType;
 			cart._isWithinCustomer=this._isWithinCustomer;
 			cart._isWithinVisitor=this._isWithinVisitor;
 			cart.id=this.id;
-			if(this.customer!=null) {
-				cart.customer=this.customer;
-				cart.visitor=null;
-			}else if(this.visitor!=null) {
-				cart.visitor=this.visitor;
-				cart.customer=null;
-			}
+//			if(this.userType.equals(UserTypes.CUSTOMER)) {
+//				cart.customer=this.customer;
+//				cart.visitor=null;
+//			}else if(this.userType.equals(UserTypes.VISITOR)) {
+//				cart.visitor=this.visitor;
+//				cart.customer=null;
+//			}
+//			if(this.visitor==null &&this.userType.equals(UserTypes.VISITOR)) {
+//				this.visitor=new Visitor.Builder().withId(this.id).build();
+//				this.customer=null;
+//			}else if(this.customer==null &&this.userType.equals(UserTypes.CUSTOMER)) {
+//				this.customer=new Customer.Builder().withId(this.id).build();
+//				this.visitor=null;
+//			}
+			
 			return cart;
 		}
 
@@ -238,11 +263,11 @@ public class Cart extends IdObject{
 		// TODO Auto-generated method stub
 		String customerJson="";
 		String visitorJson="";
-		if(isWithinCustomer()) {
-			customerJson=isWithinCustomer()?Bean.jsonMapNumber("customer","{},"):this.customer.toJson();
-		}else if (isWithinVisitor()) {
-			visitorJson=isWithinVisitor()?Bean.jsonMapNumber("visitor","{},"):this.visitor.toJson();
-		}
+//		if(isWithinCustomer()) {
+//			customerJson=isWithinCustomer()?Bean.jsonMapNumber("id","{},"):this.customer.toJson();
+//		}else if (isWithinVisitor()) {
+//			visitorJson=isWithinVisitor()?Bean.jsonMapNumber("visitor","{},"):this.visitor.toJson();
+//		}
 
 		
 
@@ -259,7 +284,8 @@ public class Cart extends IdObject{
 		booksJson+="]";
 		String userJson=this.userType.equals(UserTypes.VISITOR)?visitorJson:customerJson;
 //		String userJsonLabel=this.customer==null?"visitor":"customer";
-		return "{"+userJson+
+		return "{"+Bean.jsonMapVarChar("user", this.id.toString())+","+
+				Bean.jsonMapVarChar("userType", this.userType)+","+
 				booksJson+
 				"}";				
 	}

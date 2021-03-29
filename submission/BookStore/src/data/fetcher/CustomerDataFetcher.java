@@ -97,6 +97,10 @@ public class CustomerDataFetcher extends DataFetcher<Customer>{
 				customer = new Customer.Builder(customer).withCountry(resultSet.getString(prefix+schema.COUNTRY)).build();
 			}
 			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREATED_AT_EPOCH)) {
+				customer = new Customer.Builder(customer).withCreatedAtEpoch(resultSet.getLong(prefix+schema.CREATED_AT_EPOCH)).build();
+			}
+			
 			
 			
 			return customer;

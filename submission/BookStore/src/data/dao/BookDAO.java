@@ -27,6 +27,7 @@ import data.query.BookStoreQuery;
 import data.query.BookStoreVarCharQuery;
 import data.query.DataAccessString;
 import data.query.PageRequestMetaData;
+import data.query.Query;
 import data.beans.Book;
 import data.beans.Cart;
 import data.beans.Customer;
@@ -34,15 +35,18 @@ import data.beans.Id;
 import data.beans.PurchaseOrder;
 import data.beans.Review;
 import data.beans.Visitor;
+import data.dao.CartDAO.BookStoreCartQuery;
 import data.dao.CartDAO.CartAttributeAccess;
 import data.dao.CustomerDAO.BookStoreCustomerQuery;
 import data.dao.ReviewDAO.BookStoreReviewQuery;
+import data.dao.VisitorDAO.BookStoreVisitorQuery;
 import data.schema.BookSchema;
 import data.schema.CartSchema;
 import data.schema.DataSchema;
 import data.schema.PurchaseOrderSchema;
 import data.schema.ReviewSchema;
 import data.schema.UserTypes;
+import data.schema.VisitorSchema;
 
 public class BookDAO implements DAO{
 
@@ -249,7 +253,17 @@ public class BookDAO implements DAO{
 		public BookStoreReviewQuery queryReviews() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.BOOK)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 
 		}
 		
@@ -287,14 +301,24 @@ public class BookDAO implements DAO{
 		public BookStoreReviewQuery queryReviews() {
 //			this.references.put(tableName, new ArrayList<DataAccessString>());
 //			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.BOOK)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 
 		}
 		
 	}
 	
 
-	public class BookVarCharQuery extends BookStoreVarCharQuery<BookVarCharQuery,BookAttributeAccess,BookStoreBookQuery>{
+	public class BookVarCharQuery<T extends BookVarCharQuery> extends BookStoreVarCharQuery<T,BookAttributeAccess,BookStoreBookQuery>{
 		private BookAttributeAccess bookAttributeAccess;
 		private BookDAO bookDAO;
 		
@@ -315,39 +339,55 @@ public class BookDAO implements DAO{
 		
 		
 		public BookStoreReviewQuery queryReviews() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.BOOK)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+
 
 		}
 		
 	}
 	
+
 	public class BookKeyQuery extends BookStoreQuery<BookKeyQuery,BookAttributeAccess>{
+
 		private BookAttributeAccess bookAttributeAccess;
 		private BookDAO bookDAO;
-		
-		BookKeyQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess) {
-			super(bookStoreQuery, new BookSchema());
-			this.currentAttributeAccess=currentAttributeAccess;
+//		
+
+		BookKeyQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess){
+			super(bookStoreQuery,new VisitorSchema());
 		}
-		
-		BookKeyQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess, PageRequestMetaData pageRequestMetaData) {
-			super(bookStoreQuery, new BookSchema());
-			this.pageRequestMetaData=pageRequestMetaData;
-			this.currentAttributeAccess=currentAttributeAccess;
+		BookKeyQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess, PageRequestMetaData pageRequestMetaData){
+			super(bookStoreQuery,new VisitorSchema());
 		}
 		
 		public BookAttributeAccess queryBookAttribute() {		
 			return bookAttributeAccess;
 		}
-		
 		public BookStoreReviewQuery queryReviews() {
-//			this.references.put(tableName, new ArrayList<DataAccessString>());
-//			this.references.get(tableName).addAll(BookStoreDAO.getReferenceDataAccessString(tableName, new ReviewSchema().tableName()));
-			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.BOOK)
+					.build()
+					);
+			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 
 		}
+		
 		
 		public BookKeyQuery isBook(Book book) {
 //			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
@@ -374,6 +414,143 @@ public class BookDAO implements DAO{
 //					);
 			return  this;
 		}
+	}
+	
+	public class BookCategoryQuery extends BookVarCharQuery<BookCategoryQuery>{
+		private BookAttributeAccess bookAttributeAccess;
+		private BookDAO bookDAO;
+		BookCategoryQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess) {
+			super(bookStoreQuery, currentAttributeAccess);
+			// TODO Auto-generated constructor stub
+		}
+		BookCategoryQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess,
+				PageRequestMetaData pageRequestMetaData) {
+			super(bookStoreQuery, currentAttributeAccess, pageRequestMetaData);
+			// TODO Auto-generated constructor stub
+		}
+		
+		public BookCategoryQuery isBookCategoryArtists() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_ARTISTS)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryBusiness() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_BUSINESS)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryComics() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_COMICS)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryAdventure() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_ADVENTURE)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryDystopia() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_DYSTOPIA)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryEntertainment() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_ENTERTAINMENT)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryHistorical() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_HISTORICAL)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryHorror() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_HORROR)
+					.build()
+					);
+			return this;
+		}
+		public BookCategoryQuery isBookCategoryRomance() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_ROMANCE)
+					.build()
+					);
+			return this;
+		}
+		
+		public BookCategoryQuery isBookCategorySciFi() {
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(BookSchema.CATEGORY)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(BookSchema.BOOK_CATEGORY_SCIENCE_FICTION)
+					.build()
+					);
+			return this;
+		}
+		
 	}
 	
 	public class BookAttributeAccess extends AttributeAccess<BookStoreBookQuery>{
@@ -408,11 +585,10 @@ public class BookDAO implements DAO{
 		
 
 		
-		public BookVarCharQuery whereBookCategory() {
-			BookVarCharQuery bookVarCharQuery= new BookVarCharQuery(this.bookStoreBookQuery,BookSchema.CATEGORY,this.bookStoreBookQuery.getPageData());
-			bookVarCharQuery.setAttribute(this);
-			return bookVarCharQuery;
-			
+		public BookCategoryQuery whereBookCategory() {
+			BookCategoryQuery bookCategoryQuery= new BookCategoryQuery(this.bookStoreBookQuery,BookSchema.CATEGORY,this.bookStoreBookQuery.getPageData());
+			bookCategoryQuery.setAttribute(this);
+			return bookCategoryQuery;			
 		}
 		
 		public BookVarCharQuery whereBookAuthor() {

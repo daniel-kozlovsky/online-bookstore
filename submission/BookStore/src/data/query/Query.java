@@ -66,6 +66,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 	protected Map<String,List<DataAccessString>> dataAccessRequestsConjunction;
 	protected Map<String,List<DataAccessString>> dataAccessRequestsDisjunction;
 	protected boolean isDisjunctionMode;
+	protected List<DataAccessString> tableJoins;
 	
 	public T queryAsDisjunction() {
 		isDisjunctionMode=true;
@@ -104,6 +105,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 //	}
 	protected Query(DataSchema dataSchema) {
 		this.isDisjunctionMode=false;
+		this.tableJoins=new LinkedList<DataAccessString>();
 		this.dataAccessRequestsConjunction=new HashMap<String, List<DataAccessString>>();
 		this.dataAccessRequestsDisjunction= new HashMap<String, List<DataAccessString>>();
 		this.pageRequestMetaData=new PageRequestMetaData();
@@ -134,6 +136,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 	
 	protected Query(Query query,DataSchema dataSchema) {
 		this.pageRequestMetaData=query.pageRequestMetaData;
+		this.tableJoins=query.tableJoins;
 		this.pageNumber=query.pageNumber;
 		this.attributesToIncludInResults=query.attributesToIncludInResults;	/*Attributes that will be received after a query*/
 		this.ascOrderOfAttribute=query.ascOrderOfAttribute;/*order of query results ascending*/
@@ -242,21 +245,34 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 ////					queryString+=dataAccessString.getReferenceDataAcessString();	
 //					queryString+=andQuery;
 //				}
-				List<DataAccessString> tableReferences = new ArrayList<DataAccessString>();
-				List<String> referenceQueries= new ArrayList<String>(references);
-				for(int i=0; i<referenceQueries.size();i++) {
-					for(int j=i+1; j<referenceQueries.size();j++) {
-						tableReferences.addAll(getReferenceDataAccessString(referenceQueries.get(i), referenceQueries.get(j)));
-					}
-				}
-				
-				for(DataAccessString referenceQuery:tableReferences) {
-					queryString+=referenceQuery.getReferenceDataAcessString()+andQuery;
+//				Map<String,List<DataAccessString>> tableReferences = new HashMap<String, List<DataAccessString>>();
+//				List<String> referenceQueries= new ArrayList<String>(references);
+//				for(int i=0; i<referenceQueries.size();i++) {
+//					if(!tableReferences.containsKey(referenceQueries.get(i)) || tableReferences.get(referenceQueries.get(i))==null)tableReferences.put(referenceQueries.get(i), new ArrayList<DataAccessString>());
+//					for(int j=i+1; j<referenceQueries.size();j++) {
+//						
+//						tableReferences.get(referenceQueries.get(i)).addAll(getReferenceDataAccessString(referenceQueries.get(i), referenceQueries.get(j)));
+//					}
+//				}
+//				String orQuery=" AND ";
+				String joins="";
+				for(DataAccessString referenceQuery:this.tableJoins) {
+
+					joins+=referenceQuery.getReferenceDataAcessString() + andQuery;
+//					for(DataAccessString referenceQuery:referenceEntry.getValue()) {
+//						currentJoin+=referenceQuery.getReferenceDataAcessString()+andQuery;	
+//						
+//					}
+//					if(currentJoin.contains(andQuery))
+//						joins="("+currentJoin.substring(0,currentJoin.length()-andQuery.length())+")"+orQuery+joins;
+//					else if(!currentJoin.isEmpty())
+//						joins+=orQuery;
+
 				}
 
 //			}
-			if(queryString.contains("AND"))
-				queryString=queryString.substring(0,queryString.length()-andQuery.length());
+			if(joins.contains(andQuery))
+				queryString+=joins.substring(0,joins.length()-andQuery.length());
 		}else {
 			queryString+=" FROM "+this.tableName+" ";
 		}
@@ -267,14 +283,14 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 		for(Entry<String,List<DataAccessString>> entry : this.dataAccessRequestsConjunction.entrySet()) {
 			queryCount=queryCount+entry.getValue().size();
 		}
-		if(!queryString.contains("WHERE") && queryCount>=1) queryString+=" WHERE ";
+//		if(!queryString.contains("WHERE") && queryCount>=1) queryString+=" WHERE ";
 		
 		String queryParameters=getQueryParameterString();	
-		if(queryString.contains("AND") && !queryParameters.isEmpty())
+		if(queryString.contains("WHERE") && !queryParameters.isEmpty())
 			queryString+=andQuery;
 		queryString+=queryParameters;	
 		
-		System.out.println(this.pageRequestMetaData.attributeName +" "+this.pageRequestMetaData.tableName);
+//		System.out.println(this.pageRequestMetaData.attributeName +" "+this.pageRequestMetaData.tableName);
 		
 		if(this.pageRequestMetaData.hasOrder() && this.pageRequestMetaData.isAscending()) {
 			String ascOrderRequest = hasReferences?this.pageRequestMetaData.getTableName()+this.referenceOperator+this.pageRequestMetaData.getAttributeName():this.pageRequestMetaData.getAttributeName();
@@ -354,16 +370,16 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 			}			
 		}
 		if(!this.dataAccessRequestsDisjunction.isEmpty() && !this.dataAccessRequestsConjunction.isEmpty()) {
-			System.out.println("1");
+//			System.out.println("1");
 			return "("+conjunctionQueries+") AND ("+disjunctionQueries+")";
 		}else if(!this.dataAccessRequestsDisjunction.isEmpty()) {
-			System.out.println("2");
+//			System.out.println("2");
 			return  disjunctionQueries;
 		}else if(!this.dataAccessRequestsConjunction.isEmpty()) {
-			System.out.println("3");
+//			System.out.println("3");
 			return conjunctionQueries;
 		}else {
-			System.out.println("4");
+//			System.out.println("4");
 			return "";	
 		}
 		
@@ -493,6 +509,12 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 		}
 		return (T) this;
 	}
+	
+	public T addTableJoins(List<DataAccessString> tableJoins){
+		this.tableJoins.addAll(tableJoins);
+		return (T) this;
+	}
+	
 	
 //	public T setReferences(Map<String,List<DataAccessString>> references){
 //		this.references=references;
