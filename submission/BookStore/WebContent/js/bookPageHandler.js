@@ -26,3 +26,25 @@ function handler(request){
 	}
 }
 
+function loadMoreReviews(address) {
+	
+	var request = new XMLHttpRequest();
+		
+
+	console.log("===> OUTPUT: " + address);
+	request.open("GET", (address), true); // opens a GET communication to the server, specify the URL, and provide parameters. synchronous communication
+	
+	request.onreadystatechange = function(){
+		handler2(request);	
+	};
+	
+	request.send();
+}
+
+
+function handler2(request){
+	if ((request.readyState == 4) && (request.status == 200)){
+		var target = document.getElementById("loadMoreReviews");
+		target.innerHTML = request.responseText; 
+	}
+}

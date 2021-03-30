@@ -31,9 +31,12 @@ public class MainPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String CUSTOMER = "customer";
 	private static final String VISITOR = "visitor";
-    private static final String COMM = "COMM";
+    
+	private static final String COMM = "COMM";
     private static final String AJAX = "AJAX";
+    
     private static final String MODEL = "model";
+    
     private static final String AUTHOR = "AUTHOR";
     private static final String TITLE = "TITLE";
     private static final String YEAR = "YEAR";
@@ -84,10 +87,10 @@ public class MainPage extends HttpServlet {
 				String prodID = request.getParameter(ID);
 				try {
 					response.setContentType("application/json");
-//					PrintWriter out = response.getWriter();
-//					out.printf(" test "); 
-//					out.flush();
-//					
+					PrintWriter out = response.getWriter();
+					out.printf(" test "); 
+					out.flush();
+					
 					preparePageRedirection (request, prodID, model);
 					request.getRequestDispatcher("html/ProductPage.jspx").forward(request, response);
 				} catch (Exception e) {
@@ -96,8 +99,7 @@ public class MainPage extends HttpServlet {
 			} else {
 				System.out.println("No ID was recieved");
 			}
-		}
-		else {
+		} else {
 			loadPage(request, model);
 			System.out.println("THis is the NON AJAX Section!");
 			request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);

@@ -45,11 +45,15 @@
 	  	
 	  	<!-- search bar -->
 		<div class="search_bar">
-	  		<form action="MainPage">
+	  		<form action="${pageContext.request.contextPath}/Search" method="Post">
 	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
-	    		<a href="${pageContext.request.contextPath}/html/SearchedResults.jspx" style="float:right;" >
+	    		
+	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">
+	    		
+	    		</button> 
+	    		<!-- <a href="${pageContext.request.contextPath}/html/SearchedResults.jspx" style="float:right;" >
 		    		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/magnifyingGlass.jpg" alt="search" />
-	    		</a>
+	    		</a> -->
 	    	</form>
 	  	</div>
 	</div>
@@ -154,7 +158,9 @@
 						would just be able to get their happy endings, I would be lying if I said I didn''t want to see more of them.
 					</p>
 				</div>
-				<button class="readMore" type="readMore">read more</button>
+				<p id="loadMoreReviews"></p>
+				
+				<button class="readMore" type="readMore" onClick="loadMoreReviews(${pageContext.request.contextPath}/MainPage/?COMM=LOAD_REVIEWS)" >read more</button>
 			</div>
 		</div>
 	</div>

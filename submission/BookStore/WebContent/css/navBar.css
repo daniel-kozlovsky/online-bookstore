@@ -37,6 +37,7 @@
   color: white;
 }
 
+
 .nav_bar .search_bar {
   float: right;
 }
@@ -48,20 +49,6 @@
   border: none;
 }
 
-.nav_bar .search_bar button {
-  float: right;
-  padding: 6px 10px;
-  margin-top: 8px;
-  margin-right: 16px; 
-  background: #ddd;
-  font-size: 17px;
-  border: none;
-  cursor: pointer;
-}
-
-.nav_bar .search_bar button:hover {
-  background: #ccc;
-}
 
 .nav_bar .nav_bar_img{
   width:60px;
@@ -69,10 +56,12 @@
   margin-top: 8px; 
   background-color: white;
   background-size: 100% 100%;
+  border: none;
 }
 
 .nav_bar .nav_bar_img:hover {
 	opacity:0.6;
 }
+
 
 
