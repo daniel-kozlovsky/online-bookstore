@@ -118,22 +118,7 @@ public class MainPageModel {
 						.queryAttribute()
 						.whereBookCategory()
 						.varCharContains(input)
-						
 						.queryAsDisjunction()
-						.queryAttribute()
-						.whereBookAuthor()
-						.varCharContains(input)
-						
-						.queryAsDisjunction()
-						.queryAttribute()
-						.whereBookTitle()
-						.varCharContains(input)
-						
-						.queryAsDisjunction()
-						.queryAttribute()
-						.whereBookDescription()
-						.varCharContains(input)
-						
 						.withResultLimit(book.getNumberBooks())
 						.executeQuery().
 						executeCompilation().
@@ -158,7 +143,6 @@ public class MainPageModel {
 						.executeQuery().
 						executeCompilation().
 						compileBooks();
-		
 		List<Book> b4 = book.newQueryRequest()
 						.includeAllAttributesInResultFromSchema()	
 						.queryAttribute()
@@ -169,10 +153,10 @@ public class MainPageModel {
 						executeCompilation().
 						compileBooks();
 		
-//		b.addAll(b2);
-//		b.addAll(b3);
-//		b.addAll(b4);
-//		
+		b.addAll(b2);
+		b.addAll(b3);
+		b.addAll(b4);
+		
 		return b;
 	}
 	
