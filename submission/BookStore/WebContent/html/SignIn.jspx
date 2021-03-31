@@ -8,10 +8,16 @@
 		omit-xml-declaration="true" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Insert title here</title>
+<title>Login</title>
 </head>
 <body>
-
+	<form action="" method="post">
+		<label for="input-uname">Username: </label>
+		<input type="text" id="input-uname" name="username"/>
+		<label for="input-pword">Password: </label>
+		<input type="text" id="input-pword" name="password"/>
+		<button type="button" submit="">Login</button>
+	</form>
 </body>
 </html>
 </jsp:root>
