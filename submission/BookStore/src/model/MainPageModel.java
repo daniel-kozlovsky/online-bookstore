@@ -26,15 +26,17 @@ public class MainPageModel {
 	 * @throws Exception if id not found or not unique
 	 */
 	public Book getBookByID (String prodID) throws Exception{
+		
 		List<Book> b = book.newQueryRequest()
 				 .includeAllAttributesInResultFromSchema()
 				 .queryAttribute()
-				 .whereBookISBN()
-				 .varCharEquals(prodID)
+				 .whereBook()
+				 .isBook(prodID)
 				 .executeQuery()
 				 .executeCompilation()
 				 .compileBooks();
 		
+		System.out.println(b.size());
 		
 		if (b.size() == 0)
 			throw new Exception("ID not found in database");
@@ -84,26 +86,36 @@ public class MainPageModel {
 	 * @return
 	 * 		a list of new reviews to load
 	 */
-	public List<Review> getNextReviewsForThisBook (String prodID, int currentNumReviews) {
+	public Book getReviewsForThisBook (String prodID, boolean isRestrict, int restrict) {
 		
 		int num = 0;
 		
-		if (currentNumReviews+15 < 0)
-			num = 0;
+		if (isRestrict) 
+			num = restrict; 
+		else
+			num = Integer.MAX_VALUE;
 		
-		review.newQueryRequest()
+		List<Book> b = book.newQueryRequest()
 			.includeAllAttributesInResultFromSchema()
 			.queryAttribute()
-			.whereReviewBody()
-			.varCharEquals(prodID)
+			.whereBook()
+			.isBook(prodID)
+			.withResultLimit(num)
+			.queryReview()
+			.includeAllAttributesInResultFromSchema()
 			.queryAttribute()
 			.whereReviewRating()
 			.withDescendingOrderOf()
-			.withResultLimit(currentNumReviews+15)
-			.executeQuery().executeCompilation();
+			.queryCustomer()
+			.includeAllAttributesInResultFromSchema()
+			.executeQuery()
+			.executeCompilation()
+			.compileBooks();
 		
+		if (b.size() == 0)
+			System.out.println("Couln't find book id: "+prodID + " in Book");
 		
-		return null;
+		return b.get(0);
 	}
 	
 	
@@ -115,10 +127,28 @@ public class MainPageModel {
 		
 		List<Book> b= book.newQueryRequest()
 						.includeAllAttributesInResultFromSchema()
+						
 						.queryAttribute()
 						.whereBookCategory()
-						.varCharContains(input)
-						.queryAsDisjunction()
+//						.queryAsDisjunction()
+						.varCharContainsIgnoreCase(input)
+//						.varCharContains(input)
+//						
+//						.queryAttribute()
+//						.whereBookAuthor()
+//						.queryAsDisjunction()
+//						.varCharContains(input)
+//						
+//						.queryAttribute()
+//						.whereBookAuthor()
+//						.queryAsDisjunction()
+//						.varCharContains(input)
+//						
+//						.queryAttribute()
+//						.whereBookDescription()
+//						.queryAsDisjunction()
+//						.varCharContains(input)
+						
 						.withResultLimit(book.getNumberBooks())
 						.executeQuery().
 						executeCompilation().
@@ -128,7 +158,7 @@ public class MainPageModel {
 						.includeAllAttributesInResultFromSchema()		
 						.queryAttribute()
 						.whereBookAuthor()
-						.varCharContains(input)
+						.varCharContainsIgnoreCase(input)
 						.withResultLimit(maxNum)
 						.executeQuery().
 						executeCompilation().
@@ -138,7 +168,7 @@ public class MainPageModel {
 						.includeAllAttributesInResultFromSchema()	
 						.queryAttribute()
 						.whereBookTitle()
-						.varCharContains(input)
+						.varCharContainsIgnoreCase(input)
 						.withResultLimit(maxNum)
 						.executeQuery().
 						executeCompilation().
@@ -147,7 +177,7 @@ public class MainPageModel {
 						.includeAllAttributesInResultFromSchema()	
 						.queryAttribute()
 						.whereBookDescription()
-						.varCharContains(input)
+						.varCharContainsIgnoreCase(input)
 						.withResultLimit(maxNum)
 						.executeQuery().
 						executeCompilation().

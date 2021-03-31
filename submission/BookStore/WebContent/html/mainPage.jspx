@@ -66,13 +66,8 @@
 		<div class="search_bar">
 	  		<form action="${pageContext.request.contextPath}/Search" method="Post">
 	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
-	    		
 	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">
-	    		
 	    		</button> 
-	    		<!-- <a href="${pageContext.request.contextPath}/html/SearchedResults.jspx" style="float:right;" >
-		    		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/magnifyingGlass.jpg" alt="search" />
-	    		</a> -->
 	    	</form>
 	  	</div>
 	</div>
@@ -80,16 +75,9 @@
 	<!-- headline -->
 	<header>Online Book Store</header>
 	
-	<!-- Suggestion Section -->
-	<form action='MainPage' method='POST'>
-	
-		${requestScope['HTML_SUGGST_MAIN']}
-	
-	</form>
-	
-	
-	<p id="ajaxTarget"> </p>
-	
+	<!-- Suggestion Section -->	
+	${requestScope['HTML_SUGGST_MAIN']}
+
 	<!-- footer -->
 	<footer>
 		<div class="footer_container">

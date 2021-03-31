@@ -1,7 +1,6 @@
 package ctrl;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -17,33 +16,38 @@ import data.beans.Review;
 import model.MainPageModel;
 
 /**
- * Servlet implementation class ReviewPage
+ * Servlet implementation class ProductPage
  */
-@WebServlet("/ReviewPage")
-public class ReviewPage extends HttpServlet {
+@WebServlet("/ProductPage")
+public class ProductPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
 	private static final String CUSTOMER = "customer";
 	private static final String VISITOR = "visitor";
 	
 	private static final String MODEL = "model";
-	
-	private static final String bookID = "bookID";
-	
-	private static final String VIWE_ALL_REVIEWS= "VIWE_ALL_REVIEWS";
-	private static final String NUM_REVIEWS_FOUND = "NUM_REVIEWS_FOUND";
+
 	private static final String TITLE = "TITLE";
 	private static final String AUTHOR = "AUTHOR";
 	private static final String YEAR = "YEAR";
+	private static final String COVER = "COVER";
+	private static final String PRICE = "PRICE";
+	private static final String RATING = "RATING";
+	private static final String CATEGORY = "CATEGORY";
+	private static final String ISBN = "ISBN";
+	
+	private static final String bookID = "bookID";
+	
+	private static final String VIWE_SOME_REVIEWS = "VIWE_SOME_REVIEWS";
 	
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ReviewPage() {
+    public ProductPage() {
         super();
         // TODO Auto-generated constructor stub
     }
     
+
     @Override
     public void init(ServletConfig config) throws ServletException { 
     	super.init(config);
@@ -56,7 +60,7 @@ public class ReviewPage extends HttpServlet {
 		    context.setAttribute(MODEL, model);
 	    }
 	    catch (Exception e) {
-	    	System.out.println("ERROR initializeing review page model!");
+	    	System.out.println("ERROR initializeing main page model!");
 	    }
     }
     
@@ -64,43 +68,38 @@ public class ReviewPage extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
 		getServletContext().setAttribute("user", VISITOR);
-		
 		HttpSession h = request.getSession();
 		
-		
-		if (request.getParameter(bookID)!=null) {
+		if (request.getParameter(bookID) != null) {
 			
 			try {
-			
 				String id =  request.getParameter(bookID);
+				
 				h.setAttribute(bookID, id);
-				setAttributes ( request,  model,  id);
-				String html = getAllReviewsForBook(request, id, model);
+				request.setAttribute(bookID, id);
 				
+				String html = getTop10Reviews(request, model, id);
+				setAttributes (request,  model,  id);
 				
-				request.setAttribute(VIWE_ALL_REVIEWS, html);
-			
-			} catch (Exception e) {
-				request.setAttribute(NUM_REVIEWS_FOUND, "0");
+				request.setAttribute(VIWE_SOME_REVIEWS, html);
+			}catch (Exception e) {
 				System.out.println("An error occured." + e.getMessage());
 			}
+			
 		} else if (h.getAttribute(bookID) != null) {
 			try {
 				
 				String id =  (String) h.getAttribute(bookID);
 				h.setAttribute(bookID, id);
-				setAttributes ( request,  model,  id);
-				String html = getAllReviewsForBook(request, id, model);
-				
-				request.setAttribute(VIWE_ALL_REVIEWS, html);
+				String html = getTop10Reviews(request, model, id);
+			
+				request.setAttribute(VIWE_SOME_REVIEWS, html);
 			
 			} catch (Exception e) {
-				request.setAttribute(NUM_REVIEWS_FOUND, "0");
 				System.out.println("An error occured." + e.getMessage());
 			}
 			
@@ -109,7 +108,7 @@ public class ReviewPage extends HttpServlet {
 			System.out.println("An error occured. Could have come here only if pressed 'load more reviews'");
 		}
 		
-		request.getRequestDispatcher("html/ProdReviewPage.jspx").forward(request, response);
+		request.getRequestDispatcher("html/ProductPage.jspx").forward(request, response);
 	}
 
 	/**
@@ -120,26 +119,36 @@ public class ReviewPage extends HttpServlet {
 		doGet(request, response);
 	}
 	
-	/**
-	 * This method returns html tags of reviews for book with id 'id', and sets the request scope attributes
-	 * 
-	 * @param request http request
-	 * @param id	book id
-	 * @param model to communicate with the appropriate databases
-	 * @return
-	 * @throws Exception
-	 */
-	private String getAllReviewsForBook(HttpServletRequest request, String id, MainPageModel model) throws Exception {
+	private void setAttributes (HttpServletRequest request, MainPageModel model, String id) throws Exception{
+		Book b = model.getBookByID(id);
+		
+		request.setAttribute(TITLE, b.getTitle());
+		request.setAttribute(AUTHOR, b.getAuthor());
+		request.setAttribute(YEAR, b.getPublishYear());
+		request.setAttribute(COVER, b.getCover());
+		request.setAttribute(PRICE, b.getPrice());
+		request.setAttribute(RATING, b.getRating());
+		request.setAttribute(ISBN, b.getISBN());
+		request.setAttribute(CATEGORY, b.getCategory());
+		
+	}
+	
+	private String getTop10Reviews(HttpServletRequest request, MainPageModel model, String id) {
+		
 		String html = "";
+		Book b = null;
 		
-		Book b = model.getReviewsForThisBook (id, false, 0);
-		
-		if (b == null) {
-			request.setAttribute(NUM_REVIEWS_FOUND, "0");
+		try {
+			b = model.getReviewsForThisBook (id, true, 10);
+			
+		} catch (Exception e) {
 			return "<p> This book has no reviews </p>";
 		}
-
+		
 		Review[] r = b.getReviews();
+
+		
+		System.out.println("number of reviews= " + r.length);
 		
 		int numPages = (int) Math.ceil( (double) r.length / 10);
 		
@@ -156,21 +165,8 @@ public class ReviewPage extends HttpServlet {
 					
 			
 		}
-		
-		if (r.length == 0)
-			request.setAttribute(NUM_REVIEWS_FOUND, "0");
-		else
-			request.setAttribute(NUM_REVIEWS_FOUND, r.length);
 
 		return html;
 	}
-	
-	private void setAttributes (HttpServletRequest request, MainPageModel model, String id) throws Exception{
-		Book b = model.getBookByID(id);
-		
-		request.setAttribute(TITLE, b.getTitle());
-		request.setAttribute(AUTHOR, b.getAuthor());
-		request.setAttribute(YEAR, b.getPublishYear());
-		
-	}
+
 }

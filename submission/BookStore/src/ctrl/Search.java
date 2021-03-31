@@ -31,12 +31,8 @@ public class Search extends HttpServlet {
 	
 	private static final String MODEL = "model";
 	
-	private static final String COMM = "COMM";
-    private static final String AJAX = "AJAX";
     
-    private static final String NUM_DISP = "currentNumDisplayed";
-    
-    private static final String FIRST_OUTPUT = "FIRST_OUTPUT";
+    private static final String RESULTS = "RESULTS";
     
     private static final String USER_INPUT = "USER_INPUT";
     private static final String NUM_RES_FOUND = "NUM_RES_FOUND";
@@ -77,34 +73,6 @@ public class Search extends HttpServlet {
 		
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
-//		String html = prepareSearchResults ("Harry", model,  0);
-//		System.out.println(html);
-//		if (!html.equals("")) {
-//			response.setContentType("application/json");
-//			PrintWriter out = response.getWriter();
-//			out.printf(html); 
-//			out.flush();
-//		}
-//		if (request.getParameter(COMM)!= null && request.getParameter(COMM).equals(AJAX)) {
-//			System.out.println("-> AJAX");
-//			System.out.println("");
-//			
-//			try {
-//				int currentNumDisplayed = Integer.parseInt(request.getParameter(NUM_DISP));
-//				System.out.println("current # of books displayed: "+currentNumDisplayed);
-//				String input = (String) h.getAttribute(SEARCH_VAL);
-//				String html = prepareSearchResults (input, model,  currentNumDisplayed);
-//				
-//				response.setContentType("application/json");
-//				PrintWriter out = response.getWriter();
-//				out.printf(html); 
-//				out.flush();
-//				
-//			} catch (Exception e) {
-//				System.out.println("An error occured! Either nothing was saved in session, this is not the 1st call, or this calls was an accident!\n"+e.getMessage());
-//			}
-//			
-//		}
 	   if (request.getParameter(SEARCH) != null) {
 			String input = (String) request.getParameter(SEARCH);
 			
@@ -122,7 +90,7 @@ public class Search extends HttpServlet {
 				try {
 					String html = prepareSearchResults (request, input, model);
 					
-					request.setAttribute(FIRST_OUTPUT, html);
+					request.setAttribute(RESULTS, html);
 					request.setAttribute(USER_INPUT, input);
 					
 					
@@ -185,9 +153,12 @@ public class Search extends HttpServlet {
 						
 						html +=
 								"			<div class=\"column_1_4\">\n"
-								+ "				<button id=\"press\" class=\"book book_hover\" \n"
-								+ "					onclick=\"pageHandler('/BookStore/MainPage/?COMM=AJAX&;ID="+b.get(index).getId()+"');return true;\"\n"
-								+ "					style=\"background-image:url('/BookStore/res/book_images/covers/"+b.get(index).getCover()+"');\">\n"
+								
+								+ "				<form action=\"/BookStore/ProductPage\" method=\"Post\">\n"
+							    + "					<input type=\"hidden\" name=\"bookID\" value=\""+b.get(index).getId()+"\" />"
+								+ "					<button id=\"press\" class=\"book book_hover\" \n"
+								+ "						style=\"background-image:url('/BookStore/res/book_images/covers/"+b.get(index).getCover()+"');\">\n"
+								+ "					</form>\n"
 								+ "					<div class=\"overlay\">\n"
 								+ "						<div class=\"text\">\n"
 								+ "							"+b.get(index).getTitle()+"<BR />\n"

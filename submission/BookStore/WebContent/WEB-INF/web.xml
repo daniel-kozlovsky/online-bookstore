@@ -3,8 +3,8 @@
   <welcome-file-list>
     <welcome-file>MainPage</welcome-file>
     <welcome-file>Search</welcome-file>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
+    <welcome-file>ReviewPage</welcome-file>
+    <welcome-file>ProductPage</welcome-file>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>default.html</welcome-file>
     <welcome-file>default.htm</welcome-file>

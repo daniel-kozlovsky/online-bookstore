@@ -133,3 +133,17 @@ body {
 	cursor: pointer;
 	text-decoration: none;
 }
+
+
+.review_row p {
+	margin-left:30px;
+	margin-right:30px;
+}
+
+
+.review_row:after {
+	content: "";
+	display: table;
+	clear: both;
+	margin-top:50px;
+}
