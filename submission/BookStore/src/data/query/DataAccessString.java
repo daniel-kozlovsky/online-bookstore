@@ -42,7 +42,7 @@ public class DataAccessString {
 		return this.tableName+this.referenceOperator+this.attributeName+ this.dataAccessParameterPrefix+this.dataAccessParameter+this.dataAccessParameterSuffix;
 		}
 	
-	
+
 	
 	public static class Builder {
 		private String attributeName;

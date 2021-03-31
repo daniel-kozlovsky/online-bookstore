@@ -20,6 +20,7 @@ public class BookStoreQuery <T extends Query,U extends AttributeAccess> extends 
 	protected BookStoreQuery(DataSchema dataSchema) {
 		super(dataSchema);
 		// TODO Auto-generated constructor stub
+		
 	}
 	
 	protected BookStoreQuery(Query query, DataSchema dataSchema) {
