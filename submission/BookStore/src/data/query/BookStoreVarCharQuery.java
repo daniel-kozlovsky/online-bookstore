@@ -13,6 +13,7 @@ public class BookStoreVarCharQuery <T extends BookStoreVarCharQuery,U extends At
 		super(query, dataSchema);
 		// TODO Auto-generated constructor stub
 		this.emptyBookStoreQuery=new BookStoreQuery<T, U>(dataSchema);
+
 	}
 	
 	@Override
@@ -23,6 +24,7 @@ public class BookStoreVarCharQuery <T extends BookStoreVarCharQuery,U extends At
 	protected Map<String, Set<String>> getReferenceRules() {
 		return emptyBookStoreQuery.getReferenceRules();
 	}
+
 
 
 }

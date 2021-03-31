@@ -325,12 +325,14 @@ public class BookDAO implements DAO{
 		BookVarCharQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess) {
 			super(bookStoreQuery, new BookSchema());
 			this.currentAttributeAccess=currentAttributeAccess;
+
 		}
 		
 		BookVarCharQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess, PageRequestMetaData pageRequestMetaData) {
 			super(bookStoreQuery, new BookSchema());
 			this.pageRequestMetaData=pageRequestMetaData;
 			this.currentAttributeAccess=currentAttributeAccess;
+
 		}
 		
 		public BookAttributeAccess queryBookAttribute() {		
@@ -364,10 +366,10 @@ public class BookDAO implements DAO{
 //		
 
 		BookKeyQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess){
-			super(bookStoreQuery,new VisitorSchema());
+			super(bookStoreQuery,new BookSchema());
 		}
 		BookKeyQuery(BookStoreBookQuery bookStoreQuery, String currentAttributeAccess, PageRequestMetaData pageRequestMetaData){
-			super(bookStoreQuery,new VisitorSchema());
+			super(bookStoreQuery,new BookSchema());
 		}
 		
 		public BookAttributeAccess queryBookAttribute() {		

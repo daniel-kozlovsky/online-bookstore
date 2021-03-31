@@ -85,7 +85,7 @@ public class BookTestCtrl extends HttpServlet {
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
 		Customer customer = new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build();
-        CustomerDAO customerDAO = new CustomerDAO();
+//        CustomerDAO customerDAO = new CustomerDAO();
 //        DataObjectCompiler customerResults=
 //        customerDAO.newQueryRequest()
 //		.includeAllAttributesInResultFromSchema()
@@ -103,10 +103,30 @@ public class BookTestCtrl extends HttpServlet {
 //        ;
 //        customerResults.compileCustomers();
 //        System.out.println(customerResults.getCompiledCustomersJson());
+//        
+//        Customer loggedCustomer =customerDAO.loginCustomer("SPhillips4588","Scottpassword");
+//        System.out.println(Boolean.toString(loggedCustomer.isLoggedOn()));
+//        System.out.println(loggedCustomer.toJson());
         
-        Customer loggedCustomer =customerDAO.loginCustomer("SPhillips4588","Scottpassword");
-        System.out.println(Boolean.toString(loggedCustomer.isLoggedOn()));
-        System.out.println(loggedCustomer.toJson());
+        
+        new BookDAO()
+        .newQueryRequest()
+        .queryAttribute()
+        .whereBook()
+        .isBook("b7441b2a-0739-3641-a78f-1d973daee854")
+        .queryAttribute()
+        .whereBookTitle()
+        .queryAsDisjunction()
+        .varCharContainsIgnoreCase("queen of      air")
+        .queryAttribute()
+        .whereBookCategory()
+        .queryAsDisjunction()
+        .varCharContains("a")
+        .executeQuery()
+        .executeCompilation()
+        .compileBooks()
+        .stream()
+        .map(abook->abook.toJson()).forEach(System.out::println);
 //        out.write(customerResults.getCompiledCustomersJson());
 //        
 //        System.out.println("get req:");
