@@ -58,7 +58,7 @@
 	  	</c:choose>
 		
 		<!-- shopping cart -->
-	  	<a href="${pageContext.request.contextPath}/html/Cart.jspx" style="float:right;" >
+	  	<a href="${pageContext.request.contextPath}/ShoppingCart" style="float:right;" >
 	  		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/shoppingCart.png" alt="checkout" />
   		</a>
 	  	

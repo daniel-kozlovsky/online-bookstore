@@ -8,16 +8,27 @@
 		omit-xml-declaration="true" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Login</title>
+	<title>Login</title>
+	<script type="text/javascript" src="/BookStore/js/signIn.js">;</script>
+	<link rel="StyleSheet" href="/BookStore/css/signIn.css" type="text/css" title="signInStyle" media="screen, print"/>
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
+		title="cse4413" media="screen, print" />
 </head>
 <body>
-	<form action="" method="post">
-		<label for="input-uname">Username: </label>
-		<input type="text" id="input-uname" name="username"/>
-		<label for="input-pword">Password: </label>
-		<input type="text" id="input-pword" name="password"/>
-		<button type="button" submit="">Login</button>
-	</form>
+	<div id="div-message">
+		<label class="error" id="label-error"></label>
+	</div>
+	<div id="login-panel">
+		<form action="" method="post">
+			<label for="input-uname">Username: </label>
+			<input type="text" id="input-uname" name="username"/>
+			<label for="input-pword">Password: </label>
+			<input type="text" id="input-pword" name="password"/>
+			<button type="button" onClick="signIn();">Login</button>
+		</form>
+	</div>
 </body>
 </html>
 </jsp:root>

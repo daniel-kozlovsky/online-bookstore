@@ -157,7 +157,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 	}	
-	class ExecuteCustomerInsert extends CustomerInsert{
+	public class ExecuteCustomerInsert extends CustomerInsert{
 
 		private ExecuteCustomerInsert (Customer customer) {
 			super(customer);

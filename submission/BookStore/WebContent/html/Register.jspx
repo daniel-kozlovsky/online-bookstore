@@ -8,10 +8,29 @@
 		omit-xml-declaration="true" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Register</title>
+	<title>Register</title>
+	<script type="text/javascript" src="/BookStore/js/register.js">;</script>
+	<link rel="StyleSheet" href="/BookStore/css/register.css" type="text/css" title="registerStyle" media="screen, print"/>
 </head>
 <body>
-
+	<div>
+		<label class="error" id="label-error"></label>
+	</div>
+	<div>
+		<form action="" method="post">
+			<label>Given Name</label>
+			<input type="text" id="input-given-name"/>
+			<label>Surname</label>
+			<input type="text" id="input-surname"/>
+			<label>Email</label>
+			<input type="text" id="input-email"/>
+			<label>Username</label>
+			<input type="text" id="input-username"/>
+			<label>Password</label>
+			<input type="text" id="input-password"/>
+			<button type="button" onClick="register();">Register</button>
+		</form>
+	</div>
 </body>
 </html>
 </jsp:root>
