@@ -12,6 +12,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Cart</title>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/cart.js">;</script>
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
@@ -20,10 +21,10 @@
 <body>
 	<c:forEach var="book" items="${requestScope.books}">
 		<div>
-			<img id="img-cover" src=""></img>
+			<img id="img-cover" src="${book.key.cover}"></img>
 			<div>
-				<table id="vertical-1">
-	            <caption>Title</caption>
+				<table>
+	            <caption>${book.key.title}</caption>
 	            <tr>
 	                <th>Price</th>
 	                <td>${book.key.price}</td>
@@ -64,7 +65,7 @@
 	</c:forEach>
 	
 	<div>
-		<label>TOTAL PRICE: <span></span></label>
+		<label>TOTAL PRICE: <span id="span-price"></span></label>
 		<button type="submit">Payment</button>
 	</div>
 </body>
