@@ -324,29 +324,29 @@ public class UpdateCustomer extends DataUpdate{
 			
 		}
 		
-		public CustomerUpdater updateCustomerCreditCardType(String creditCardType){
-			this.updateRequest.put(customerSchema.CREDIT_CARD, surroundWithQuotes(creditCardType));
-			return this;
-			
-		}
-		public CustomerUpdater updateCustomerCreditCardNumber(String creditCardNumber){
-			this.updateRequest.put(customerSchema.CREDIT_CARD_NUMBER, surroundWithQuotes(creditCardNumber));
-			return this;
-			
-		}		
-		
-		public CustomerUpdater updateCustomerCreditCardExpiry(String creditCardExpiry){
-			this.updateRequest.put(customerSchema.CREDIT_CARD_EXPIRY, surroundWithQuotes(creditCardExpiry));
-			return this;
-			
-		}		
-		
-		public CustomerUpdater updateCustomerCreditCardCvv2(String cvv2){
-			this.updateRequest.put(customerSchema.CREDIT_CARD_CVV2, surroundWithQuotes(cvv2));
-			return this;
-			
-		}
-		
+//		public CustomerUpdater updateCustomerCreditCardType(String creditCardType){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD, surroundWithQuotes(creditCardType));
+//			return this;
+//			
+//		}
+//		public CustomerUpdater updateCustomerCreditCardNumber(String creditCardNumber){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD_NUMBER, surroundWithQuotes(creditCardNumber));
+//			return this;
+//			
+//		}		
+//		
+//		public CustomerUpdater updateCustomerCreditCardExpiry(String creditCardExpiry){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD_EXPIRY, surroundWithQuotes(creditCardExpiry));
+//			return this;
+//			
+//		}		
+//		
+//		public CustomerUpdater updateCustomerCreditCardCvv2(String cvv2){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD_CVV2, surroundWithQuotes(cvv2));
+//			return this;
+//			
+//		}
+//		
 		
 		public void executeUpdate() {
 			String update = "UPDATE CUSTOMER SET ";
