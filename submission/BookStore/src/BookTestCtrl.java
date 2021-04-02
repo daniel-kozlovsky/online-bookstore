@@ -97,6 +97,9 @@ public class BookTestCtrl extends HttpServlet {
 				.executeQuery()
 				.executeCompilation()
 				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
+		
+		
+		System.out.println(Boolean.toString(new CustomerDAO().loginCustomer("SPhillips4588","Scottpassword").isLoggedOn()));
 //        CustomerDAO customerDAO = new CustomerDAO();
 //        DataObjectCompiler customerResults=
 //        customerDAO.newQueryRequest()
