@@ -312,20 +312,20 @@ public class Book extends IdObject{
 
 		public Book build(){
 			Book book=new Book();
-			book.id=this.id;
-			book.title=this.title;
-			book.description=this.description;
-			book.category=this.category;
-			book.author=this.author;
+			book.id=this.id==null?new Id(""):this.id;
+			book.title=this.title==null?"":this.title;
+			book.description=this.description==null?"":this.description;
+			book.category=this.category==null?"":this.category;
+			book.author=this.author==null?"":this.author;
 			book.price=this.price;
-			book.cover=this.cover;
-			book.reviews=this.reviews;
+			book.cover=this.cover==null?new File(""):this.cover;
+			book.reviews=this.reviews==null?new Review[0]:this.reviews;
 			book.rating=this.rating;
 			book.amountSold=this.amountSold;
-			book.series=this.series;
+			book.series=this.series==null?"":this.series;
 			book._isInReview=this._isInReview;
 			book.publishYear=this.publishYear;
-			book.ISBN=this.ISBN;
+			book.ISBN=this.ISBN==null?"":this.ISBN;
 			return book;
 		}
 

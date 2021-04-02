@@ -45,7 +45,8 @@ public abstract class DataUpdate {
 	
 
 	protected String surroundWithQuotes(String word) {
-		return "'"+word+"'";
+		String result=word==null||word.isEmpty()?"NULL":"'"+word+"'";
+		return result;
 	}
 	
 }
