@@ -43,27 +43,27 @@ public class ShoppingCart extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 		/*******testing********************************************/
-		Book b = new Book.Builder()
-				.withCover(new File("Queen_of_Air_and_Darkness_9781442468450.jpg"))
-				.withAmountSold(5)
-				.withAuthor("Author")
-				.withCategory("Category")
-				.withDescription("Desc")
-				.withISBN("1234")
-				.withPrice(13.99)
-				.withPublishYear(1997)
-				.withRating(5.0)
-				.withTitle("Random Book")
-				.build();
-		Map<Book, Integer> m = new HashMap<Book, Integer>();
-		m.put(b, 1);
-		request.setAttribute("books", m);
+//		Book b = new Book.Builder()
+//				.withCover(new File("Queen_of_Air_and_Darkness_9781442468450.jpg"))
+//				.withAmountSold(5)
+//				.withAuthor("Author")
+//				.withCategory("Category")
+//				.withDescription("Desc")
+//				.withISBN("1234")
+//				.withPrice(13.99)
+//				.withPublishYear(1997)
+//				.withRating(5.0)
+//				.withTitle("Random Book")
+//				.build();
+//		Map<Book, Integer> m = new HashMap<Book, Integer>();
+//		m.put(b, 1);
+//		request.setAttribute("books", m);
 		/*****************************************************/
 		 
 		Customer customer = (Customer) session.getAttribute("customer");
-		//request.setAttribute("books", customer.getCart().getBooks());
-		//double totalPrice = cartModel.getTotalPrice(customer.getCart());
-		//request.setAttribute("totalPrice", totalPrice);
+		request.setAttribute("books", customer.getCart().getBooks());
+		double totalPrice = cartModel.getTotalPrice(customer.getCart());
+		request.setAttribute("totalPrice", totalPrice);
 		
 		request.getRequestDispatcher(CART_TARGET).forward(request, response);
 	}
