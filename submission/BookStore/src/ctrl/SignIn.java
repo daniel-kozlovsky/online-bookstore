@@ -19,7 +19,7 @@ import model.UserAuthenticationModel;
 public class SignIn extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	UserAuthenticationModel UAuthModel;  
-	final String MAIN_PAGE_TARGET = "/MainPage";
+	final String MAIN_PAGE_TARGET = "/BookStore/MainPage";
 	
     /**
      * @see HttpServlet#HttpServlet()
