@@ -49,7 +49,7 @@ public class BookDataFetcher extends DataFetcher<Book>{
 				
 		try {
 
-			book = new Book.Builder().withId(new Id(resultSet.getString(prefix+BookSchema.ID))).build();		
+			book = new Book.Builder().withId(new Id(resultSet.getString(prefix+BookSchema.ID))).withISBN(resultSet.getString(prefix+BookSchema.ISBN)).build();		
 			
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.AUTHOR)) {
@@ -90,13 +90,14 @@ public class BookDataFetcher extends DataFetcher<Book>{
 				book = new Book.Builder(book).withAmountSold(resultSet.getInt(prefix+schema.AMOUNT_SOLD)).build();
 			}
 			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.PUBLISH_YEAR)) {
+				book = new Book.Builder(book).withPublishYear(resultSet.getInt(prefix+schema.PUBLISH_YEAR)).build();
+			}
+			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.RATING)) {
 				book = new Book.Builder(book).withRating(resultSet.getDouble(prefix+schema.RATING)).build();
 			}
-			
-			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.ISBN)) {
-				book = new Book.Builder(book).withISBN(resultSet.getString(prefix+schema.ISBN)).build();
-			}			
+					
 			
 			return book;
 			

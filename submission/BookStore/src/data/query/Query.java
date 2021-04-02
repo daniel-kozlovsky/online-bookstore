@@ -68,6 +68,7 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 	public boolean isDisjunctionMode;
 	protected List<DataAccessString> tableJoins;
 	
+	
 	public T queryAsDisjunction() {
 		isDisjunctionMode=true;
 		return (T) this;

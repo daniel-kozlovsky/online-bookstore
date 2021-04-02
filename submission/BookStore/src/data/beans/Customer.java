@@ -407,7 +407,7 @@ public class Customer extends User{
 		reviewsJson+="]";
 		
 		
-		return "{"+
+		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
 		Bean.jsonMapVarChar("givenName",this.givenName)+","+
 		Bean.jsonMapVarChar("surName",this.surName)+","+
 		Bean.jsonMapVarChar("userName",this.userName)+","+
@@ -415,6 +415,7 @@ public class Customer extends User{
 		Bean.jsonMapVarChar("password",this.password)+","+
 		Bean.jsonMapNumber("createdAtEpoch",Long.toString(createdAtEpoch))+","+
 		Bean.jsonMapNumber("address",this.address.toJson())+","+
+		Bean.jsonMapNumber("creditCard",this.creditCard.toJson())+","+
 		Bean.jsonMapNumber("cart",this.cart.toJson())+","+
 		purchaseOrdersJson+","+
 		reviewsJson+

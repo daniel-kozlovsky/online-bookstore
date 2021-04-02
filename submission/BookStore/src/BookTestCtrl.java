@@ -1,4 +1,4 @@
-package dao.ctrl;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -62,6 +62,10 @@ public class BookTestCtrl extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("do get");
+		PrintWriter out = response.getWriter();
+      response.setContentType("text");
+      response.setCharacterEncoding("UTF-8");
+      out.write("TESTING  !!!");
 //		String query ="SELECT BOOK.ID AS BOOK_ID,BOOK.TITLE AS BOOK_TITLE, BOOK.ISBN AS BOOK_ISBN,REVIEW.TITLE AS REVIEW_TITLE,REVIEW.BODY AS REVIEW_BODY, REVIEW.CUSTOMER AS REVIEW_CUSTOMER, REVIEW.BOOK AS REVIEW_BOOK, CUSTOMER.ID AS CUSTOMER_ID, CUSTOMER.GIVENNAME AS CUSTOMER_GIVENNAME, CUSTOMER.SURNAME AS CUSTOMER_SURNAME FROM BOOK,REVIEW,CUSTOMER WHERE  BOOK.ID=REVIEW.BOOK AND REVIEW.CUSTOMER=CUSTOMER.ID AND REVIEW.BOOK='b7441b2a-0739-3641-a78f-1d973daee854'";
 //
 //		Map<String,Set<String>> attributesIncludedInResults = new LinkedHashMap<String, Set<String>>();
@@ -85,6 +89,14 @@ public class BookTestCtrl extends HttpServlet {
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
 		Customer customer = new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build();
+		new BookDAO().newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereBook()
+				.isBook("b7441b2a-0739-3641-a78f-1d973daee854")
+				.executeQuery()
+				.executeCompilation()
+				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
 //        CustomerDAO customerDAO = new CustomerDAO();
 //        DataObjectCompiler customerResults=
 //        customerDAO.newQueryRequest()
@@ -108,25 +120,26 @@ public class BookTestCtrl extends HttpServlet {
 //        System.out.println(Boolean.toString(loggedCustomer.isLoggedOn()));
 //        System.out.println(loggedCustomer.toJson());
         
-        
-        new BookDAO()
-        .newQueryRequest()
-        .queryAttribute()
-        .whereBook()
-        .isBook("b7441b2a-0739-3641-a78f-1d973daee854")
-        .queryAttribute()
-        .whereBookTitle()
-        .queryAsDisjunction()
-        .varCharContainsIgnoreCase("queen of      air")
-        .queryAttribute()
-        .whereBookCategory()
-        .queryAsDisjunction()
-        .varCharContains("a")
-        .executeQuery()
-        .executeCompilation()
-        .compileBooks()
-        .stream()
-        .map(abook->abook.toJson()).forEach(System.out::println);
+//        
+//        new BookDAO()
+//        .newQueryRequest()
+//        .queryAttribute()
+//        .whereBook()
+//        .isBook("b7441b2a-0739-3641-a78f-1d973daee854")
+//        .queryReview()
+//        .queryAttribute()
+//        .whereBookTitle()
+//        .queryAsDisjunction()
+//        .varCharContainsIgnoreCase("queen of      air")
+//        .queryAttribute()
+//        .whereBookCategory()
+//        .queryAsDisjunction()
+//        .varCharContains("a")
+//        .executeQuery()
+//        .executeCompilation()
+//        .compileBooks()
+//        .stream()
+//        .map(abook->abook.toJson()).forEach(System.out::println);
 //        out.write(customerResults.getCompiledCustomersJson());
 //        
 //        System.out.println("get req:");
