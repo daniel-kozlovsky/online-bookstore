@@ -141,8 +141,8 @@ public class Customer extends User{
 		}
 		return result;
 	}
-	
-	public PurchaseOrder getPurchaseOrderByEpoch(Long createdAtEpoch) {
+
+	public PurchaseOrder getPurchaseOrderByCreatedAtEpoch(Long createdAtEpoch) {
 		return getCreatedAtEpochToPurchaseOrders().get(createdAtEpoch);
 	}
 
