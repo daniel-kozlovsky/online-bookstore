@@ -171,7 +171,8 @@ public class CustomerDAO implements DAO{
 			
 		}
 //		System.out.println(customer.toJson());
-		return customer;
+		
+		return new Customer.Builder(customer).withLoggedOn().build();
 //		return new Customer.Builder(customer).withCart(customerCart.getCart()).withPurchaseOrders(customerPurchaseOrder.getPurchaseOrders()).withReviews(customerReview.getReviews()).withLoggedOn().build();
 	}
 	

@@ -59,7 +59,9 @@ public class Review implements Bean{
 		String bookJson=isWithinBook()?Bean.jsonMapNumber("book","{}"):Bean.jsonMapNumber("book",this.book.toJson());
 
 
-		return "{"+Bean.jsonMapVarChar("body",this.body.replaceAll("\"", "\\\""))+","+
+		return "{"+Bean.jsonMapVarChar("customer",this.customer.getId().toString())+","+
+				Bean.jsonMapVarChar("book",this.book.getId().toString())+","+
+				Bean.jsonMapVarChar("body",this.body.replaceAll("\"", "\\\""))+","+
 				Bean.jsonMapVarChar("title",this.title.replaceAll("\"", "\\\""))+","+
 				Bean.jsonMapNumber("rating",Integer.toString(this.rating))+","+
 				Bean.jsonMapNumber("createdAtEpoch",Long.toString(this.createdAtEpoch))+","+

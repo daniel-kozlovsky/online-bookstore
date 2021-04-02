@@ -113,7 +113,7 @@ public class Visitor extends User {
 	@Override
 	public String toJson() {
 		// TODO Auto-generated method stub		
-		return "{"+
+		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
 		Bean.jsonMapNumber("createdAtEpoch",Long.toString(createdAtEpoch))+","+
 		Bean.jsonMapNumber("lastAccessedAtEpoch",Long.toString(lastAccessedAtEpoch))+
 		Bean.jsonMapNumber("cart",this.cart.toJson())+","+
