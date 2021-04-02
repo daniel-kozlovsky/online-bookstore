@@ -33,7 +33,19 @@ public class UserModel {
 		return l;
 	}
 	
-	public void getOrder(String order_id) {
+	public void getOrder(String order_id, String username, String passwd) {
+		Customer s = user.loginCustomer(username, passwd);
+//		
+//		user.newQueryRequest()
+//			.includeAllAttributesInResultFromSchema()
+//			.queryAttribute()
+//			.whereCustomer()
+//			.isCustomer(s)
+//			.queryPurchaseOrder()
+//			.queryAttribute()
+//			.wherePurchaseOrder()
+//			.queryPurchaseOrderAttribute()
+//			.
 		
 //		order.newQueryRequest()
 //			.includeAllAttributesInResultFromSchema()

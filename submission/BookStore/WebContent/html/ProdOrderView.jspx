@@ -62,12 +62,13 @@
 			<div class="column_1_3">
 				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
 			</div>
-			<div class="column_2_3">
+			<div class="column_1_3">
 				<div class="row">
 					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
 				</div>
 				<div class="row" >
-					ISBN: ${requestScope['ISBN']}
+					ISBN: fasdfadf <BR />
+					Quantity: 3
 				</div>
 				<div class="row">
 					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
