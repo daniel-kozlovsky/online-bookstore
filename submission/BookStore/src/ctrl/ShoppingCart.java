@@ -1,6 +1,8 @@
 package ctrl;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,7 +22,7 @@ import model.ShoppingCartModel;
 /**
  * Servlet implementation class ShoppingCart
  */
-@WebServlet("/ShoppingCart")
+@WebServlet(urlPatterns = {"/ShoppingCart", "/ShoppingCart/*"})
 public class ShoppingCart extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	ShoppingCartModel cartModel;
@@ -40,8 +42,9 @@ public class ShoppingCart extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		
+		/*******testing********************************************/
 		Book b = new Book.Builder()
+				.withCover(new File("Queen_of_Air_and_Darkness_9781442468450.jpg"))
 				.withAmountSold(5)
 				.withAuthor("Author")
 				.withCategory("Category")
@@ -54,10 +57,14 @@ public class ShoppingCart extends HttpServlet {
 				.build();
 		Map<Book, Integer> m = new HashMap<Book, Integer>();
 		m.put(b, 1);
-		
+		request.setAttribute("books", m);
+		/*****************************************************/
+		 
 		Customer customer = (Customer) session.getAttribute("customer");
 		//request.setAttribute("books", customer.getCart().getBooks());
-		request.setAttribute("books", m);
+		//double totalPrice = cartModel.getTotalPrice(customer.getCart());
+		//request.setAttribute("totalPrice", totalPrice);
+		
 		request.getRequestDispatcher(CART_TARGET).forward(request, response);
 	}
 
@@ -65,6 +72,42 @@ public class ShoppingCart extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		response.setContentType("application/text");
+		PrintWriter out = response.getWriter();
+		Customer customer = (Customer) request.getSession().getAttribute("customer");
+		String isbn = request.getParameter("isbn");
+		int quantity;
+		
+		//remove book
+		if(request.getPathInfo() != null && request.getPathInfo().indexOf("remove") >= 0)
+		{
+			cartModel.removeBook(customer.getCart(), isbn);
+		}
+		//update price
+		else
+		{
+			try
+			{
+				quantity = Integer.parseInt(request.getParameter("quantity"));
+			}
+			catch(NumberFormatException NFE)
+			{
+				quantity = 0;
+			}
+			
+			String responseText = "";
+			if(quantity > 0 && !isbn.isEmpty())
+			{
+				cartModel.updateBookQuantity(customer.getCart(), isbn, quantity);
+				responseText = Double.toString(cartModel.getTotalPrice(customer.getCart()));
+			}
+			
+			
+			out.printf(responseText);
+			out.flush();
+		}
+		
 		
 	}
 	

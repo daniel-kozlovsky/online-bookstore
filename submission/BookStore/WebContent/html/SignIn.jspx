@@ -23,11 +23,12 @@
 	<div id="login-panel">
 		<form action="" method="post">
 			<label for="input-uname">Username: </label>
-			<input type="text" id="input-uname" name="username"/>
+			<input type="text" id="input-uname" name="username" placeholder="Username"/>
 			<label for="input-pword">Password: </label>
-			<input type="text" id="input-pword" name="password"/>
+			<input type="password" id="input-pword" name="password" placeholder="Password"/>
 			<button type="button" onClick="signIn();">Login</button>
 		</form>
+		<a href="${pageContext.request.contextPath}/html/Register.jspx">Register</a>
 	</div>
 </body>
 </html>

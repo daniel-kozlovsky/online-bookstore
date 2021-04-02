@@ -58,7 +58,7 @@ public class SignIn extends HttpServlet {
 			//log user in
 			UAuthModel.logUserIn(request.getSession(), username, password);
 			//go to main page
-			request.getRequestDispatcher(MAIN_PAGE_TARGET).forward(request, response);
+			response.sendRedirect(MAIN_PAGE_TARGET);
 		}
 		
 		out.printf(responseText);

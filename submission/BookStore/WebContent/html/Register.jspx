@@ -27,7 +27,7 @@
 			<label>Username</label>
 			<input type="text" id="input-username"/>
 			<label>Password</label>
-			<input type="text" id="input-password"/>
+			<input type="password" id="input-password"/>
 			<button type="button" onClick="register();">Register</button>
 		</form>
 	</div>

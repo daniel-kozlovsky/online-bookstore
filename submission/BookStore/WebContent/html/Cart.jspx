@@ -20,8 +20,8 @@
 </head>
 <body>
 	<c:forEach var="book" items="${requestScope.books}">
-		<div>
-			<img id="img-cover" src="${book.key.cover}"></img>
+		<div id="div-${book.key.ISBN}">
+			<img src="/BookStore/res/book_images/covers/${book.key.cover}"></img>
 			<div>
 				<table>
 	            <caption>${book.key.title}</caption>
@@ -59,14 +59,17 @@
 	            </tr>
 	        </table>
 	        <label>Quantity</label>
-	        <input type="number" value="${book.value}"/>
+	        <input class="quantity" type="number" min="1" value="${book.value}"
+	        	name="${book.key.ISBN}" id="input-${book.key.ISBN}" oninput="updateQuantity(this.name, this.value);"/>
+	        	
+	        <button name="${book.key.ISBN}" id="button-${book.key.ISBN}" type="button" onclick="removeBook(this.name);">remove</button>
 			</div>
 		</div>
 	</c:forEach>
 	
 	<div>
-		<label>TOTAL PRICE: <span id="span-price"></span></label>
-		<button type="submit">Payment</button>
+		<label>TOTAL PRICE: <span id="span-price">${requestScope.totalPrice}</span></label>
+		<button type="button" onclick=";">Payment</button>
 	</div>
 </body>
 </html>
