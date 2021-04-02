@@ -124,6 +124,7 @@ public class ProductPage extends HttpServlet {
 		
 		request.setAttribute(TITLE, b.getTitle());
 		request.setAttribute(AUTHOR, b.getAuthor());
+		System.out.println("year of "+b.getId() + " is " + b.getPublishYear());
 		request.setAttribute(YEAR, b.getPublishYear());
 		request.setAttribute(COVER, b.getCover());
 		request.setAttribute(PRICE, b.getPrice());

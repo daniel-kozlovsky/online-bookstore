@@ -45,7 +45,7 @@
 		<c:choose>
 			<!-- customer -->
 		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/OrdersReturns.jspx">Orders &amp; Returns</a>
+				<a class="padding hovering" href="Orders">Orders</a>
 				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
 		  	</c:when>
 

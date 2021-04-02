@@ -75,10 +75,9 @@ public class MainPage extends HttpServlet {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
-		getServletContext().setAttribute("user", VISITOR);
+		getServletContext().setAttribute("user", CUSTOMER);
 	
 		loadPage(request, model);
-		System.out.println("THis is the NON AJAX Section!");
 		request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
 
 

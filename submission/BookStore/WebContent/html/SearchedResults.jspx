@@ -27,11 +27,11 @@
 	<!-- Navigation bar -->
 	<div class="nav_bar">
 		<a href="MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
-		<a class="padding" href="MainPage">Home</a>
+		<a class="padding hovering" href="MainPage">Home</a>
 		<c:choose>
 			<!-- customer -->
 		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/OrdersReturns.jspx">Orders &amp; Returns</a>
+				<a class="padding hovering" href="Orders">Orders</a>
 				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
 		  	</c:when>
 

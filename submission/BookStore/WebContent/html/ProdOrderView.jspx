@@ -9,12 +9,12 @@
 		omit-xml-declaration="true" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>ProdName</title>
+	<title>Order Page</title>
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
-	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/ProdPage.css" type="text/css"
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/Order.css" type="text/css"
 		title="cse4413" media="screen, print" />
 </head>
 <body>
@@ -25,7 +25,7 @@
 		<c:choose>
 			<!-- customer -->
 		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding hovering" href="Orders">Orders</a>
+				<a class="padding active" href="${pageContext.request.contextPath}/html/Orders.jspx">Orders</a>
 				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
 		  	</c:when>
 
@@ -46,59 +46,78 @@
 		<div class="search_bar">
 	  		<form action="${pageContext.request.contextPath}/Search" method="Post">
 	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
-	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">	    		
+	    		
+	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">
+	    		
 	    		</button> 
-
 	    	</form>
 	  	</div>
 	</div>
 	
-	<!-- Prod Section -->
-	<div class="prod_section">
+	<!-- individual order summary -->
+	<div class="section">
+		<header>Order ID : ${requestScope['ORDER_ID']}</header>
+		
 		<div class="row">
 			<div class="column_1_3">
 				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
 			</div>
 			<div class="column_2_3">
 				<div class="row">
-					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2>
-				</div>
-				<div class="row" >
-					<h3>by ${requestScope['AUTHOR']}</h3>
+					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
 				</div>
 				<div class="row" >
 					ISBN: ${requestScope['ISBN']}
-				</div>
-				<div class="row" >
-					<p style="margin-left:0px;">Genre: ${requestScope['CATEGORY']}</p>
-				</div>
-				<div class="row" style="margin-left:0px;">
-					<p style="margin-left:0px;">Rating: ${requestScope['RATING']} / 5.0</p>
 				</div>
 				<div class="row">
 					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
 				</div>
 				<div class="row">
-					<p style="margin-left:0px;"><button class="button addProduct" type="addProduct">add product</button></p>
+					<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
 				</div>
 			</div>
 		</div>
-		<div class="row" style="margin-top:100px;">
-			
-			<div class="container">
-				<div class="title">Sample reviews</div>
-				
-				 ${requestScope['VIWE_SOME_REVIEWS']}
-				 
-				<form action="${pageContext.request.contextPath}/ReviewPage" method="Post">
-					<input type="hidden" name="bookID" value="${requestScope['bookID']}" />
-					<button class="readMore" type="readMore" >read more</button>
-				</form>
+		<div class="row">
+			<div class="column_1_3">
+				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
+			</div>
+			<div class="column_2_3">
+				<div class="row">
+					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
+				</div>
+				<div class="row" >
+					ISBN: ${requestScope['ISBN']}
+				</div>
+				<div class="row">
+					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
+				</div>
+				<div class="row">
+					<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
+				</div>
 			</div>
 		</div>
+		<div class="row">
+			<div class="column_1_3">
+				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
+			</div>
+			<div class="column_2_3">
+				<div class="row">
+					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
+				</div>
+				<div class="row" >
+					ISBN: ${requestScope['ISBN']}
+				</div>
+				<div class="row">
+					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
+				</div>
+				<div class="row">
+					<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
+				</div>
+			</div>
+		</div>
+		
 	</div>
 	
-	 
 	<!-- footer -->
 	<footer>
 		<div class="footer_container">
@@ -124,7 +143,6 @@
 			</div>
 		</div>
 	</footer>
-		
 </body>
 </html>
 </jsp:root>

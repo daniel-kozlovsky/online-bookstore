@@ -6,15 +6,11 @@ import java.util.Map;
 import data.beans.Book;
 import data.dao.BookDAO;
 
-import data.beans.Review;
-import data.dao.ReviewDAO;
-
 
 public class MainPageModel {
 	
 	public static MainPageModel instance;
 	private BookDAO book;
-	private ReviewDAO review;
 	
 	public MainPageModel() {};
 	
@@ -196,7 +192,6 @@ public class MainPageModel {
 		if (instance==null) {
 			instance =new MainPageModel();
 			instance.book = new BookDAO();
-			instance.review = new ReviewDAO();
 		}
 		return instance;
 	}
