@@ -62,7 +62,7 @@ public class Customer extends User{
 	}
 	
 	public String getEmail() {
-		return userName;
+		return email;
 	}
 	public boolean isLoggedOn() {
 		return _isLoggedOn;
