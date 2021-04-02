@@ -1,7 +1,9 @@
 package data.beans;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import data.beans.Book.Builder;
@@ -130,6 +132,18 @@ public class Customer extends User{
 	
 	public PurchaseOrder[] getPurchaseOrders() {
 		return purchaseOrders;
+	}
+	
+	public Map<Long,PurchaseOrder> getEpochToPurchaseOrders() {
+		Map<Long,PurchaseOrder>  result = new LinkedHashMap<Long, PurchaseOrder>();
+		for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
+			result.put(purchaseOrder.getCreatedAtEpoch(), purchaseOrder);
+		}
+		return result;
+	}
+	
+	public PurchaseOrder getPurchaseOrderByEpoch(Long createdAtEpoch) {
+		return getEpochToPurchaseOrders().get(createdAtEpoch);
 	}
 
 	public boolean isReviewByCustomer(Review review) {
