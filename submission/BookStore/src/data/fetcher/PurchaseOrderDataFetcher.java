@@ -35,23 +35,77 @@ public class PurchaseOrderDataFetcher  extends DataFetcher<PurchaseOrder>{
 	public PurchaseOrder resultSetToBean(ResultSet resultSet) {
 		String prefix = isReferenceQuery()?schema.tableName()+Query.referenceSeparator:"";
 		PurchaseOrder purchaseOrder = new PurchaseOrder.Builder().build();
+		boolean isRequestAllAttributes=this.attributesToIncludInResults.get(schema.tableName()).isEmpty();
 				
 		try {
 			
 			
 			Book book = new Book.Builder().withId(new Id(resultSet.getString(prefix+schema.BOOK))).build();
 			
-			return new PurchaseOrder.Builder(purchaseOrder)
+			purchaseOrder= new PurchaseOrder.Builder(purchaseOrder)
 					.withId(new Id(resultSet.getString(prefix+schema.ID)))
 					.withCreatedAtEpoch(resultSet.getLong(prefix+schema.CREATED_AT_EPOCH))
 					.withBookAndAmount(book,resultSet.getInt(prefix+schema.AMOUNT))
 					.build();		
 			
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.EMAIL)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withEmail(resultSet.getString(prefix+schema.EMAIL)).build();
+			}
+			
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.STREET_NUMBER)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withStreetNumber(resultSet.getString(prefix+schema.STREET_NUMBER)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.STREET)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withStreet(resultSet.getString(prefix+schema.STREET)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.PROVINCE)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withProvince(resultSet.getString(prefix+schema.PROVINCE)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CITY)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withCity(resultSet.getString(prefix+schema.CITY)).build();
+			}
+			
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.POSTAL_CODE)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withPostalCode(resultSet.getString(prefix+schema.POSTAL_CODE)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.COUNTRY)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withCountry(resultSet.getString(prefix+schema.COUNTRY)).build();
+			}
+			
+			//
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withCreditCardType(resultSet.getString(prefix+schema.CREDIT_CARD)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD_NUMBER)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withCreditCardNumber(resultSet.getString(prefix+schema.CREDIT_CARD_NUMBER)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD_EXPIRY)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withCreditCardExpiry(resultSet.getString(prefix+schema.CREDIT_CARD_EXPIRY)).build();
+			}
+			
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD_CVV2)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withCreditCardCVV2(resultSet.getString(prefix+schema.CREDIT_CARD_CVV2)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.USER_TYPE)) {
+				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withUserType(resultSet.getString(prefix+schema.USER_TYPE)).build();
+			}
+			
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
 		
-		System.err.println("Warning empty book, since resultSet could not produce book object");
+		System.err.println("Warning empty purchase order, since resultSet could not produce purchase order object");
 		return new PurchaseOrder.Builder().build();
 		
 	}

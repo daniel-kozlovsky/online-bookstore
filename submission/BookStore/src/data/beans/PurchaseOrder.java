@@ -13,6 +13,10 @@ public class PurchaseOrder extends IdObject {
 	private String status;
 	private Map<Book,Integer> books;	
 	private long createdAtEpoch;
+	private Address address;
+	private CreditCard creditCard;
+	private String email;
+	private String userType;
 //	private boolean _isWithinCustomer;
 	
 
@@ -55,6 +59,9 @@ public class PurchaseOrder extends IdObject {
 		return customer.getId().equals(this.id);
 		
 	}
+	public String getUserType() {
+		return this.userType;
+	}
 	
 //	public boolean isBookInPurchaseOrder(Book book) {
 //		return books.get(book)!=null &&books.get(book)>0;		
@@ -88,6 +95,18 @@ public class PurchaseOrder extends IdObject {
 		private String status;
 		private Map<Book,Integer> books;	
 		private long createdAtEpoch;
+		private String email;
+		private String creditCardType;
+		private String creditCardNumber;
+		private String creditCardExpiry;
+		private String creditCardCVV2;
+		private String streetNumber;
+		private String street;
+		private String postalCode;
+		private String province;
+		private String country;
+		private String city;
+		private String userType;
 //		private boolean _isWithinCustomer;
 		
 //		public Builder withInCustomer() {
@@ -119,6 +138,30 @@ public class PurchaseOrder extends IdObject {
 		}
 		
 		
+		public Builder withSiteUser(SiteUser siteUser){
+			this.id=siteUser.getId();
+			this.userType=siteUser.getUserType();
+			return this;
+		}
+		
+		public Builder withCreditCard(CreditCard creditCard){
+			this.creditCardCVV2=creditCard.getCreditCardCVV2();
+			this.creditCardNumber=creditCard.getCreditCardNumber();
+			this.creditCardExpiry=creditCard.getCreditCardExpiry();
+			this.creditCardType=creditCard.getCreditCardType();
+			return this;
+		}
+		public Builder withAddress(Address address){
+			this.streetNumber=address.getNumber();
+			this.street=address.getStreet();
+			this.postalCode=address.getPostalCode();
+			this.province=address.getProvince();
+			this.country=address.getCountry();
+			this.city=address.getCity();
+			return this;
+		}
+		
+		
 
 		public Builder withStatus(String status){
 			this.status=status;
@@ -137,6 +180,62 @@ public class PurchaseOrder extends IdObject {
 		
 		public Builder withBookAndAmount(Book book,int amount){
 			this.books.put(book, amount);
+			return this;
+		}
+		public Builder withCreditCardType(String creditCardType) {
+			this.creditCardType=creditCardType;
+			return this;
+		}
+		public Builder withCreditCardNumber(String creditCardNumber ) {
+			this.creditCardNumber=creditCardNumber;
+			return this;
+		}
+		public Builder withCreditCardExpiry(String creditCardExpiry) {
+			this.creditCardExpiry=creditCardExpiry;
+			return this;
+		}
+		public Builder withCreditCardCVV2(String creditCardCVV2) {
+			this.creditCardCVV2=creditCardCVV2;
+			return this;
+		}
+		
+
+
+		
+		public Builder withStreetNumber(String streetNumber){
+			this.streetNumber=streetNumber;
+			return this;
+		}
+		
+		public Builder withStreet(String street){
+			this.street=street;
+			return this;
+		}
+		public Builder withPostalCode(String postalCode){
+			this.postalCode=postalCode;
+			return this;
+		}
+		public Builder withProvince(String province){
+			this.province=province;
+			return this;
+		}
+		
+		public Builder withCountry(String country){
+			this.country=country;
+			return this;
+		}
+		
+		public Builder withCity(String city){
+			this.city=city;
+			return this;
+		}
+		
+		public Builder withEmail(String email){
+			this.email=email;
+			return this;
+		}
+		public Builder withUserType(String userType){
+			this.userType=userType;
 			return this;
 		}
 //		
@@ -161,11 +260,16 @@ public class PurchaseOrder extends IdObject {
 
 
 		public PurchaseOrder build(){
-			PurchaseOrder purchaseOrder=new PurchaseOrder();
-//			purchaseOrder.customer=this.customer;
+			Address address =new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
+			CreditCard creditCard = new CreditCard.Builder().withCreditCardType(creditCardType).withCreditCardNumber(creditCardNumber).withCreditCardExpiry(creditCardExpiry).withCreditCardCVV2(creditCardCVV2).build();
+			PurchaseOrder purchaseOrder=new PurchaseOrder();			
 			purchaseOrder.status=this.status;
 			purchaseOrder.books=this.books;
+			purchaseOrder.userType=this.userType;
 			purchaseOrder.createdAtEpoch=this.createdAtEpoch;
+			purchaseOrder.email=this.email;
+			purchaseOrder.address=address;
+			purchaseOrder.creditCard=creditCard;
 			purchaseOrder.id=this.id;
 			return purchaseOrder;
 		}
@@ -195,9 +299,13 @@ public class PurchaseOrder extends IdObject {
 			
 		}
 		booksJson+="]";
-		return "{"+Bean.jsonMapVarChar("customer",this.id.toString())+","+
+		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
+				Bean.jsonMapVarChar("userType",this.userType)+","+
+				Bean.jsonMapVarChar("email",this.email)+","+
 				Bean.jsonMapNumber("createdAtEpoch",Long.toString(this.createdAtEpoch))+","+
 				Bean.jsonMapVarChar("status",this.status)+","+
+				Bean.jsonMapNumber("address",this.address.toJson())+","+
+				Bean.jsonMapNumber("creditCard",this.creditCard.toJson())+","+
 				booksJson+
 				"}";				
 	}

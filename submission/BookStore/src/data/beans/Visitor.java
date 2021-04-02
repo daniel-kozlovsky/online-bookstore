@@ -7,8 +7,7 @@ import java.util.List;
 import data.beans.Cart.Builder;
 import data.beans.IdObject.IdObjectBuilder;
 import data.schema.UserTypes;
-public class Visitor extends User {
-	public Cart cart;
+public class Visitor extends SiteUser {
 	private  long createdAtEpoch;
 	private  long lastAccessedAtEpoch;
 	public static final String userType=UserTypes.VISITOR;
@@ -19,9 +18,7 @@ public class Visitor extends User {
 		return this.userType;
 	}
 	
-	public Cart getCart() {
-		return cart;
-	}
+
 	
 	public long getCreatedAtEpoch() {
 		return createdAtEpoch;
@@ -33,12 +30,6 @@ public class Visitor extends User {
 	}
 
 
-
-
-
-	public void setCart(Cart cart) {
-		this.cart = cart;
-	}
 
 	private Visitor() {
 		

@@ -22,13 +22,21 @@ public class PurchaseOrderSchema extends DataSchema{
 	public static final String  CREDIT_CARD_NUMBER="CREDIT_CARD_NUMBER";
 	public static final String  CREDIT_CARD_EXPIRY="CREDIT_CARD_EXPIRY";
 	public static final String  CREDIT_CARD_CVV2="CREDIT_CARD_CVV2";
+	public static final String EMAIL="EMAIL";
+	public static final String USER_TYPE="USER_TYPE";
+	public static final String STREET_NUMBER="STREET_NUMBER";
+	public static final String STREET="STREET";
+	public static final String POSTAL_CODE="POSTAL_CODE";
+	public static final String CITY="CITY";
+	public static final String PROVINCE="PROVINCE";
+	public static final String COUNTRY="COUNTRY";
 //	'PROCESSED','SHIPPED','DENIED','DELIVERED','ORDERED'
 
 	public PurchaseOrderSchema() {
 		super();
 		this.TABLE_NAME="PURCHASE_ORDER";
 		VARCHAR_ATTRIBUTE_LABELS = new String[]{ID,BOOK,AMOUNT,CREATED_AT_EPOCH};
-		ATTRIBUTE_LABELS = new String[]{ID,BOOK,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2,STATUS};
+		ATTRIBUTE_LABELS = new String[]{ID,BOOK,AMOUNT,USER_TYPE,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2,STATUS,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,EMAIL};
 		WORD_ATTRIBUTE_LABELS = new String[]{STATUS};
 		NUMBER_ATTRIBUTE_LABELS = new String[]{};
 		OBJECT_ATTRIBUTE_LABELS =  new String[]{};		

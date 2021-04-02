@@ -81,7 +81,8 @@ CREATE  TABLE CART (
   USER_TYPE varchar(20) not null,
   PRIMARY KEY(ID,BOOK),
   CONSTRAINT type_check_cart CHECK (USER_TYPE IN('VISITOR','CUSTOMER')),
-  FOREIGN KEY (ID,USER_TYPE) REFERENCES SITE_USER(ID,USER_TYPE)
+  FOREIGN KEY (ID,USER_TYPE) REFERENCES SITE_USER(ID,USER_TYPE),
+  FOREIGN KEY (BOOK) REFERENCES BOOK(ID)
   );
 
 CREATE  TABLE PURCHASE_ORDER(
@@ -89,13 +90,21 @@ CREATE  TABLE PURCHASE_ORDER(
   BOOK varchar (100) not null,
   STATUS varchar (50) not null,
   AMOUNT int not null,
+  EMAIL varchar (50) not null,
+USER_TYPE varchar(20) not null,
+  CREDIT_CARD varchar (20) not null,
+  CREDIT_CARD_NUMBER varchar (50) not null,
+  CREDIT_CARD_EXPIRY varchar (10) not null,
+  CREDIT_CARD_CVV2 varchar (10) not null,
+  STREET_NUMBER varchar (20) not null,
+  STREET varchar (100) not null,
+  POSTAL_CODE varchar (10) not null,
+  CITY varchar (50) not null,
+  PROVINCE varchar (50) not null,
+  COUNTRY varchar (50) not null,
   CREATED_AT_EPOCH bigint not null,
-  CREDIT_CARD varchar (20),
-  CREDIT_CARD_NUMBER varchar (50),
-  CREDIT_CARD_EXPIRY varchar (10),
-  CREDIT_CARD_CVV2 varchar (10),
   PRIMARY KEY(ID,CREATED_AT_EPOCH,BOOK),
-  FOREIGN KEY (ID) REFERENCES CUSTOMER(ID),
+  FOREIGN KEY (ID) REFERENCES SITE_USER(ID),
   FOREIGN KEY (BOOK) REFERENCES BOOK(ID),
   CONSTRAINT type_check_status_purchase_order CHECK (STATUS IN('PROCESSED','SHIPPED','DENIED','DELIVERED','ORDERED'))
   );
