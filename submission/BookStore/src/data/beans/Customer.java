@@ -134,7 +134,7 @@ public class Customer extends User{
 		return purchaseOrders;
 	}
 	
-	public Map<Long,PurchaseOrder> getEpochToPurchaseOrders() {
+	public Map<Long,PurchaseOrder> getCreatedAtEpochToPurchaseOrders() {
 		Map<Long,PurchaseOrder>  result = new LinkedHashMap<Long, PurchaseOrder>();
 		for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
 			result.put(purchaseOrder.getCreatedAtEpoch(), purchaseOrder);
@@ -143,7 +143,7 @@ public class Customer extends User{
 	}
 	
 	public PurchaseOrder getPurchaseOrderByEpoch(Long createdAtEpoch) {
-		return getEpochToPurchaseOrders().get(createdAtEpoch);
+		return getCreatedAtEpochToPurchaseOrders().get(createdAtEpoch);
 	}
 
 	public boolean isReviewByCustomer(Review review) {
