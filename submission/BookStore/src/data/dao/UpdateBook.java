@@ -32,7 +32,8 @@ public class UpdateBook extends DataUpdate{
 		}
 		
 		public InsertBookSeries insertBookWithTitle(String title){
-			return new InsertBookSeries(new Book.Builder(book).withTitle(title).build());
+			
+			return new InsertBookSeries(new Book.Builder(book).withTitle(surroundWithQuotes(title)).build());
 		}
 	}
 	
@@ -43,7 +44,7 @@ public class UpdateBook extends DataUpdate{
 		}
 		
 		public InsertBookCategory insertBookWithSeries(String series){
-			return new InsertBookCategory(new Book.Builder(book).withSeries(series).build());
+			return new InsertBookCategory(new Book.Builder(book).withSeries(surroundWithQuotes(series)).build());
 		}
 	}
 	
@@ -53,7 +54,7 @@ public class UpdateBook extends DataUpdate{
 		}
 
 		public InsertBookAuthor insertBookWithCategory(String category){
-			return new InsertBookAuthor(new Book.Builder(book).withCategory(category).build());
+			return new InsertBookAuthor(new Book.Builder(book).withCategory(surroundWithQuotes(category)).build());
 		}
 	}
 	
@@ -64,7 +65,7 @@ public class UpdateBook extends DataUpdate{
 		}
 
 		public InsertBookDescription insertBookWithAuthor(String author){
-			return new InsertBookDescription(new Book.Builder(book).withAuthor(author).build());
+			return new InsertBookDescription(new Book.Builder(book).withAuthor(surroundWithQuotes(author)).build());
 		}
 	}
 	
@@ -77,7 +78,7 @@ public class UpdateBook extends DataUpdate{
 		
 		public InsertBookPublishYear insertBookWithDescription(String description){
 			
-			return new InsertBookPublishYear(new Book.Builder(book).withDescription(description).build());
+			return new InsertBookPublishYear(new Book.Builder(book).withDescription(surroundWithQuotes(description)).build());
 		}
 	}
 	
@@ -101,7 +102,14 @@ public class UpdateBook extends DataUpdate{
 		}
 
 		public InsertBookPrice insertBookWithCover(File cover){
-			return new InsertBookPrice(new Book.Builder(book).withCover(cover).build());
+			File bookCover = cover==null?new File(""):cover;
+			return new InsertBookPrice(new Book.Builder(book).withCover(bookCover).build());
+
+		}
+		
+		public InsertBookPrice insertBookWithCover(String cover){
+			File bookCover = cover==null||cover.isEmpty()?new File(""):new File(cover);
+			return new InsertBookPrice(new Book.Builder(book).withCover(bookCover).build());
 
 		}
 	}
@@ -128,7 +136,7 @@ public class UpdateBook extends DataUpdate{
 		}
 
 		public ExecuteBookInsertion insertBookWithISBN(String ISBN){
-			return new ExecuteBookInsertion(new Book.Builder(book).withISBN(ISBN).build());
+			return new ExecuteBookInsertion(new Book.Builder(book).withISBN(surroundWithQuotes(ISBN)).build());
 
 		}
 	}
@@ -143,7 +151,7 @@ public class UpdateBook extends DataUpdate{
 			String idInput=book.getISBN()+book.getPublishYear();
 			String id =UUID.nameUUIDFromBytes(idInput.getBytes()).toString().stripLeading().stripTrailing();
 			String update ="INSERT INTO BOOK (ID,TITLE ,SERIES ,DESCRIPTION ,CATEGORY,AUTHOR,COVER,ISBN ,PUBLISH_YEAR,PRICE)	VALUES 	"+
-					"('"+id+"','"+book.getTitle()+"','"+book.getSeries()+"','"+book.getDescription()+"','"+book.getCategory()+"','"+book.getAuthor()+"','"+book.getCover().getName()+"','"+book.getISBN()+"',"+Integer.toString(book.getPublishYear())+","+Double.toString(book.getPrice())+")";
+					"("+id+","+book.getTitle()+","+book.getSeries()+","+book.getDescription()+","+book.getCategory()+","+book.getAuthor()+","+book.getCover().getName()+","+book.getISBN()+","+Integer.toString(book.getPublishYear())+","+Double.toString(book.getPrice())+")";
 			sendUpdateToDatabase(update);
 		}
 	}

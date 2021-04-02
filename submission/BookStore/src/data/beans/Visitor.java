@@ -99,8 +99,8 @@ public class Visitor extends User {
 
 		public Visitor build(){
 			Visitor visitor=new Visitor();
-			visitor.id=this.id;
-			visitor.cart=this.cart;
+			visitor.id=this.id==null?new Id(""):this.id;
+			visitor.cart=this.cart==null? new Cart.Builder().withId(this.id).build():this.cart;
 			visitor.createdAtEpoch=this.createdAtEpoch;
 			visitor.lastAccessedAtEpoch=this.lastAccessedAtEpoch;
 			return visitor;

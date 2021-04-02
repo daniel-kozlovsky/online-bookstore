@@ -65,6 +65,14 @@ public class CreditCard implements Bean{
 			this.creditCardExpiry=creditCard.creditCardExpiry;
 			this.creditCardType=creditCard.creditCardType;
 		}
+		public CreditCard build() {
+			CreditCard creditCard = new CreditCard();
+			creditCard.creditCardCVV2=this.creditCardCVV2==null?"":this.creditCardCVV2;
+			creditCard.creditCardNumber=this.creditCardNumber==null?"":this.creditCardNumber;
+			creditCard.creditCardExpiry=this.creditCardExpiry==null?"":this.creditCardExpiry;
+			creditCard.creditCardType=this.creditCardType==null?"":this.creditCardType;
+			return creditCard;
+		}
 	}
 	@Override
 	public String toJson() {

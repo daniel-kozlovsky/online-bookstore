@@ -223,11 +223,11 @@ public class Cart extends IdObject {
 		public Cart build() {
 			Cart cart = new Cart();
 //			cart.user=this.user;
-			cart.books = this.books;
-			cart.userType = this.userType;
+			cart.books = this.books==null?new LinkedHashMap<Book, Integer>():this.books;
+			cart.userType = this.userType==null?"":this.userType;
 			cart._isWithinCustomer = this._isWithinCustomer;
 			cart._isWithinVisitor = this._isWithinVisitor;
-			cart.id = this.id;
+			cart.id = this.id==null?new Id(""):this.id;
 //			if(this.userType.equals(UserTypes.CUSTOMER)) {
 //				cart.customer=this.customer;
 //				cart.visitor=null;

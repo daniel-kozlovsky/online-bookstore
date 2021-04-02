@@ -149,11 +149,11 @@ public class Review implements Bean{
 
 		public Review build(){
 			Review review=new Review();
-			review.body=this.body;
-			review.title=this.title;
-			review.customer=this.customer;
+			review.body=this.body==null?"":this.body;
+			review.title=this.title==null?"":this.title;
+			review.customer=this.customer==null? new Customer.Builder().build():this.customer;
 			review.rating=this.rating;
-			review.book=this.book;
+			review.book=this.book==null?new Book.Builder().build():this.book;
 			review.createdAtEpoch=this.createdAtEpoch;
 			review._isWithinBook=this._isWithinBook;
 			review._isWithinCustomer=this._isWithinCustomer;

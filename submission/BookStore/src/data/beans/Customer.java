@@ -1,7 +1,9 @@
 package data.beans;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import data.beans.Book.Builder;
@@ -23,7 +25,6 @@ public class Customer extends User{
 	private  long createdAtEpoch;
 	private CreditCard creditCard;
 	private boolean _isLoggedOn;
-
 	private boolean _isWithinReview;
 	
 	public static final String userType=UserTypes.CUSTOMER;
@@ -40,7 +41,7 @@ public class Customer extends User{
 	
 	private Customer() {
 	}
-	
+
 	public String getGivenName() {
 		return givenName;
 	}
@@ -132,6 +133,18 @@ public class Customer extends User{
 	public PurchaseOrder[] getPurchaseOrders() {
 		return purchaseOrders;
 	}
+	
+	public Map<Long,PurchaseOrder> getCreatedAtEpochToPurchaseOrders() {
+		Map<Long,PurchaseOrder>  result = new LinkedHashMap<Long, PurchaseOrder>();
+		for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
+			result.put(purchaseOrder.getCreatedAtEpoch(), purchaseOrder);
+		}
+		return result;
+	}
+
+	public PurchaseOrder getPurchaseOrderByCreatedAtEpoch(Long createdAtEpoch) {
+		return getCreatedAtEpochToPurchaseOrders().get(createdAtEpoch);
+	}
 
 	public boolean isReviewByCustomer(Review review) {
 		return true;
@@ -164,6 +177,7 @@ public class Customer extends User{
 		private String country;
 		private String city;
 		private boolean _isLoggedOn;
+		private CreditCard creditCard;
 
 		private  long createdAtEpoch;
 		private boolean _isWithinReview;
@@ -195,6 +209,7 @@ public class Customer extends User{
 			this.country="";
 			this.postalCode="";
 			this._isLoggedOn=false;
+			this.creditCard=new CreditCard.Builder().build();
 		}
 		
 		
@@ -220,6 +235,7 @@ public class Customer extends User{
 			this.country=customer.getAddress().getCountry();
 			this.postalCode=customer.getAddress().getPostalCode();
 			this._isLoggedOn=customer._isLoggedOn;
+			this.creditCard=customer.creditCard;
 			
 		}
 		public Builder withCreatedAtEpoch(long createdAtEpoch){
@@ -360,24 +376,30 @@ public class Customer extends User{
 			return this;
 		}
 		
+		public Builder withCreditCard(CreditCard creditCard){
+			this.creditCard=creditCard;
+			return this;
+		}
+		
 
 
 		public Customer build(){
 			Customer customer=new Customer();
-			customer.id=this.id;
-			customer.givenName=this.givenName;
-			customer.surName=this.surName;
+			customer.id=this.id==null?new Id(""):this.id;
+			customer.givenName=this.givenName==null?"":this.givenName;
+			customer.surName=this.surName==null?"":this.surName;
 			Address address =new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
 			customer.address=address;
-			customer.userName=this.userName;
-			customer.password=this.password;
-			customer.reviews=this.reviews;
-			customer.cart=this.cart;
-			customer.purchaseOrders=this.purchaseOrders;
+			customer.userName=this.userName==null?"":this.userName;
+			customer.password=this.password==null?"":this.password;
+			customer.reviews=this.reviews==null?new Review[0]:this.reviews;
+			customer.cart=this.cart==null?new Cart.Builder().withId(this.id).build():this.cart;
+			customer.purchaseOrders=this.purchaseOrders==null?new PurchaseOrder[0]:this.purchaseOrders;
 			customer._isLoggedOn=this._isLoggedOn;
-			customer.email=this.email;
+			customer.email=this.email==null?"":this.email;
 			customer.createdAtEpoch=this.createdAtEpoch;
 			customer._isWithinReview=this._isWithinReview;
+			customer.creditCard=this.creditCard;
 			return customer;
 		}
 

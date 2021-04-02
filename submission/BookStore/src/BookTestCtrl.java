@@ -98,8 +98,31 @@ public class BookTestCtrl extends HttpServlet {
 				.executeCompilation()
 				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
 		
-		
+//		'Daniel','Kozlovsky','dankoz0','123456','dankoz0','',','','','','',1617293430
 		System.out.println(Boolean.toString(new CustomerDAO().loginCustomer("SPhillips4588","Scottpassword").isLoggedOn()));
+		new CustomerDAO().newUpdateRequest().requestNewCustomerInsertion()
+		.insertCustomerWithGivenName("Daniel")
+		.insertCustomerWithSurName("Kozlovsky")
+		.insertCustomerWithUserName("dankoz0")
+		.insertCustomerWithPassWord("123456")
+		.insertCustomerWithEmail("dkemail")
+		.insertCustomerWithStreetNumber("")
+		.insertCustomerWithStreet("")
+		.insertCustomerWithPostalCode("")
+		.insertCustomerWithCity("")
+		.insertCustomerWithProvince("")
+		.insertCustomerWithCountry("")
+		.executeCustomerInsertion();
+		
+		new CustomerDAO().newQueryRequest().includeAllAttributesInResultFromSchema()
+		.queryAttribute()
+		.whereCustomerEmail()
+		.varCharEquals("dkemail")
+		.executeQuery()
+		.executeCompilation()
+		.compileCustomers()
+		.stream().map(abook->abook.toJson()).forEach(System.out::println);
+		
 //        CustomerDAO customerDAO = new CustomerDAO();
 //        DataObjectCompiler customerResults=
 //        customerDAO.newQueryRequest()

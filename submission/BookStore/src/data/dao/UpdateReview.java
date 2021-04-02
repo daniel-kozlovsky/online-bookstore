@@ -41,7 +41,7 @@ public class UpdateReview extends DataUpdate{
 		}
 		
 		public InsertReviewBody insertReviewWithTitle(String title){
-			return new InsertReviewBody(new Review.Builder(review).withTitle(title).build());
+			return new InsertReviewBody(new Review.Builder(review).withTitle(surroundWithQuotes(title)).build());
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class UpdateReview extends DataUpdate{
 		}
 		
 		public InsertReviewRating insertReviewWithBody(String body){
-			return new InsertReviewRating(new Review.Builder(review).withBody(body).build());
+			return new InsertReviewRating(new Review.Builder(review).withBody(surroundWithQuotes(body)).build());
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class UpdateReview extends DataUpdate{
 		public void executeReviewInsertion(){
 			String epoch =Long.toString(Instant.now().getEpochSecond());
 			String update ="INSERT INTO REVIEW (CUSTOMER,BOOK,RATING,TITLE,BODY,CREATED_AT_EPOCH) VALUES "+
-					"('"+review.getCustomer().getId().toString()+"','"+review.getBook().getId().toString()+"',"+Integer.toString(review.getRating())+",'"+review.getTitle()+"','"+review.getBody()+"',"+epoch+")";
+					"('"+review.getCustomer().getId().toString()+"','"+review.getBook().getId().toString()+"',"+Integer.toString(review.getRating())+","+review.getTitle()+","+review.getBody()+","+epoch+")";
 			sendUpdateToDatabase(update);
 		}
 	}
