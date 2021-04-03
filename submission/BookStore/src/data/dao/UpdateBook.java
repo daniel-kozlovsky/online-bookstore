@@ -149,7 +149,7 @@ public class UpdateBook extends DataUpdate{
 
 		public void executeBookInsertion(){
 			String idInput=book.getISBN()+book.getPublishYear();
-			String id =UUID.nameUUIDFromBytes(idInput.getBytes()).toString().stripLeading().stripTrailing();
+			String id =UUID.nameUUIDFromBytes(idInput.getBytes()).toString();
 			String update ="INSERT INTO BOOK (ID,TITLE ,SERIES ,DESCRIPTION ,CATEGORY,AUTHOR,COVER,ISBN ,PUBLISH_YEAR,PRICE)	VALUES 	"+
 					"("+id+","+book.getTitle()+","+book.getSeries()+","+book.getDescription()+","+book.getCategory()+","+book.getAuthor()+","+book.getCover().getName()+","+book.getISBN()+","+Integer.toString(book.getPublishYear())+","+Double.toString(book.getPrice())+")";
 			sendUpdateToDatabase(update);

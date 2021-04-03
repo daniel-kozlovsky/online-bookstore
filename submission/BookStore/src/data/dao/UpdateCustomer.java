@@ -248,7 +248,7 @@ public class UpdateCustomer extends DataUpdate{
 		public 	void executeCustomerInsertion(){
 
 		    String epoch =Long.toString(Instant.now().getEpochSecond());
-			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString().stripLeading().stripTrailing();
+			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString();
 			String userTablesUpdate = "INSERT INTO SITE_USER (ID,USER_TYPE) VALUES ('"+id+"','"+UserTypes.CUSTOMER+"')";
 			sendUpdateToDatabase(userTablesUpdate);
 			String update="INSERT INTO CUSTOMER (USER_TYPE,ID,GIVENNAME,SURNAME,USERNAME,PASSWORD ,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,CREATED_AT_EPOCH) VALUES "+
