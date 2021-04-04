@@ -28,11 +28,14 @@ import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
 import data.beans.PurchaseOrder;
+import data.beans.Visitor;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
+import data.dao.PurchaseOrderDAO;
 import data.dao.UpdateBook;
 import data.dao.UpdateCustomer;
 import data.dao.UpdateReview;
+import data.dao.VisitorDAO;
 import data.query.DataObjectCompiler;
 
 /**
@@ -66,12 +69,51 @@ public class BookTestCtrl extends HttpServlet {
 //      response.setContentType("text");
 //      response.setCharacterEncoding("UTF-8");
 //      out.write("TESTING  !!!");
-      CustomerDAO user= new CustomerDAO();
-      String username="WRitter163";
-      String passwd = "Walterpassword";
+//      CustomerDAO user= new CustomerDAO();
+//      String username="WRitter163";
+//      String passwd = "Walterpassword";
+//
+//      Customer s = user.loginCustomer(username, passwd);
+//      System.out.println(s.toJson());
+      
+      //9781442468450
 
-      Customer s = user.loginCustomer(username, passwd);
-      System.out.println(s.toJson());
+//      List<Customer> customers=
+		DataObjectCompiler doc1=
+      new CustomerDAO().newQueryRequest()
+      .includeAllAttributesInResultFromSchema()
+      .queryPurchaseOrder()
+      .includeAllAttributesInResultFromSchema()
+      .queryBook()
+      .includeAllAttributesInResultFromSchema()
+      .queryAttribute()
+      .whereBookISBN()
+      .varCharEquals("9781442468450")
+      .executeQuery()
+      .executeCompilation();
+//		doc1.compileCustomers();
+		
+      System.out.println(doc1.getPurchaseOrderByBookJson());
+      DataObjectCompiler doc=
+      new VisitorDAO().newQueryRequest()
+      .includeAllAttributesInResultFromSchema()
+      .queryPurchaseOrder()
+      .includeAllAttributesInResultFromSchema()
+      .queryBook()
+      .includeAllAttributesInResultFromSchema()
+      .queryAttribute()
+      .whereBookISBN()
+      .varCharEquals("9781442468450")
+      .executeQuery()
+      .executeCompilation();
+      doc.compileVisitors();
+//      System.out.println(doc.getPurchaseOrderByBookJson());
+      System.out.println(doc.getPurchaseOrderByBookWithCustomersJson(doc1.compileCustomers()));
+//      doc.getPurchaseOrderByBookJsonIncludeCustomers(customers);
+     
+//      DataObjectCompiler.getJsonFromSiteUsers(customers, visitors)
+//      .stream().map(visitor->visitor.toJson()).forEach(System.out::println);
+      
 //		String query ="SELECT BOOK.ID AS BOOK_ID,BOOK.TITLE AS BOOK_TITLE, BOOK.ISBN AS BOOK_ISBN,REVIEW.TITLE AS REVIEW_TITLE,REVIEW.BODY AS REVIEW_BODY, REVIEW.CUSTOMER AS REVIEW_CUSTOMER, REVIEW.BOOK AS REVIEW_BOOK, CUSTOMER.ID AS CUSTOMER_ID, CUSTOMER.GIVENNAME AS CUSTOMER_GIVENNAME, CUSTOMER.SURNAME AS CUSTOMER_SURNAME FROM BOOK,REVIEW,CUSTOMER WHERE  BOOK.ID=REVIEW.BOOK AND REVIEW.CUSTOMER=CUSTOMER.ID AND REVIEW.BOOK='b7441b2a-0739-3641-a78f-1d973daee854'";
 //
 //		Map<String,Set<String>> attributesIncludedInResults = new LinkedHashMap<String, Set<String>>();

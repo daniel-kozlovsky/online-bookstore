@@ -20,7 +20,6 @@ public class Customer extends SiteUser{
 	private  String email;
 	private  String password;
 	private  Review[] reviews;
-	private  PurchaseOrder[] purchaseOrders;
 	private  long createdAtEpoch;
 	private CreditCard creditCard;
 	private boolean _isLoggedOn;
@@ -100,56 +99,20 @@ public class Customer extends SiteUser{
 	
 
 	
-	public void addPurchseOrder(PurchaseOrder purchaseOrder) {
-		PurchaseOrder[] purchaseOrders=new PurchaseOrder[this.purchaseOrders.length+1];
-		for(int i=0;i<this.purchaseOrders.length;i++) {
-			purchaseOrders[i]=this.purchaseOrders[i];
-		}
-		purchaseOrders[this.purchaseOrders.length]=purchaseOrder;
-		this.purchaseOrders=purchaseOrders;
-	}
-	
-	public void addPurchseOrders(PurchaseOrder[] purchaseOrders) {
-		PurchaseOrder[] appendPurchaseOrders=new PurchaseOrder[this.purchaseOrders.length+purchaseOrders.length];
-		for(int i=0;i<this.purchaseOrders.length;i++) {
-			appendPurchaseOrders[i]=this.purchaseOrders[i];
-		}
-		for(int i=0;i<purchaseOrders.length;i++) {
-			appendPurchaseOrders[i+this.purchaseOrders.length]=purchaseOrders[i];
-		}
 
-		this.purchaseOrders=appendPurchaseOrders;
-	}
 	
 	public long getCreatedAtEpoch() {
 		return this.createdAtEpoch;
 	}
 
 	
-	
-	public PurchaseOrder[] getPurchaseOrders() {
-		return purchaseOrders;
-	}
-	
-	public Map<Long,PurchaseOrder> getCreatedAtEpochToPurchaseOrders() {
-		Map<Long,PurchaseOrder>  result = new LinkedHashMap<Long, PurchaseOrder>();
-		for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
-			result.put(purchaseOrder.getCreatedAtEpoch(), purchaseOrder);
-		}
-		return result;
-	}
 
-	public PurchaseOrder getPurchaseOrderByCreatedAtEpoch(Long createdAtEpoch) {
-		return getCreatedAtEpochToPurchaseOrders().get(createdAtEpoch);
-	}
 
 	public boolean isReviewByCustomer(Review review) {
 		return true;
 	}
 	
-	public boolean isPurchaseOrderByCustomer(PurchaseOrder purchaseOrder) {
-		return true;
-	}
+
 	
 	public boolean isCartByCustomer(Cart cart) {
 		return true;
@@ -383,7 +346,7 @@ public class Customer extends SiteUser{
 		}
 
 		public Builder withPurchaseOrders(List<PurchaseOrder> purchaseOrders){
-			PurchaseOrder[] purchaseOrderArr = new PurchaseOrder[this.purchaseOrders.length];
+			PurchaseOrder[] purchaseOrderArr = new PurchaseOrder[purchaseOrders.size()];
 			return withPurchaseOrders(purchaseOrders.toArray(purchaseOrderArr));
 		}
 		public Builder withPurchaseOrders(PurchaseOrder purchaseOrders){
