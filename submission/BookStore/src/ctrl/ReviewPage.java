@@ -72,7 +72,6 @@ public class ReviewPage extends HttpServlet {
 		
 		HttpSession h = request.getSession();
 		
-		
 		if (request.getParameter(bookID)!=null) {
 			
 			try {

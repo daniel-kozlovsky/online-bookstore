@@ -58,65 +58,77 @@
 	<div class="section">
 		<header>Order ID : ${requestScope['ORDER_ID']}</header>
 		
-		<div class="row">
-			<div class="column_1_3">
-				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
-			</div>
-			<div class="column_1_3">
-				<div class="row">
-					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
-				</div>
-				<div class="row" >
-					ISBN: fasdfadf <BR />
-					Quantity: 3
-				</div>
-				<div class="row">
-					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
-				</div>
-				<div class="row">
-					<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="column_1_3">
-				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
-			</div>
-			<div class="column_2_3">
-				<div class="row">
-					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
-				</div>
-				<div class="row" >
-					ISBN: ${requestScope['ISBN']}
-				</div>
-				<div class="row">
-					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
-				</div>
-				<div class="row">
-					<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="column_1_3">
-				<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
-			</div>
-			<div class="column_2_3">
-				<div class="row">
-					<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
-				</div>
-				<div class="row" >
-					ISBN: ${requestScope['ISBN']}
-				</div>
-				<div class="row">
-					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
-				</div>
-				<div class="row">
-					<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
-				</div>
-			</div>
-		</div>
+		${requestScope['BOOKS_IN_ORDER']}
 		
+		<FORM action="${pageContext.request.contextPath}/Orders" method="Get">
+			<div class="row">
+				<div class="column_1_3">
+					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/1984__George_Orwell_1230004544609.jpg" alt="search" /> 
+				</div>
+				<div class="column_1_3">
+					<div class="row">
+						<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
+					</div>
+					<div class="row" >
+						ISBN: fasdfadf <BR />
+						Quantity: 3
+					</div>
+					<div class="row">
+						<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
+					</div>
+					<div class="row">
+						<input type="hidden" id="TITLE" name="TITLE" value="This is a title"></input>
+						<input type="hidden" id="AUTHOR" name="AUTHOR" value="author"></input>
+						<input type="hidden" id="bookID" name="bookID" value="988eed34-bad0-3635-a0ae-9e4f72a54306"></input>
+						<p style="margin-left:0px;"><button id="addReview" name="addReview" class="button addReview" type="addReview" value="988eed34-bad0-3635-a0ae-9e4f72a54306">write a review</button></p>
+					</div>
+				</div>
+			</div>
+		</FORM>
+		
+		<FORM action="${pageContext.request.contextPath}/Orders" method="Post">
+			<div class="row">
+				<div class="column_1_3">
+					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
+				</div>
+				<div class="column_2_3">
+					<div class="row">
+						<h2>${requestScope['TITLE']}, ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
+					</div>
+					<div class="row" >
+						ISBN: ${requestScope['ISBN']}
+					</div>
+					<div class="row">
+						<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
+					</div>
+					<div class="row">
+						<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
+					</div>
+				</div>
+			</div>
+		</FORM>
+		
+		<FORM action="${pageContext.request.contextPath}/Orders" method="Post">
+			<div class="row">
+				<div class="column_1_3">
+					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
+				</div>
+				<div class="column_2_3">
+					<div class="row">
+						<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
+					</div>
+					<div class="row" >
+						ISBN: ${requestScope['ISBN']}
+					</div>
+					<div class="row">
+						<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
+					</div>
+					<div class="row">
+						<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
+					</div>
+				</div>
+			</div>
+		</FORM>	
 	</div>
 	
 	<!-- footer -->

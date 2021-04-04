@@ -4,13 +4,21 @@ import java.util.List;
 import java.util.Map;
 
 import data.beans.Book;
+import data.beans.Customer;
+import data.beans.PurchaseOrder;
 import data.dao.BookDAO;
+import data.dao.CustomerDAO;
+import data.dao.PurchaseOrderDAO;
+import data.dao.ReviewDAO;
 
 
 public class MainPageModel {
 	
 	public static MainPageModel instance;
 	private BookDAO book;
+	private CustomerDAO user;
+	private PurchaseOrderDAO order;
+	private ReviewDAO review;
 	
 	public MainPageModel() {};
 	
@@ -114,7 +122,13 @@ public class MainPageModel {
 		return b.get(0);
 	}
 	
-	
+	/**
+	 * Finds books where the input appears in their title, author's name, description or category
+	 * 
+	 * 
+	 * @param input - input in the search bar
+	 * @return
+	 */
 	public List<Book>  prepSearchResult (String input) {
 		
 		int maxNum = book.getNumberBooks();
@@ -186,12 +200,75 @@ public class MainPageModel {
 		return b;
 	}
 	
+	/**
+	 * Identifies the customer with username and password, then finds all the order
+	 * transactions and books related to that customer
+	 * 
+	 * @param username	
+	 * @param passwd
+	 * @return
+	 * @throws Exception
+	 */
+	public PurchaseOrder[] getCustomerOrders(String username, String passwd) throws Exception{
+//		List<Customer> l = null;
+		PurchaseOrder[] p = null;
+		
+		try {
+			Customer s = user.loginCustomer(username, passwd);
+			
+			p = s.getPurchaseOrders();
+
+		} catch (Exception e) {
+			throw new Exception("Couldn't find username and password in the database!");
+		}
+		return p;
+	}
+	
+	
+	public void addReview (String username, String passwd, String title, String body, int rate, String book_id) throws Exception{
+		
+		Book b = getBookByID(book_id);
+		Customer c = user.loginCustomer(username, passwd);
+						
+		review.newUpdateRequest()
+			.requestNewReviewInsertion(c, b)
+			.insertReviewWithTitle(title)
+			.insertReviewWithBody(body)
+			.insertReviewWithRating(rate)
+			.executeReviewInsertion();
+	}
+	
+	public boolean didCustomerAddReview (String username, String passwd, String book_id) throws Exception {
+		
+		Customer c = user.loginCustomer(username, passwd);
+		
+		List<Book> b = review.newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereReviewCustomer()
+				.isCustomer(c)
+				.queryBook()
+				.queryAttribute()
+				.whereBook()
+				.isBook(book_id)
+				.executeQuery()
+				.executeCompilation()
+				.compileBooks();
+		
+		if (b.size() > 1)
+			throw new Exception ("At most 1 book can be associated with a user review!");
+		
+		return (b.size() == 1);
+	}
+	
 	//getInstance will return that ONE instance of the pattern 
 	//with the the DAO objects initialized..
 	public static MainPageModel getInstance()throws ClassNotFoundException{
 		if (instance==null) {
 			instance =new MainPageModel();
 			instance.book = new BookDAO();
+			instance.review = new ReviewDAO();
+			instance.user = new CustomerDAO();
 		}
 		return instance;
 	}
