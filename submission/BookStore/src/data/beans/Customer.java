@@ -10,7 +10,7 @@ import data.beans.Book.Builder;
 import data.beans.IdObject.IdObjectBuilder;
 import data.schema.UserTypes;
 
-public class Customer extends User{
+public class Customer extends SiteUser{
 	
 	
 	private String givenName;
@@ -20,7 +20,6 @@ public class Customer extends User{
 	private  String email;
 	private  String password;
 	private  Review[] reviews;
-	private  Cart cart;
 	private  PurchaseOrder[] purchaseOrders;
 	private  long createdAtEpoch;
 	private CreditCard creditCard;
@@ -99,9 +98,7 @@ public class Customer extends User{
 		this.reviews=appendReviews;
 	}
 	
-	public Cart getCart() {
-		return cart;
-	}
+
 	
 	public void addPurchseOrder(PurchaseOrder purchaseOrder) {
 		PurchaseOrder[] purchaseOrders=new PurchaseOrder[this.purchaseOrders.length+1];
@@ -164,7 +161,7 @@ public class Customer extends User{
 		private String givenName;
 		private String surName;
 		private String userName;
-		private Address address;
+//		private Address address;
 		private String password;
 		private Review[] reviews;
 		private Cart cart;
@@ -177,7 +174,10 @@ public class Customer extends User{
 		private String country;
 		private String city;
 		private boolean _isLoggedOn;
-		private CreditCard creditCard;
+		private String creditCardType;
+		private String creditCardNumber;
+		private String creditCardExpiry;
+		private String creditCardCVV2;
 
 		private  long createdAtEpoch;
 		private boolean _isWithinReview;
@@ -196,7 +196,6 @@ public class Customer extends User{
 			this.userName="";
 			this.password="";
 			this.email="";
-			this.address=new Address.Builder().build();
 			this.reviews=new Review[]{};
 			this.cart=new Cart.Builder().withId(this.id).build();
 			this.purchaseOrders=new PurchaseOrder[] {};
@@ -209,7 +208,10 @@ public class Customer extends User{
 			this.country="";
 			this.postalCode="";
 			this._isLoggedOn=false;
-			this.creditCard=new CreditCard.Builder().build();
+			this.creditCardCVV2="";
+			this.creditCardNumber="";
+			this.creditCardExpiry="";
+			this.creditCardType="";
 		}
 		
 		
@@ -221,7 +223,7 @@ public class Customer extends User{
 			this.surName=customer.surName;
 			this.userName=customer.userName;
 			this.password=customer.password;
-			this.address=customer.address;
+//			this.address=customer.address;
 			this.reviews=customer.reviews;
 			this.cart=customer.cart;
 			this.email=customer.email;
@@ -235,7 +237,10 @@ public class Customer extends User{
 			this.country=customer.getAddress().getCountry();
 			this.postalCode=customer.getAddress().getPostalCode();
 			this._isLoggedOn=customer._isLoggedOn;
-			this.creditCard=customer.creditCard;
+			this.creditCardCVV2=customer.getCreditCard().getCreditCardCVV2();
+			this.creditCardNumber=customer.getCreditCard().getCreditCardNumber();
+			this.creditCardExpiry=customer.getCreditCard().getCreditCardExpiry();
+			this.creditCardType=customer.getCreditCard().getCreditCardType();
 			
 		}
 		public Builder withCreatedAtEpoch(long createdAtEpoch){
@@ -259,7 +264,12 @@ public class Customer extends User{
 		}
 
 		public Builder withAddress(Address address){
-			this.address=address;
+			this.streetNumber=address.getNumber();
+			this.street=address.getStreet();
+			this.postalCode=address.getPostalCode();
+			this.province=address.getProvince();
+			this.country=address.getCountry();
+			this.city=address.getCity();
 			return this;
 		}
 		
@@ -293,17 +303,36 @@ public class Customer extends User{
 			return this;
 		}
 		
-
+		public Builder withCreditCardType(String creditCardType) {
+			this.creditCardType=creditCardType;
+			return this;
+		}
+		public Builder withCreditCardNumber(String creditCardNumber ) {
+			this.creditCardNumber=creditCardNumber;
+			return this;
+		}
+		public Builder withCreditCardExpiry(String creditCardExpiry) {
+			this.creditCardExpiry=creditCardExpiry;
+			return this;
+		}
+		public Builder withCreditCardCVV2(String creditCardCVV2) {
+			this.creditCardCVV2=creditCardCVV2;
+			return this;
+		}
+		
+		
+		public Builder withEmail(String email){
+			this.email=email;
+			return this;
+		}
+		
 		public Builder withUserName(String userName){
 			this.userName=userName;
 			return this;
 		}
 		
 
-		public Builder withEmail(String email){
-			this.email=email;
-			return this;
-		}
+
 
 		public Builder withPassword(String password){
 			this.password=password;
@@ -377,18 +406,22 @@ public class Customer extends User{
 		}
 		
 		public Builder withCreditCard(CreditCard creditCard){
-			this.creditCard=creditCard;
+			this.creditCardCVV2=creditCard.getCreditCardCVV2();
+			this.creditCardNumber=creditCard.getCreditCardNumber();
+			this.creditCardExpiry=creditCard.getCreditCardExpiry();
+			this.creditCardType=creditCard.getCreditCardType();
 			return this;
 		}
 		
 
 
 		public Customer build(){
+			Address address =new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
+			CreditCard creditCard = new CreditCard.Builder().withCreditCardType(creditCardType).withCreditCardNumber(creditCardNumber).withCreditCardExpiry(creditCardExpiry).withCreditCardCVV2(creditCardCVV2).build();
 			Customer customer=new Customer();
 			customer.id=this.id==null?new Id(""):this.id;
 			customer.givenName=this.givenName==null?"":this.givenName;
 			customer.surName=this.surName==null?"":this.surName;
-			Address address =new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
 			customer.address=address;
 			customer.userName=this.userName==null?"":this.userName;
 			customer.password=this.password==null?"":this.password;
@@ -399,7 +432,7 @@ public class Customer extends User{
 			customer.email=this.email==null?"":this.email;
 			customer.createdAtEpoch=this.createdAtEpoch;
 			customer._isWithinReview=this._isWithinReview;
-			customer.creditCard=this.creditCard;
+			customer.creditCard=creditCard;
 			return customer;
 		}
 
@@ -409,7 +442,7 @@ public class Customer extends User{
 	public String toJson() {
 		
 		String purchaseOrdersJson="\"purchaseOrders\": [";
-		if (this.purchaseOrders!=null && purchaseOrders.length!=0) {
+		if (this.purchaseOrders!=null && purchaseOrders.length>0) {
 			for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
 				purchaseOrdersJson+=purchaseOrder.toJson()+",";
 			}
@@ -417,6 +450,7 @@ public class Customer extends User{
 				
 		}
 		purchaseOrdersJson+="]";
+		
 		String reviewsJson="\"reviews\": [";
 		if(!isWithinReview()) {			
 			if (this.reviews!=null && reviews.length!=0) {

@@ -229,6 +229,27 @@ public class CustomerDAO implements DAO{
 			return this;
 		}
 		
+		public BookStoreCustomerQuery includeCustomerCreditCardInResult() {
+			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
+			this.attributesToIncludInResults.get(customerSchema.tableName()).add(customerSchema.CREDIT_CARD);
+			
+			this.attributesToIncludInResults.get(customerSchema.tableName()).add(customerSchema.CREDIT_CARD_NUMBER);
+			
+			this.attributesToIncludInResults.get(customerSchema.tableName()).add(customerSchema.CREDIT_CARD_EXPIRY);
+			
+			this.attributesToIncludInResults.get(customerSchema.tableName()).add(customerSchema.CREDIT_CARD_CVV2);
+			includeKeyInResults();
+			return this;
+		}
+		public BookStoreCustomerQuery excludeCustomerCreditCardInResult(){
+			if(this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.get(customerSchema.tableName()).remove(customerSchema.CREDIT_CARD);
+			if(this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.get(customerSchema.tableName()).remove(customerSchema.CREDIT_CARD_NUMBER);
+			if(this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.get(customerSchema.tableName()).remove(customerSchema.CREDIT_CARD_EXPIRY);
+			if(this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.get(customerSchema.tableName()).remove(customerSchema.CREDIT_CARD_CVV2);
+			return this;
+		}
+		
+		
 		
 //		public BookStoreCustomerQuery includeCustomerCartInResult(){
 //			if(!this.attributesToIncludInResults.containsKey(customerSchema.tableName())) this.attributesToIncludInResults.put(customerSchema.tableName(), new HashSet<String>());
@@ -662,13 +683,14 @@ public class CustomerDAO implements DAO{
 			customerVarCharQuery.setAttribute(this);
 			return customerVarCharQuery;
 		}
-		public CustomerVarCharQuery whereCustomerEmail(){
-			CustomerVarCharQuery customerVarCharQuery= new CustomerVarCharQuery(this.bookStoreCustomerQuery,CustomerSchema.EMAIL);
+
+		public CustomerVarCharQuery whereCustomerPassword(){
+			CustomerVarCharQuery customerVarCharQuery= new CustomerVarCharQuery(this.bookStoreCustomerQuery,CustomerSchema.PASSWORD);
 			customerVarCharQuery.setAttribute(this);
 			return customerVarCharQuery;
 		}
-		public CustomerVarCharQuery whereCustomerPassword(){
-			CustomerVarCharQuery customerVarCharQuery= new CustomerVarCharQuery(this.bookStoreCustomerQuery,CustomerSchema.PASSWORD);
+		public CustomerVarCharQuery whereCustomerEmail(){
+			CustomerVarCharQuery customerVarCharQuery= new CustomerVarCharQuery(this.bookStoreCustomerQuery,CustomerSchema.EMAIL);
 			customerVarCharQuery.setAttribute(this);
 			return customerVarCharQuery;
 		}

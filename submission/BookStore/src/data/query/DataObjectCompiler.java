@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -99,6 +101,7 @@ public class DataObjectCompiler {
 		}
 		this.compileCustomerResults=new LinkedList<Customer>();
 		this.compileBookResults=new LinkedList<Book>();
+//		this.compilePurchaseOrderResults= new LinkedList<PurchaseOrder>();
 		this.queryString=queryString;
 		this.attributesIncludedInResults=attributesIncludedInResults;
 		this.buildOrder="";
@@ -273,8 +276,68 @@ public class DataObjectCompiler {
 		this.compileBookResults=results;
 		return results;
 	}
+//	
+//	private List<PurchaseOrder> compilePurchaseOrderResults;
+//	public List<PurchaseOrder>  compilePurchaseOrders() {
+//		List<PurchaseOrder> results = new LinkedList<PurchaseOrder>();
+//		for(Entry<Id,Map<Long,PurchaseOrder>>  entry:this.purchaseOrderResults.entrySet()) {
+//			for(Entry<Long,PurchaseOrder> poEntry:entry.getValue().entrySet()) {
+//				Map<Book,Integer> compiledBooks = new LinkedHashMap<Book,Integer>();
+//				for(Entry<Book,Integer> bookEntry:poEntry.getValue().getBooks().entrySet()) {
+//					
+//					Book book = new Book.Builder().withId(bookEntry.getKey().getId()).build();					
+//					if(bookResults.containsKey(bookEntry.getKey().getId())) {
+//						book=bookResults.get(entry.getKey());
+//					}
+//					List<Review> reviews = new LinkedList<Review>();
+//					if(bookReviewResults.containsKey(bookEntry.getKey().getId())) {
+//						reviews=bookReviewResults.get(bookEntry.getKey().getId()).stream().map(review-> new Review.Builder(review).withBook(new Book.Builder().withId(bookEntry.getKey().getId()).build()).withinBook().build()).collect(Collectors.toCollection(LinkedList::new));
+//					}
+//					book = new Book.Builder(book).withReviews(reviews).build();
+//					
+//					compiledBooks.put(book, bookEntry.getValue());
+//					
+//
+//				}
+//				results.add(new PurchaseOrder.Builder(poEntry.getValue()).withBooks(compiledBooks).build());
+//			}
+//		}
+//		
+//		return results;
+//	}
 	
-	
+//	public Map<Book,PurchaseOrder>  compilePurchaseOrdersOfBooks() {
+//		Map<Book,PurchaseOrder> results = new LinkedHashMap<Book,PurchaseOrder>();
+//		List<Book> bookInPO = new LinkedList<Book>();
+//		for(Entry<Id,Book> bookEntry:this.bookResults.entrySet()) {
+//			List<Review> reviews = new LinkedList<Review>();
+//			if(bookReviewResults.containsKey(bookEntry.getKey())) {
+//				reviews=bookReviewResults.get(bookEntry.getKey())
+//						.stream()
+//						.map(review-> new Review.Builder(review).withBook(new Book.Builder().withId(bookEntry.getKey()).build()).withinBook().build())
+//						.collect(Collectors.toCollection(LinkedList::new));
+//			}
+//			Book bookWithReview = new Book.Builder(bookEntry.getValue()).withReviews(reviews).build();
+//			bookInPO.add(bookWithReview);
+//			
+//
+//			
+//			compiledBooks.put(book, bookEntry.getValue());
+//			
+//
+//		}
+//		
+//		for(Entry<Id,Map<Long,PurchaseOrder>>  entry:this.purchaseOrderResults.entrySet()) {
+//			for(Entry<Long,PurchaseOrder> poEntry:entry.getValue().entrySet()) {
+//				Map<Book,Integer> compiledBooks = new LinkedHashMap<Book,Integer>();
+//
+//				results.add(new PurchaseOrder.Builder(poEntry.getValue()).withBooks(compiledBooks).build());
+//			}
+//		}
+//		
+//		return results;
+//	}
+//	
 
 	
 	public String getCompiledBooksJson() {

@@ -62,10 +62,16 @@ public class BookTestCtrl extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("do get");
-		PrintWriter out = response.getWriter();
-      response.setContentType("text");
-      response.setCharacterEncoding("UTF-8");
-      out.write("TESTING  !!!");
+//		PrintWriter out = response.getWriter();
+//      response.setContentType("text");
+//      response.setCharacterEncoding("UTF-8");
+//      out.write("TESTING  !!!");
+      CustomerDAO user= new CustomerDAO();
+      String username="WRitter163";
+      String passwd = "Walterpassword";
+
+      Customer s = user.loginCustomer(username, passwd);
+      System.out.println(s.toJson());
 //		String query ="SELECT BOOK.ID AS BOOK_ID,BOOK.TITLE AS BOOK_TITLE, BOOK.ISBN AS BOOK_ISBN,REVIEW.TITLE AS REVIEW_TITLE,REVIEW.BODY AS REVIEW_BODY, REVIEW.CUSTOMER AS REVIEW_CUSTOMER, REVIEW.BOOK AS REVIEW_BOOK, CUSTOMER.ID AS CUSTOMER_ID, CUSTOMER.GIVENNAME AS CUSTOMER_GIVENNAME, CUSTOMER.SURNAME AS CUSTOMER_SURNAME FROM BOOK,REVIEW,CUSTOMER WHERE  BOOK.ID=REVIEW.BOOK AND REVIEW.CUSTOMER=CUSTOMER.ID AND REVIEW.BOOK='b7441b2a-0739-3641-a78f-1d973daee854'";
 //
 //		Map<String,Set<String>> attributesIncludedInResults = new LinkedHashMap<String, Set<String>>();
@@ -88,40 +94,40 @@ public class BookTestCtrl extends HttpServlet {
 //		PrintWriter out = response.getWriter();
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
-		Customer customer = new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build();
-		new BookDAO().newQueryRequest()
-				.includeAllAttributesInResultFromSchema()
-				.queryAttribute()
-				.whereBook()
-				.isBook("b7441b2a-0739-3641-a78f-1d973daee854")
-				.executeQuery()
-				.executeCompilation()
-				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
+//		Customer customer = new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build();
+//		new BookDAO().newQueryRequest()
+//				.includeAllAttributesInResultFromSchema()
+//				.queryAttribute()
+//				.whereBook()
+//				.isBook("b7441b2a-0739-3641-a78f-1d973daee854")
+//				.executeQuery()
+//				.executeCompilation()
+//				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
 		
 //		'Daniel','Kozlovsky','dankoz0','123456','dankoz0','',','','','','',1617293430
-		System.out.println(Boolean.toString(new CustomerDAO().loginCustomer("SPhillips4588","Scottpassword").isLoggedOn()));
-		new CustomerDAO().newUpdateRequest().requestNewCustomerInsertion()
-		.insertCustomerWithGivenName("Daniel")
-		.insertCustomerWithSurName("Kozlovsky")
-		.insertCustomerWithUserName("dankoz0")
-		.insertCustomerWithPassWord("123456")
-		.insertCustomerWithEmail("dkemail")
-		.insertCustomerWithStreetNumber("")
-		.insertCustomerWithStreet("")
-		.insertCustomerWithPostalCode("")
-		.insertCustomerWithCity("")
-		.insertCustomerWithProvince("")
-		.insertCustomerWithCountry("")
-		.executeCustomerInsertion();
-		
-		new CustomerDAO().newQueryRequest().includeAllAttributesInResultFromSchema()
-		.queryAttribute()
-		.whereCustomerEmail()
-		.varCharEquals("dkemail")
-		.executeQuery()
-		.executeCompilation()
-		.compileCustomers()
-		.stream().map(abook->abook.toJson()).forEach(System.out::println);
+//		System.out.println(Boolean.toString(new CustomerDAO().loginCustomer("SPhillips4588","Scottpassword").isLoggedOn()));
+//		new CustomerDAO().newUpdateRequest().requestNewCustomerInsertion()
+//		.insertCustomerWithGivenName("Daniel")
+//		.insertCustomerWithSurName("Kozlovsky")
+//		.insertCustomerWithUserName("dankoz0")
+//		.insertCustomerWithPassWord("123456")
+//		.insertCustomerWithEmail("dkemail")
+//		.insertCustomerWithStreetNumber("")
+//		.insertCustomerWithStreet("")
+//		.insertCustomerWithPostalCode("")
+//		.insertCustomerWithCity("")
+//		.insertCustomerWithProvince("")
+//		.insertCustomerWithCountry("")
+//		.executeCustomerInsertion();
+//		
+//		new CustomerDAO().newQueryRequest().includeAllAttributesInResultFromSchema()
+//		.queryAttribute()
+//		.whereCustomerEmail()
+//		.varCharEquals("dkemail")
+//		.executeQuery()
+//		.executeCompilation()
+//		.compileCustomers()
+//		.stream().map(abook->abook.toJson()).forEach(System.out::println);
 		
 //        CustomerDAO customerDAO = new CustomerDAO();
 //        DataObjectCompiler customerResults=
