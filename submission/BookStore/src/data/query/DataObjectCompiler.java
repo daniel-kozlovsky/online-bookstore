@@ -214,8 +214,7 @@ public class DataObjectCompiler {
 //					customerCart= new Cart.Builder(customerCart).withBooks(cartBooks).withInCustomer().build();
 //				}
 			}
-			
-			System.out.println("asdf");
+
 			
 			results.add(new Customer.Builder(entry.getValue())
 					.withCart(customerCart)

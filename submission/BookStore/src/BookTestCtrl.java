@@ -65,52 +65,70 @@ public class BookTestCtrl extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("do get");
+		CustomerDAO user =new CustomerDAO();
+		String username="WRitter163";
+		String passwd = "Walterpassword";
+
+		Customer s = user.loginCustomer(username, passwd);
+		for(PurchaseOrder po: s.getPurchaseOrders()) {
+			System.out.println(po.toJson());
+		}
+		
 //		PrintWriter out = response.getWriter();
 //      response.setContentType("text");
 //      response.setCharacterEncoding("UTF-8");
 //      out.write("TESTING  !!!");
-//      CustomerDAO user= new CustomerDAO();
-//      String username="WRitter163";
-//      String passwd = "Walterpassword";
-//
-//      Customer s = user.loginCustomer(username, passwd);
-//      System.out.println(s.toJson());
-      
+
+
+//		DataObjectCompiler docCust= new CustomerDAO().newQueryRequest()
+//				.includeAllAttributesInResultFromSchema()
+//				.queryPurchaseOrder()
+//				.queryAttribute()
+//				.wherePurchaseOrderCustomer()
+//				.isCustomer(new Customer.Builder().withId(new Id("988eed34-bad0-3635-a0ae-9e4f72a54306")).build())
+//				.withResultLimit(100)
+//				.withPageNumber(0)
+//				.executeQuery()
+//				.executeCompilation()
+//				;
+//		docCust.compileCustomers();
+
+//		System.out.println(docCust.getCompiledCustomersJson());
       //9781442468450
 
-//      List<Customer> customers=
-		DataObjectCompiler doc1=
-      new CustomerDAO().newQueryRequest()
-      .includeAllAttributesInResultFromSchema()
-      .queryPurchaseOrder()
-      .includeAllAttributesInResultFromSchema()
-      .queryBook()
-      .includeAllAttributesInResultFromSchema()
-      .queryAttribute()
-      .whereBookISBN()
-      .varCharEquals("9781442468450")
-      .executeQuery()
-      .executeCompilation();
-//		doc1.compileCustomers();
-		
-      System.out.println(doc1.getPurchaseOrderByBookJson());
-      DataObjectCompiler doc=
-      new VisitorDAO().newQueryRequest()
-      .includeAllAttributesInResultFromSchema()
-      .queryPurchaseOrder()
-      .includeAllAttributesInResultFromSchema()
-      .queryBook()
-      .includeAllAttributesInResultFromSchema()
-      .queryAttribute()
-      .whereBookISBN()
-      .varCharEquals("9781442468450")
-      .executeQuery()
-      .executeCompilation();
-      doc.compileVisitors();
-//      System.out.println(doc.getPurchaseOrderByBookJson());
-      System.out.println(doc.getPurchaseOrderByBookWithCustomersJson(doc1.compileCustomers()));
-//      doc.getPurchaseOrderByBookJsonIncludeCustomers(customers);
-     
+////      Customer query
+//		DataObjectCompiler docCust=
+//      new CustomerDAO().newQueryRequest()
+//      .includeAllAttributesInResultFromSchema()
+//      .queryPurchaseOrder()
+//      .includeAllAttributesInResultFromSchema()
+//      .queryBook()
+//      .includeAllAttributesInResultFromSchema()
+//      .queryAttribute()
+//      .whereBookISBN()
+//      .varCharEquals("9781442468450")
+//      .executeQuery()
+//      .executeCompilation();
+//		
+////	Visitor Query	
+//      System.out.println(docCust.getPurchaseOrderByBookJson());
+//      DataObjectCompiler docVis=
+//      new VisitorDAO().newQueryRequest()
+//      .includeAllAttributesInResultFromSchema()
+//      .queryPurchaseOrder()
+//      .includeAllAttributesInResultFromSchema()
+//      .queryBook()
+//      .includeAllAttributesInResultFromSchema()
+//      .queryAttribute()
+//      .whereBookISBN()
+//      .varCharEquals("9781442468450")
+//      .executeQuery()
+//      .executeCompilation();
+//      docVis.compileVisitors();
+//      System.out.println(docVis.getPurchaseOrderByBookWithCustomersJson(docCust.compileCustomers())); //combines docVis compiled visitors with doc1 compiled customers
+//      System.out.println( docVis.getPurchaseOrderByBookJson());//prints json for docVis, since it was a visitor, it will be the visitor version
+//      System.out.println( docCust.getPurchaseOrderByBookJson());//prints json for docCust, since it was a customer, it will be the customer version
+
 //      DataObjectCompiler.getJsonFromSiteUsers(customers, visitors)
 //      .stream().map(visitor->visitor.toJson()).forEach(System.out::println);
       

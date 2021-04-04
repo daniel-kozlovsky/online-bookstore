@@ -117,6 +117,7 @@ public class CustomerDAO implements DAO{
 				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
+				.withResultLimit(50)
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
@@ -138,6 +139,7 @@ public class CustomerDAO implements DAO{
 				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
+				.withResultLimit(new PurchaseOrderDAO().getPurchaseOrderRowCount(customer)*5)
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
@@ -159,6 +161,7 @@ public class CustomerDAO implements DAO{
 				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
+				.withResultLimit(new ReviewDAO().getReviewCount(customer)*5)
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();

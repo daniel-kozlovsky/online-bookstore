@@ -1,11 +1,23 @@
 package data.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import data.beans.Book;
 import data.beans.Customer;
+import data.beans.Id;
 import data.beans.PurchaseOrder;
 import data.beans.SiteUser;
 import data.beans.User;
@@ -37,6 +49,71 @@ public class PurchaseOrderDAO implements DAO{
 	private PurchaseOrderSchema purchaseOrderSchema;
 	public PurchaseOrderDAO(){
 		this.purchaseOrderSchema=new PurchaseOrderSchema();
+	}
+	
+	public Map<Long,Integer> getPurchaseOrderCountByCreatedAtEpoch(Id id){
+		return getPurchaseOrderCountByCreatedAtEpoch(id.toString());
+	}
+	
+	public Map<Long,Integer> getPurchaseOrderCountByCreatedAtEpoch(Customer customer){
+		return getPurchaseOrderCountByCreatedAtEpoch(customer.getId().toString());
+	}
+	
+	public Integer getPurchaseOrderRowCount(Customer customer){
+		return getPurchaseOrderRowCount(customer.getId().toString());
+	}
+	
+	public Integer getPurchaseOrderRowCount(Id id){
+		return getPurchaseOrderRowCount(id.toString());
+	}
+	public Integer getPurchaseOrderRowCount(String id){
+		int result=0;
+		for(Entry<Long,Integer> entry :getPurchaseOrderCountByCreatedAtEpoch(id).entrySet()) {
+			result=result+entry.getValue();
+		}
+		return result+10;
+	}
+	
+	public Map<Long,Integer> getPurchaseOrderCountByCreatedAtEpoch(String id){
+		String queryString="SELECT COUNT(CREATED_AT_EPOCH) AS PO_COUNT, CREATED_AT_EPOCH FROM PURCHASE_ORDER where ID='"+id+"' GROUP BY ID, CREATED_AT_EPOCH ";
+		Map<Long,Integer> results= new LinkedHashMap<Long,Integer>();
+		Connection connection= null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		try {
+			DataSource dataSource=(DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			connection= dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(queryString);
+			resultSet= preparedStatement.executeQuery();
+			while(resultSet.next()) {				
+				results.put(resultSet.getLong("CREATED_AT_EPOCH"), resultSet.getInt("PO_COUNT"));
+			}
+			return results;
+
+			
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(preparedStatement!=null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		return results;
 	}
 	
 	@Override
