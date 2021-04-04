@@ -62,6 +62,7 @@ public class RestModel {
 	}
 	
 	public String getOrdersByISBN (String prodID) throws Exception {
+<<<<<<< HEAD
 		String orderString = "";
 		
 		//Retrieve the book based on it's ISBN
@@ -75,6 +76,18 @@ public class RestModel {
 			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
 		if (book.size() > 1)
 			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
+=======
+		String orderString;
+		
+		List<Book> book = this.getBookByISBN(prodID);
+		
+		
+		
+		List<PurchaseOrder> po;
+		
+		if (book.size() == 0)
+			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
+>>>>>>> Added REST for orders methods
 		else
 		orderString = this.orders.newQueryRequest()
 									 .includeAllAttributesInResultFromSchema()
@@ -94,7 +107,7 @@ public class RestModel {
 		if (b.size() == 0)
 			bookString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
 		else if (b.size() > 1)
-			bookString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
+			bookString = this.create403Message("Forbidden, Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
 		else 
 			bookString = b.get(0).toJson();
 
