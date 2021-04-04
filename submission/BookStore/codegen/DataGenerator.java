@@ -428,7 +428,103 @@ public class DataGenerator {
 		}
 	}
 	
+//	@Test
+	public void delimitBookISBNTest() {
+		List<String> books=new ArrayList<String>();
+
+		try {
+			books=Files.readAllLines(new File("insertBooks.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		FileWriter writer=null;
+		try {
+			writer = new FileWriter("bookIdToISBN.txt"); 
+//			writer.write("INSERT INTO SITE_USER (USER_TYPE,ID) VALUES "+"\n");
+			for(String line:books) {
+				Pattern isbnPattern = Pattern.compile("'([0-9]+)',[0-9]+,[0-9.]+,[0-9]+,[0-9]+\\)");//. represents single character  
+
+//				Pattern isbnPattern = Pattern.compile("([']{1}[0-9]+[']{1})[,][0-9]+[,][0-9]+[,][0-9]+[,]{1}[0-9]+[\\)]");//. represents single character  
+//				Pattern isbnPattern = Pattern.compile("([']{1}[0-9]+[']{1}),[0-9]+,[0-9]+,[0-9]+,[0-9]+[)]");//. represents single character  
+				Matcher isbnMatcher = isbnPattern.matcher(line);  
+				isbnMatcher.find();
+//				System.out.println(isbnMatcher.group(1));
+//				System.out.println(line.substring(2,38));
+				writer.write(line.substring(2,38)+":"+isbnMatcher.group(1)+"\n");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+
+	}
+	
 	@Test
+	public void addISBNTOPo() {
+		List<String> bookIdtoISBN=new ArrayList<String>();
+		List<String> pos=new ArrayList<String>();
+
+		try {
+			bookIdtoISBN=Files.readAllLines(new File("bookIdToISBN.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			pos=Files.readAllLines(new File("PoRaw.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Map<String, String> ids = new HashMap<String, String>();
+
+		for(String line:bookIdtoISBN) {
+			String[] arr=line.split(":");			
+			ids.put(arr[0], arr[1]);
+		}
+		
+		FileWriter writer=null;
+		try {
+			writer = new FileWriter("PosWithISBNRaw.txt"); 
+//			writer.write("INSERT INTO SITE_USER (USER_TYPE,ID) VALUES "+"\n");
+			for(String line:pos) {
+				String ISBN = ids.get(line.substring(41,77));
+				String editLine = "('"+ISBN+"'," + line.substring(1);
+//				System.out.println(editLine);
+//				return;
+				writer.write(editLine+"\n");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	
+//	@Test
 	public void generatePO() {
 		List<String> inserts= new ArrayList<String>();
 		List<String> bookIds= new ArrayList<String>();

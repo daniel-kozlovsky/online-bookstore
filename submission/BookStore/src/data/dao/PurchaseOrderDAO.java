@@ -179,6 +179,11 @@ public class PurchaseOrderDAO implements DAO{
 			if(this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).remove(purchaseOrderSchema.STATUS);
 			return this;
 		}
+		
+		public BookStorePurchaseOrderQuery excludePurchaseOrderBookISBN(){
+			if(this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName())) this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).remove(purchaseOrderSchema.STATUS);
+			return this;
+		}
 
 		public BookStoreBookQuery queryBook() {
 			this.tableJoins.add(
@@ -220,6 +225,9 @@ public class PurchaseOrderDAO implements DAO{
 			
 			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName()) && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).contains(purchaseOrderSchema.USER_TYPE))
 			this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).add(purchaseOrderSchema.USER_TYPE);
+			
+			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName()) && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).contains(purchaseOrderSchema.ISBN))
+			this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).add(purchaseOrderSchema.ISBN);
 
 
 		}
@@ -440,6 +448,59 @@ public class PurchaseOrderDAO implements DAO{
 					);
 			return  this;
 		}
+		
+		public PurchaseOrderBookQuery isBookISBN(Book book) {
+//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
+//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
+//			}
+//			this.dataAccessRequests.get(this.dataSchema.tableName())
+//			.add(new DataAccessString.Builder()
+//					.withTableName(this.dataSchema.tableName())
+//					.withReferenceOperator(this.referenceOperator)
+//					.withAttributeName(PurchaseOrderSchema.ID)
+//					.withDataAccessParameterPrefix("="+"'")
+//					.withDataAccessParameterSuffix("'")
+//					.withDataAccessParameter(book.getId().toString())
+//					.build()
+//					);
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(PurchaseOrderSchema.ISBN)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(book.getISBN())
+					.build()
+					);
+			return  this;
+		}
+		
+		public PurchaseOrderBookQuery isBookISBN(String ISBN) {
+//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
+//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
+//			}
+//			this.dataAccessRequests.get(this.dataSchema.tableName())
+//			.add(new DataAccessString.Builder()
+//					.withTableName(this.dataSchema.tableName())
+//					.withReferenceOperator(this.referenceOperator)
+//					.withAttributeName(PurchaseOrderSchema.ID)
+//					.withDataAccessParameterPrefix("="+"'")
+//					.withDataAccessParameterSuffix("'")
+//					.withDataAccessParameter(book.getId().toString())
+//					.build()
+//					);
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(PurchaseOrderSchema.ISBN)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(ISBN)
+					.build()
+					);
+			return  this;
+		}
+
 
 	}
 	public class PurchaseOrderUserTypeQuery extends PurchaseOrderObjectQuery<PurchaseOrderUserTypeQuery>{

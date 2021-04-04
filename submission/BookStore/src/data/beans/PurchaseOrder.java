@@ -121,6 +121,18 @@ public class PurchaseOrder extends IdObject {
 			this.books=purchaseOrder.books;
 			this.createdAtEpoch=purchaseOrder.createdAtEpoch;
 			this.id=purchaseOrder.getId();
+			this.creditCardCVV2=purchaseOrder.creditCard.getCreditCardCVV2();
+			this.creditCardNumber=purchaseOrder.creditCard.getCreditCardNumber();
+			this.creditCardExpiry=purchaseOrder.creditCard.getCreditCardExpiry();
+			this.creditCardType=purchaseOrder.creditCard.getCreditCardType();
+			this.streetNumber=purchaseOrder.address.getNumber();
+			this.street=purchaseOrder.address.getStreet();
+			this.postalCode=purchaseOrder.address.getPostalCode();
+			this.province=purchaseOrder.address.getProvince();
+			this.country=purchaseOrder.address.getCountry();
+			this.city=purchaseOrder.address.getCity();
+			this.email=purchaseOrder.email;
+			this.userType=purchaseOrder.userType;
 		}
 
 		public Builder(){
@@ -129,6 +141,18 @@ public class PurchaseOrder extends IdObject {
 			this.books=new LinkedHashMap<Book, Integer>();
 			this.createdAtEpoch=0;
 			this.id=new Id("");
+			this.creditCardCVV2="";
+			this.creditCardNumber="";
+			this.creditCardExpiry="";
+			this.creditCardType="";
+			this.streetNumber="";
+			this.street="";
+			this.postalCode="";
+			this.province="";
+			this.country="";
+			this.city="";
+			this.email="";
+			this.userType="";
 		}
 
 
@@ -260,16 +284,15 @@ public class PurchaseOrder extends IdObject {
 
 
 		public PurchaseOrder build(){
-			Address address =new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
-			CreditCard creditCard = new CreditCard.Builder().withCreditCardType(creditCardType).withCreditCardNumber(creditCardNumber).withCreditCardExpiry(creditCardExpiry).withCreditCardCVV2(creditCardCVV2).build();
 			PurchaseOrder purchaseOrder=new PurchaseOrder();			
 			purchaseOrder.status=this.status;
 			purchaseOrder.books=this.books;
 			purchaseOrder.userType=this.userType;
 			purchaseOrder.createdAtEpoch=this.createdAtEpoch;
 			purchaseOrder.email=this.email;
-			purchaseOrder.address=address;
-			purchaseOrder.creditCard=creditCard;
+			purchaseOrder.address=new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
+			purchaseOrder.creditCard= new CreditCard.Builder().withCreditCardType(creditCardType).withCreditCardNumber(creditCardNumber).withCreditCardExpiry(creditCardExpiry).withCreditCardCVV2(creditCardCVV2).build();
+			System.out.println(purchaseOrder.address.toJson());
 			purchaseOrder.id=this.id;
 			return purchaseOrder;
 		}

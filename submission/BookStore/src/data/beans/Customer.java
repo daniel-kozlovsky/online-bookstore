@@ -442,7 +442,7 @@ public class Customer extends SiteUser{
 	public String toJson() {
 		
 		String purchaseOrdersJson="\"purchaseOrders\": [";
-		if (this.purchaseOrders!=null && purchaseOrders.length!=0) {
+		if (this.purchaseOrders!=null && purchaseOrders.length>0) {
 			for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
 				purchaseOrdersJson+=purchaseOrder.toJson()+",";
 			}
@@ -450,6 +450,7 @@ public class Customer extends SiteUser{
 				
 		}
 		purchaseOrdersJson+="]";
+		
 		String reviewsJson="\"reviews\": [";
 		if(!isWithinReview()) {			
 			if (this.reviews!=null && reviews.length!=0) {

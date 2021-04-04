@@ -47,7 +47,7 @@ CREATE  TABLE BOOK (
   CATEGORY varchar (100),
   AUTHOR varchar (100),
   COVER varchar (100),
-  ISBN varchar (100) not null constraint unique_isbn unique,
+  ISBN varchar (100) not null,
   PUBLISH_YEAR int,
   PRICE DOUBLE,
   RATING DOUBLE not null,
@@ -87,11 +87,12 @@ CREATE  TABLE CART (
 
 CREATE  TABLE PURCHASE_ORDER(
   ID varchar(100) not null,
-  BOOK varchar (100) not null,
+  BOOK varchar (100) not null,	
   STATUS varchar (50) not null,
   AMOUNT int not null,
   EMAIL varchar (50) not null,
-USER_TYPE varchar(20) not null,
+  ISBN varchar (100) not null,
+  USER_TYPE varchar(20) not null,
   CREDIT_CARD varchar (20) not null,
   CREDIT_CARD_NUMBER varchar (50) not null,
   CREDIT_CARD_EXPIRY varchar (10) not null,
