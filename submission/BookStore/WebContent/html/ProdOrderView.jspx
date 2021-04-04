@@ -86,7 +86,7 @@
 			</div>
 		</FORM>
 		
-		<FORM action="${pageContext.request.contextPath}/Orders" method="Post">
+		<FORM action="${pageContext.request.contextPath}/Orders" method="Get">
 			<div class="row">
 				<div class="column_1_3">
 					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
@@ -102,7 +102,11 @@
 						<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
 					</div>
 					<div class="row">
-						<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
+						<input type="hidden" id="TITLE" name="TITLE" value="This is a title"></input>
+						<input type="hidden" id="AUTHOR" name="AUTHOR" value="author"></input>
+						<input type="hidden" id="bookID" name="bookID" value="988eed34-bad0-3635-a0ae-9e4f72a54306"></input>
+						<input type="hidden" id="reviewID" name="reviewID" value="f86e4678-f6af-30d6-82ef-e9b4792e8669"></input>
+						<p style="margin-left:0px;"><button id="viewReview" name="viewReview" class="button viewReview" type="viewReview">view your review</button></p>
 					</div>
 				</div>
 			</div>

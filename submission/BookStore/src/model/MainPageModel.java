@@ -1,11 +1,13 @@
 package model;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.PurchaseOrder;
+import data.beans.Review;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
 import data.dao.PurchaseOrderDAO;
@@ -209,22 +211,45 @@ public class MainPageModel {
 	 * @return
 	 * @throws Exception
 	 */
-	public PurchaseOrder[] getCustomerOrders(String username, String passwd) throws Exception{
-//		List<Customer> l = null;
-		PurchaseOrder[] p = null;
+	public List<PurchaseOrder> getCustomerOrders(String username, String passwd) throws Exception{
+		List<PurchaseOrder> p = null;
+		Map<Long, PurchaseOrder> m;
 		
 		try {
+			System.out.println("here! 1 ");
 			Customer s = user.loginCustomer(username, passwd);
+			System.out.println("here! 2");
 			
-			p = s.getPurchaseOrders();
-
+			m = s.getCreatedAtEpochToPurchaseOrders();
+			System.out.println("here! 3");
+			
+			Iterator iterator = m.entrySet().iterator(); 
+			
+			System.out.println("here! 4 iterator = "+iterator.hasNext());
+			
+			if (iterator.hasNext()) {
+				Map.Entry me = (Map.Entry) iterator.next(); 
+				p.add((PurchaseOrder) me.getValue());
+			}
+			
+			System.out.println("p.size() = "+p.size());
 		} catch (Exception e) {
 			throw new Exception("Couldn't find username and password in the database!");
 		}
 		return p;
 	}
 	
-	
+	/**
+	 * Adds a review of the customer with the provided username and password
+	 * 
+	 * @param username
+	 * @param passwd
+	 * @param title
+	 * @param body
+	 * @param rate
+	 * @param book_id
+	 * @throws Exception
+	 */
 	public void addReview (String username, String passwd, String title, String body, int rate, String book_id) throws Exception{
 		
 		Book b = getBookByID(book_id);
@@ -238,6 +263,15 @@ public class MainPageModel {
 			.executeReviewInsertion();
 	}
 	
+	/**
+	 * Checks if the customer reviewed the product previously or not
+	 * 
+	 * @param username
+	 * @param passwd
+	 * @param book_id
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean didCustomerAddReview (String username, String passwd, String book_id) throws Exception {
 		
 		Customer c = user.loginCustomer(username, passwd);
@@ -259,6 +293,23 @@ public class MainPageModel {
 			throw new Exception ("At most 1 book can be associated with a user review!");
 		
 		return (b.size() == 1);
+	}
+	
+	/**
+	 * Gived the reviewID, it returns the Review object which identifies 
+	 * with that id
+	 * 
+	 * @param reviewID
+	 * @return
+	 */
+	public Review getReview (String reviewID) {
+		
+//		review.newQueryRequest()
+//			.includeAllAttributesInResultFromSchema()
+//			.queryAttribute()
+//			.whe
+//		
+		return null;
 	}
 	
 	//getInstance will return that ONE instance of the pattern 

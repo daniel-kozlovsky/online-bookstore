@@ -76,9 +76,9 @@
 			<BR/>
 			<BR/>
 			<BR/>
-			<input id="title" name="title" type="text" placeholder="Title" style="width:100%;"></input>
+			<input id="title" name="title" type="text" placeholder="Title" style="width:100%;">${requestScope['title']}</input>
 			<input id="bookID" name="bookID" value="$requestScope['bookID']" type="hidden"></input>
-			<textarea id="body" rows="15" cols="1" name="body" style="width: 100%;" placeholder="Enter review here:" class='formtext'><jsp:text /></textarea>
+			<textarea id="body" rows="15" cols="1" name="body" style="width: 100%;" placeholder="Enter review here:" class='formtext'><jsp:text />${requestScope['body']}</textarea>
 			
 			
 		  <input class="button addReview" type="submit" name="submitReview" id="submitReview"></input>

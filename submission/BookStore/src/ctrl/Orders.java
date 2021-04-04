@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.PurchaseOrder;
+import data.beans.Review;
 import data.dao.PurchaseOrderDAO;
 import model.MainPageModel;
 
@@ -36,13 +37,17 @@ public class Orders extends HttpServlet {
     private static final String ORDER_ID = "orderID";
     private static final String review_form = "review_form";
     private static final String addReview = "addReview";
+    private static final String viewReview = "viewReview";
     private static final String bookID = "bookID";
+    private static final String reviewID = "reviewID";
     private static final String AUTHOR = "AUTHOR";
     private static final String TITLE = "TITLE";
     private static final String BOOKS_IN_ORDER = "BOOKS_IN_ORDER";
     
     private static final String  USER_ORDERS = "USER_ORDERS";
     private static final String rate = "rate";
+    private static final String title = "title";
+    private static final String body = "body";
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -94,12 +99,12 @@ public class Orders extends HttpServlet {
 				String order_id = (String) h.getAttribute(ORDER_ID);
 				
 				int rank = Integer.parseInt(request.getParameter(rate));
-				String title = request.getParameter("title");
-				String body = request.getParameter("body");
+				String this_title = request.getParameter(title);
+				String this_body = request.getParameter(body);
 				String book_id = request.getParameter(bookID);
 				
 				// add review 
-				model.addReview(username, passwd, title, body, rank, book_id);
+				model.addReview(username, passwd, this_title, this_body, rank, book_id);
 				
 				String html = loadIndividualOrder(order_id, model, username, passwd);
 				request.setAttribute(BOOKS_IN_ORDER, html);
@@ -142,6 +147,26 @@ public class Orders extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println("There was a problem going back form a specific order page to writing its review! " +e.getMessage());
 			}
+			
+		} else if (request.getParameter(viewReview) != null) {
+			try {
+				Review review = model.getReview(request.getParameter(reviewID));
+				
+				request.setAttribute(rate, review.getRating());
+				request.setAttribute(title, review.getTitle());
+				request.setAttribute(body, review.getBody()); 
+	
+				String book_id = request.getParameter(bookID);
+				String title = request.getParameter(TITLE);
+				String author = request.getParameter(AUTHOR);
+				request.setAttribute(bookID, book_id);
+				request.setAttribute(TITLE, title);
+				request.setAttribute(AUTHOR, author);
+				request.getRequestDispatcher("html/Review.jspx").forward(request, response);
+			
+			} catch (Exception e) {
+				System.out.println("There was a problem going back form a specific order page to writing its review! " +e.getMessage());
+			}
 		} else {
 			try {
 				String html = loadPage( username,  passwd,  model);
@@ -165,22 +190,20 @@ public class Orders extends HttpServlet {
 	
 	private String loadPage(String username, String passwd, MainPageModel model) {
 		
-		PurchaseOrder[] orders = null;
+		List<PurchaseOrder> orders = null;
 		String html = "";
-		
-		System.out.println("orders: "+orders.length);
 		
 		try {
 			orders = model.getCustomerOrders(username, passwd);
-			
-			for (int i = 0; i < orders.length; i ++) {
+			System.out.println("orders: "+orders.size());
+			for (int i = 0; i < orders.size(); i ++) {
 			
 				html += 
 				 	  "						<tr class=\"row\">\n"
-				 	  + "						<th>"+orders[i].getId()+"</th>\n"
-				 	  + "						<th>"+orders[i].getStatus()+"</th>\n"
-				 	  + "						<th>"+orders[i].getBooks().size()+"</th>\n"
-				 	  + "						<th><button style=\"width:90%;height:90%;\" id=\"orderID\" name=\"orderID\" value=\""+orders[i].getId()+"\">view order</button></th>\n"
+				 	  + "						<th>"+orders.get(i).getId()+"</th>\n"
+				 	  + "						<th>"+orders.get(i).getStatus()+"</th>\n"
+				 	  + "						<th>"+orders.get(i).getBooks().size()+"</th>\n"
+				 	  + "						<th><button style=\"width:90%;height:90%;\" id=\"orderID\" name=\"orderID\" value=\""+orders.get(i).getId()+"\">view order</button></th>\n"
 				 	  + "					</tr>";
 			}
 		} catch (Exception e) {
@@ -239,7 +262,6 @@ public class Orders extends HttpServlet {
 					+ "		</FORM>";
 		}
 			
-		
 		return html;
 	}
 }
