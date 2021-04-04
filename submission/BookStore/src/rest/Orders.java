@@ -9,20 +9,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import data.beans.Book;
 import model.RestModel;
 
-@Path("catalog")
+@Path("orders")
 
-public class Catalog {
+public class Orders {
 
 	@GET
-	@Path("/getProductInfo/")
+	@Path("/getOrdersByPartNumber/")
 	@Produces("application/json")
-	public Response getProductInfo(@QueryParam("productID") String productID) throws Exception {
-		
-		String bookJSON = RestModel.getInstance().getBookByISBN_JSON(productID);
+	public Response getOrdersByPartNumber(@QueryParam("productID") String productID) throws Exception {
+
+		String bookJSON = RestModel.getInstance().getOrdersByISBN(productID);
 
 		return Response.ok(bookJSON).build();
+
 	}
-	
+
 }
