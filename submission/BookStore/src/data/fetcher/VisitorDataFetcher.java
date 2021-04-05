@@ -39,11 +39,11 @@ public class VisitorDataFetcher extends DataFetcher<Visitor>{
 					.withId(new Id(resultSet.getString(prefix+schema.ID)))
 					.build();
 			if (isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.ID)) {
-				visitor = new Visitor.Builder(visitor).withCreatedAtEpoch(resultSet.getString(prefix + schema.ID)).build();
+				visitor = new Visitor.Builder(visitor).withId(new Id(resultSet.getString(prefix + schema.ID))).build();
 			}
 
 			if (isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREATED_AT_EPOCH)) {
-				visitor = new Visitor.Builder(visitor).withLastAccessedAtEpoch(resultSet.getString(prefix + schema.CREATED_AT_EPOCH)).build();
+				visitor = new Visitor.Builder(visitor).withCreatedAtEpoch(resultSet.getString(prefix + schema.CREATED_AT_EPOCH)).build();
 			}
 
 

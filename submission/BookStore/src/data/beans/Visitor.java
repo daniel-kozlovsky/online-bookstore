@@ -40,6 +40,7 @@ public class Visitor extends SiteUser {
 		private Cart cart;
 		private  long createdAtEpoch;
 		private  long lastAccessedAtEpoch;
+		private PurchaseOrder[] purchaseOrders;
 
 		public Builder(){
 			super();
@@ -47,6 +48,7 @@ public class Visitor extends SiteUser {
 			this.id=new Id("");
 			createdAtEpoch=0;
 			lastAccessedAtEpoch=0;
+			this.purchaseOrders=new PurchaseOrder[0];
 		}
 		
 		public Builder(Visitor visitor){
@@ -55,6 +57,7 @@ public class Visitor extends SiteUser {
 			this.cart=visitor.cart;
 			this.createdAtEpoch=visitor.createdAtEpoch;
 			this.lastAccessedAtEpoch=visitor.lastAccessedAtEpoch;
+			this.purchaseOrders=visitor.purchaseOrders;
 		}
 
 		public Builder withSessionId(String sessionId){//SUBJECT TO CHANGE
@@ -87,6 +90,20 @@ public class Visitor extends SiteUser {
 			this.lastAccessedAtEpoch=Long.parseLong(lastAccessedAtEpoch);
 			return this;
 		}
+		
+		public Builder withPurchaseOrders(PurchaseOrder[] purchaseOrders){
+			this.purchaseOrders=purchaseOrders;
+			return this;
+		}
+
+		public Builder withPurchaseOrders(List<PurchaseOrder> purchaseOrders){
+			PurchaseOrder[] purchaseOrderArr = new PurchaseOrder[purchaseOrders.size()];
+			return withPurchaseOrders(purchaseOrders.toArray(purchaseOrderArr));
+		}
+		public Builder withPurchaseOrders(PurchaseOrder purchaseOrders){
+			this.purchaseOrders=new PurchaseOrder[] {purchaseOrders};
+			return this;
+		}
 
 		public Visitor build(){
 			Visitor visitor=new Visitor();
@@ -94,6 +111,7 @@ public class Visitor extends SiteUser {
 			visitor.cart=this.cart==null? new Cart.Builder().withId(this.id).build():this.cart;
 			visitor.createdAtEpoch=this.createdAtEpoch;
 			visitor.lastAccessedAtEpoch=this.lastAccessedAtEpoch;
+			visitor.purchaseOrders=this.purchaseOrders==null?new PurchaseOrder[0]:this.purchaseOrders;
 			return visitor;
 		}
 
@@ -103,11 +121,21 @@ public class Visitor extends SiteUser {
 
 	@Override
 	public String toJson() {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub	
+		String purchaseOrdersJson="\"purchaseOrders\": [";
+		if (this.purchaseOrders!=null && purchaseOrders.length>0) {
+			for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
+				purchaseOrdersJson+=purchaseOrder.toJson()+",";
+			}
+			purchaseOrdersJson=purchaseOrdersJson.substring(0, purchaseOrdersJson.length() - 1);				
+				
+		}
+		purchaseOrdersJson+="]";
 		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
 		Bean.jsonMapNumber("createdAtEpoch",Long.toString(createdAtEpoch))+","+
-		Bean.jsonMapNumber("lastAccessedAtEpoch",Long.toString(lastAccessedAtEpoch))+
+		Bean.jsonMapNumber("lastAccessedAtEpoch",Long.toString(lastAccessedAtEpoch))+","+
 		Bean.jsonMapNumber("cart",this.cart.toJson())+","+
+		purchaseOrdersJson+
 		"}";
 	}
 }

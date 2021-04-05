@@ -70,7 +70,6 @@ public class PurchaseOrderDataFetcher  extends DataFetcher<PurchaseOrder>{
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.STREET)) {
 				address = new Address.Builder(address).withStreet(resultSet.getString(prefix+schema.STREET)).build();
-				System.out.println(resultSet.getString(prefix+schema.STREET));
 			}
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.PROVINCE)) {
