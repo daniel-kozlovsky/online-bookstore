@@ -65,15 +65,15 @@ public class BookTestCtrl extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("do get");
-		CustomerDAO user =new CustomerDAO();
-		String username="WRitter163";
-		String passwd = "Walterpassword";
-
-		Customer s = user.loginCustomer(username, passwd);
-		for(PurchaseOrder po: s.getPurchaseOrders()) {
-			System.out.println(po.toJson());
-		}
-		
+//		CustomerDAO user =new CustomerDAO();
+//		String username="WRitter163";
+//		String passwd = "Walterpassword";
+//
+//		Customer s = user.loginCustomer(username, passwd);
+//		for(PurchaseOrder po: s.getPurchaseOrders()) {
+//			System.out.println(po.toJson());
+//		}
+//		
 //		PrintWriter out = response.getWriter();
 //      response.setContentType("text");
 //      response.setCharacterEncoding("UTF-8");
@@ -92,11 +92,11 @@ public class BookTestCtrl extends HttpServlet {
 //				.executeCompilation()
 //				;
 //		docCust.compileCustomers();
-
+//
 //		System.out.println(docCust.getCompiledCustomersJson());
       //9781442468450
 
-////      Customer query
+//      Customer query
 //		DataObjectCompiler docCust=
 //      new CustomerDAO().newQueryRequest()
 //      .includeAllAttributesInResultFromSchema()
@@ -109,7 +109,9 @@ public class BookTestCtrl extends HttpServlet {
 //      .varCharEquals("9781442468450")
 //      .executeQuery()
 //      .executeCompilation();
-//		
+//		docCust.compileCustomers();
+//	System.out.println(docCust.getPurchaseOrderJson());
+		
 ////	Visitor Query	
 //      System.out.println(docCust.getPurchaseOrderByBookJson());
 //      DataObjectCompiler docVis=
@@ -149,20 +151,22 @@ public class BookTestCtrl extends HttpServlet {
 //		attributesIncludedInResults.get("REVIEW").add("TITLE");
 //		attributesIncludedInResults.get("REVIEW").add("BODY");
 		
-//		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
+		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
 		//http://localhost:8080/BookStore/BookTestCtrl
 //		PrintWriter out = response.getWriter();
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
 //		Customer customer = new Customer.Builder().withId(new Id("f86e4678-f6af-30d6-82ef-e9b4792e8669")).build();
-//		new BookDAO().newQueryRequest()
-//				.includeAllAttributesInResultFromSchema()
-//				.queryAttribute()
-//				.whereBook()
-//				.isBook("b7441b2a-0739-3641-a78f-1d973daee854")
-//				.executeQuery()
-//				.executeCompilation()
-//				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
+		new BookDAO().newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereBook()
+				.isBook("b7441b2a-0739-3641-a78f-1d973daee854")
+				.queryReview()
+				.includeAllAttributesInResultFromSchema()
+				.executeQuery()
+				.executeCompilation()
+				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
 		
 //		'Daniel','Kozlovsky','dankoz0','123456','dankoz0','',','','','','',1617293430
 //		System.out.println(Boolean.toString(new CustomerDAO().loginCustomer("SPhillips4588","Scottpassword").isLoggedOn()));

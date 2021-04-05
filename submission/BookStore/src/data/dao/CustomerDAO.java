@@ -109,7 +109,9 @@ public class CustomerDAO implements DAO{
 		}else {
 			return new Customer.Builder().withUserName(userName).build();	
 		}
-		int limit=(new ReviewDAO().getReviewCount(customer))*(new PurchaseOrderDAO().getPurchaseOrderRowCount(customer))*60;
+		int reviewCount = new ReviewDAO().getReviewCount(customer)+1;
+		int poCount = new PurchaseOrderDAO().getPurchaseOrderRowCount(customer)+1;
+		int limit=reviewCount*poCount*60;
 		List<Customer> customersCart= newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
 				.queryCart()
@@ -386,7 +388,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
@@ -452,7 +454,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
@@ -520,7 +522,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
@@ -616,7 +618,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);

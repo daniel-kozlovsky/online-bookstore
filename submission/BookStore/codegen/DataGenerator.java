@@ -100,6 +100,95 @@ public class DataGenerator {
 	
 	}
 	
+	@Test
+	public void addNameToReviews() {
+		List<String> ids=new ArrayList<String>();
+		List<String> reviews=new ArrayList<String>();
+		try {
+			ids=Files.readAllLines(new File("idToToNameToUname.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			reviews=Files.readAllLines(new File("insertReviews.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		FileWriter writer=null;
+		try {
+			Map<String,String> idToUname= new LinkedHashMap<String, String>();
+			writer = new FileWriter("reviewNew.txt"); 
+			for(String line:ids) {
+				String[] arr = line.split(":");
+				idToUname.put(arr[0], arr[1]);
+			}
+			for(String line:reviews) {
+				String id = line.substring(1,39);
+				
+				String newLine = "("+"'CUSTOMER',"+idToUname.get(id)+","+line.substring(1, line.length())+"\n";
+//				System.out.println(newLine);
+				writer.write(newLine);
+
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+//	@Test
+	public void IdToNames() {
+		List<String> customers=new ArrayList<String>();
+
+		try {
+			customers=Files.readAllLines(new File("insertCustomers.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		FileWriter writer=null;
+		try {
+//			  ID varchar(100) not null,
+//			  BOOK varchar (100) not null,
+//			  AMOUNT int not null,
+//			  USER_TYPE varchar(20) not null,
+			writer = new FileWriter("idToToNameToUname.txt"); 
+			for(String line:customers) {
+				String[] arr = line.split(",");
+				
+				System.out.println(arr[1]);
+				System.out.println(arr[4]);
+				writer.write(arr[1]+":"+arr[4]+"\n");
+			}		
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 //	@Test
 	public void delimPoTest() {
 
@@ -107,10 +196,10 @@ public class DataGenerator {
 
 
 		try {
-			pos2=Files.readAllLines(new File("insertPOsPt2.sql").toPath());
+			pos2=Files.readAllLines(new File("insertPOsPt1.sql").toPath());
 			for(String line:pos2) {
-				String[] att = line.split(",");
-				System.out.println(att[1]);
+				
+				System.out.println(line.replace("'CUSTOMER'", "NOOO"));
 				return;
 			}
 		} catch (IOException e) {
@@ -471,7 +560,7 @@ public class DataGenerator {
 
 	}
 	
-	@Test
+//	@Test
 	public void addISBNTOPo() {
 		List<String> bookIdtoISBN=new ArrayList<String>();
 		List<String> pos=new ArrayList<String>();

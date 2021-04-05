@@ -20,6 +20,6 @@ public class UpdateVisitor extends DataUpdate{
 		String update ="INSERT INTO VISITOR (ID,USER_TYPE,CREATED_AT_EPOCH) VALUES ('"+
 				"('"+id+"','"+UserTypes.VISITOR+"',"+epoch+")";
 		sendUpdateToDatabase(update);
-		return new Visitor.Builder().withId(new Id(id)).withCart(new Cart.Builder().withId(new Id(id)).withUserType(UserTypes.VISITOR).build()).withCreatedAtEpoch(epoch).build();
+		return new Visitor.Builder().withId(new Id(id)).withCart(new Cart.Builder().withId(new Id(id)).build()).withCreatedAtEpoch(epoch).build();
 	}
 }

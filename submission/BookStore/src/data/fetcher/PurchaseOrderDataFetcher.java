@@ -107,10 +107,7 @@ public class PurchaseOrderDataFetcher  extends DataFetcher<PurchaseOrder>{
 				creditCard = new CreditCard.Builder(creditCard).withCreditCardCVV2(resultSet.getString(prefix+schema.CREDIT_CARD_CVV2)).build();
 			}
 			
-			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.USER_TYPE)) {
-				purchaseOrder = new PurchaseOrder.Builder(purchaseOrder).withUserType(resultSet.getString(prefix+schema.USER_TYPE)).build();
-			}
-			
+
 			return new PurchaseOrder.Builder(purchaseOrder).withAddress(address).withCreditCard(creditCard).build();
 			
 		}catch(SQLException e) {

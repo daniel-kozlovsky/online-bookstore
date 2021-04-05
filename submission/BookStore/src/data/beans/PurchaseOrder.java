@@ -16,13 +16,13 @@ public class PurchaseOrder extends IdObject {
 	private Address address;
 	private CreditCard creditCard;
 	private String email;
-	private String userType;
-//	private boolean _isWithinCustomer;
+	private Customer customer;
+	private boolean _isWithinCustomer;
 	
 
-//	public boolean isWithinCustomer() {
-//		return this._isWithinCustomer;
-//	}
+	public boolean isWithinCustomer() {
+		return this._isWithinCustomer;
+	}
 	
 	public String getStatus() {
 		return status;
@@ -59,9 +59,7 @@ public class PurchaseOrder extends IdObject {
 		return customer.getId().equals(this.id);
 		
 	}
-	public String getUserType() {
-		return this.userType;
-	}
+
 	
 //	public boolean isBookInPurchaseOrder(Book book) {
 //		return books.get(book)!=null &&books.get(book)>0;		
@@ -106,14 +104,14 @@ public class PurchaseOrder extends IdObject {
 		private String province;
 		private String country;
 		private String city;
-		private String userType;
-//		private boolean _isWithinCustomer;
+		private Customer customer;
+		private boolean _isWithinCustomer;
 		
-//		public Builder withInCustomer() {
-//			this._isWithinCustomer=true;
-//			return this;
-//		}
-//		
+		public Builder withInCustomer() {
+			this._isWithinCustomer=true;
+			return this;
+		}
+		
 
 		public Builder(PurchaseOrder purchaseOrder){
 //			this.customer=purchaseOrder.customer;
@@ -132,7 +130,9 @@ public class PurchaseOrder extends IdObject {
 			this.country=purchaseOrder.address.getCountry();
 			this.city=purchaseOrder.address.getCity();
 			this.email=purchaseOrder.email;
-			this.userType=purchaseOrder.userType;
+			this.customer=purchaseOrder.customer;
+			this._isWithinCustomer=purchaseOrder._isWithinCustomer;
+
 		}
 
 		public Builder(){
@@ -152,21 +152,12 @@ public class PurchaseOrder extends IdObject {
 			this.country="";
 			this.city="";
 			this.email="";
-			this.userType="";
+			this.customer=new Customer.Builder().build();
 		}
 
 
-		public Builder withCustomer(Customer customer){
-			this.id=customer.getId();
-			return this;
-		}
 		
-		
-		public Builder withSiteUser(SiteUser siteUser){
-			this.id=siteUser.getId();
-			this.userType=siteUser.getUserType();
-			return this;
-		}
+
 		
 		public Builder withCreditCard(CreditCard creditCard){
 			this.creditCardCVV2=creditCard.getCreditCardCVV2();
@@ -258,8 +249,9 @@ public class PurchaseOrder extends IdObject {
 			this.email=email;
 			return this;
 		}
-		public Builder withUserType(String userType){
-			this.userType=userType;
+		public Builder withCustomer(Customer customer){
+			this.customer=customer;
+			this.id=customer.id;
 			return this;
 		}
 //		
@@ -287,13 +279,14 @@ public class PurchaseOrder extends IdObject {
 			PurchaseOrder purchaseOrder=new PurchaseOrder();			
 			purchaseOrder.status=this.status;
 			purchaseOrder.books=this.books;
-			purchaseOrder.userType=this.userType;
+			purchaseOrder.customer=this.customer;
 			purchaseOrder.createdAtEpoch=this.createdAtEpoch;
 			purchaseOrder.email=this.email;
 			purchaseOrder.address=new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
 			purchaseOrder.creditCard= new CreditCard.Builder().withCreditCardType(creditCardType).withCreditCardNumber(creditCardNumber).withCreditCardExpiry(creditCardExpiry).withCreditCardCVV2(creditCardCVV2).build();
 			System.out.println(purchaseOrder.address.toJson());
 			purchaseOrder.id=this.id;
+			purchaseOrder._isWithinCustomer=this._isWithinCustomer;
 			return purchaseOrder;
 		}
 
@@ -311,6 +304,8 @@ public class PurchaseOrder extends IdObject {
 //			customerJson+="{}";
 //		}
 //		
+		String customerJson=isWithinCustomer()?Bean.jsonMapNumber("customer","{}"):Bean.jsonMapNumber("customer",customer.toJson());
+		
 		String booksJson="\"books\": [";
 		if (this.books!=null && !this.books.isEmpty()) {
 			for(Entry<Book,Integer> entry:this.books.entrySet()) {
@@ -323,13 +318,13 @@ public class PurchaseOrder extends IdObject {
 		}
 		booksJson+="]";
 		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
-				Bean.jsonMapVarChar("userType",this.userType)+","+
 				Bean.jsonMapVarChar("email",this.email)+","+
 				Bean.jsonMapNumber("createdAtEpoch",Long.toString(this.createdAtEpoch))+","+
 				Bean.jsonMapVarChar("status",this.status)+","+
 				Bean.jsonMapNumber("address",this.address.toJson())+","+
 				Bean.jsonMapNumber("creditCard",this.creditCard.toJson())+","+
-				booksJson+
+				booksJson+","+
+				customerJson+
 				"}";				
 	}
 }
