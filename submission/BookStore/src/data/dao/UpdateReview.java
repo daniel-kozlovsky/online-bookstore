@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Review;
+import data.beans.SiteUser;
+import data.beans.Visitor;
 import data.dao.UpdateBook.BookInsert;
 import data.dao.UpdateBook.InsertBookSeries;
 import data.dao.UpdateBook.InsertBookTitle;
@@ -20,21 +22,37 @@ public class UpdateReview extends DataUpdate{
 		
 	}
 	
-	public void executeDeleteReview(Customer customer, Review review) {
-		if(customer.getId().isEmpty() || review.getBook().getId().isEmpty()|| !review.getCustomer().getId().equals(customer.getId())) return;
-		String update="DELETE FROM REVIEW WHERE CUSTOMER='"+customer.getId().toString()+"' AND  BOOK='"+review.getBook().getId().toString()+"'";
+	public void executeDeleteReview(SiteUser siteUser, Review review) {
+		if(siteUser.getId().isEmpty() || review.getBook().getId().isEmpty()|| !review.getSiteUser().getId().equals(siteUser.getId())) return;
+		String update="DELETE FROM REVIEW WHERE SITE_USER='"+siteUser.getId().toString()+"' AND  BOOK='"+review.getBook().getId().toString()+"' AND USER_TYPE='"+review.getUserType()+"'";
 		sendUpdateToDatabase(update);
 	}
 	
-	public ReviewUpdater requestUpdateReview(Customer customer, Review review) {
-		if(customer.getId().isEmpty() || review.getBook().getId().isEmpty()|| !review.getCustomer().getId().equals(customer.getId())) return null;
+	public ReviewUpdater requestUpdateReview(SiteUser siteUser, Review review) {
+		if(siteUser.getId().isEmpty() || review.getBook().getId().isEmpty()|| !review.getSiteUser().getId().equals(siteUser.getId())) return null;
 		return new ReviewUpdater(review);
 	}
 	
-	public InsertReviewTitle requestNewReviewInsertion(Customer customer, Book book) {
-		return new InsertReviewTitle(new Review.Builder().withCustomer(customer).withBook(book).build());
+	public ReviewUpdater requestUpdateReview(Customer customer, Review review) {
+		
+		return requestUpdateReview((SiteUser) customer,review);
 	}
-
+	
+	public ReviewUpdater requestUpdateReview(Visitor visitor, Review review) {		
+		return requestUpdateReview((SiteUser) visitor,review);
+	}
+	
+	public InsertReviewTitle requestNewReviewInsertion(SiteUser siteUser, Book book) {
+		return new InsertReviewTitle(new Review.Builder().withSiteUser(siteUser).withBook(book).build());
+	}
+	
+	public InsertReviewTitle requestNewReviewInsertion(Customer customer, Book book) {
+		return new InsertReviewTitle(new Review.Builder().withSiteUser((SiteUser)customer).withBook(book).build());
+	}
+	public InsertReviewTitle requestNewReviewInsertion(Visitor visitor, Book book) {
+		return new InsertReviewTitle(new Review.Builder().withSiteUser((SiteUser)visitor).withBook(book).build());
+	}
+	
 	public class InsertReviewTitle extends ReviewInsert{
 		private InsertReviewTitle(Review review){
 			super(review);
@@ -79,8 +97,8 @@ public class UpdateReview extends DataUpdate{
 
 		public void executeReviewInsertion(){
 			String epoch =Long.toString(Instant.now().getEpochSecond());
-			String update ="INSERT INTO REVIEW (CUSTOMER,BOOK,RATING,TITLE,BODY,CREATED_AT_EPOCH) VALUES "+
-					"('"+review.getCustomer().getId().toString()+"','"+review.getBook().getId().toString()+"',"+Integer.toString(review.getRating())+","+review.getTitle()+","+review.getBody()+","+epoch+")";
+			String update ="INSERT INTO REVIEW (USER_TYPE,NAME,SITE_USER,BOOK,RATING,TITLE,BODY,CREATED_AT_EPOCH ) VALUES "+
+					"('"+review.getUserType()+"','"+review.getName()+"','"+review.getSiteUser().getId().toString()+"','"+review.getBook().getId().toString()+"',"+Integer.toString(review.getRating())+","+review.getTitle()+","+review.getBody()+","+epoch+")";
 			sendUpdateToDatabase(update);
 		}
 	}
@@ -114,7 +132,7 @@ public class UpdateReview extends DataUpdate{
 				update+=entry.getKey()+"="+entry.getValue()+",";
 			}
 			update=update.substring(0,update.length()-1);
-			update+=" WHERE BOOK='"+review.getBook().getId().toString()+"' + AND CUSTOMER='"+review.getCustomer().getId().toString()+"'";
+			update+=" WHERE BOOK='"+review.getBook().getId().toString()+"' + AND SITE_USER='"+review.getSiteUser().getId().toString()+"' AND USER_TYPE='"+review.getUserType()+"'";
 			sendUpdateToDatabase(update);
 		}
 		

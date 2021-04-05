@@ -1,7 +1,9 @@
 package data.beans;
 
+import javax.servlet.http.HttpServletRequest;
 
-	
+import data.schema.UserTypes;
+
 public class Review implements Bean{
 	
 //	private static final String BODY="BODY";
@@ -13,10 +15,11 @@ public class Review implements Bean{
 //	
 	private String body;
 	private String title;
-	private Customer customer;
+	private SiteUser siteUser;
 	private int rating;
 	private Book book;//SUBJECT TO CHANGE
 	private long createdAtEpoch;
+	private String name;
 	private boolean _isWithinBook;
 	private boolean _isWithinCustomer;
 	public String getBody() {
@@ -27,8 +30,8 @@ public class Review implements Bean{
 		return title;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public SiteUser getSiteUser() {
+		return siteUser;
 	}
 
 	public int getRating() {
@@ -51,21 +54,32 @@ public class Review implements Bean{
 		return this._isWithinBook;
 	}
 
-
+	public String getName() {
+		return this.name;
+	}
+	public String getUserType() {
+		return this.siteUser.getUserType();
+	}
+	
+	public boolean isReviewByACustomer() {
+		return this.siteUser.getUserType().equals(UserTypes.CUSTOMER);
+	}
 
 	
 	public String toJson() {
-		String customerJson=isWithinCustomer()?Bean.jsonMapNumber("customer","{}"):Bean.jsonMapNumber("customer",this.customer.toJson());
+		String siteUserJson=isWithinCustomer()?Bean.jsonMapNumber("siteUser","{}"):Bean.jsonMapNumber("siteUser",this.siteUser.toJson());
 		String bookJson=isWithinBook()?Bean.jsonMapNumber("book","{}"):Bean.jsonMapNumber("book",this.book.toJson());
 
 
-		return "{"+Bean.jsonMapVarChar("customer",this.customer.getId().toString())+","+
+		return "{"+Bean.jsonMapVarChar("userId",this.siteUser.getId().toString())+","+
+				Bean.jsonMapVarChar("userType",this.siteUser.getUserType())+","+
+				Bean.jsonMapVarChar("name",this.name)+","+
 				Bean.jsonMapVarChar("book",this.book.getId().toString())+","+
 				Bean.jsonMapVarChar("body",this.body.replaceAll("\"", "\\\""))+","+
 				Bean.jsonMapVarChar("title",this.title.replaceAll("\"", "\\\""))+","+
 				Bean.jsonMapNumber("rating",Integer.toString(this.rating))+","+
 				Bean.jsonMapNumber("createdAtEpoch",Long.toString(this.createdAtEpoch))+","+
-				customerJson+","+
+				siteUserJson+","+
 				bookJson+
 				"}"
 				;
@@ -75,21 +89,23 @@ public class Review implements Bean{
 	public static class Builder{
 		private String body;
 		private String title;
-		private Customer customer;
 		private int rating;
 		private Book book;//SUBJECT TO CHANGE
 		private long createdAtEpoch;
 		private boolean _isWithinBook;
 		private boolean _isWithinCustomer;
+		private SiteUser siteUser;
+		private String name;
 
 		public Builder(){
 			this.body="";
 			this.title="";
-			this.customer=new Customer.Builder().build();
+			this.name="";
 			this.rating=0;
 			this.book=new Book.Builder().build();
 			this._isWithinBook=false;
 			this._isWithinCustomer=false;
+			this.siteUser=new Visitor.Builder().build();
 		}
 		
 		public Builder withinBook() {
@@ -105,7 +121,8 @@ public class Review implements Bean{
 		public Builder(Review review){
 			this.body=review.body;
 			this.title=review.title;
-			this.customer=review.customer;
+			this.siteUser=review.siteUser;
+			this.name=review.name;
 			this.rating=review.rating;
 			this.book=new Book.Builder(review.book).withReviews(new Review[0]).build();
 			this.createdAtEpoch=review.createdAtEpoch;
@@ -130,12 +147,31 @@ public class Review implements Bean{
 		}
 
 		public Builder withCustomer(Customer customer){
-			this.customer=customer;
+			this.siteUser=(SiteUser)customer;
+			return this;
+		}
+		
+		public Builder withVisitor(HttpServletRequest request){
+			this.siteUser=new Visitor.Builder().withId(new Id(request.getSession().getId())).build();
+			return this;
+		}
+		
+		public Builder withVisitor(Visitor visitor){
+			this.siteUser=(SiteUser)visitor;
+			return this;
+		}
+		public Builder withSiteUser(SiteUser siteUser){
+			this.siteUser=siteUser;
+			return this;
+		}
+		
+		public Builder withName(String name){
+			this.name=name;
 			return this;
 		}
 		
 
-
+		
 		public Builder withBook(Book book){
 			this.book=new Book.Builder(book).withReviews(new Review[0]).build();
 			return this;
@@ -151,12 +187,14 @@ public class Review implements Bean{
 			Review review=new Review();
 			review.body=this.body==null?"":this.body;
 			review.title=this.title==null?"":this.title;
-			review.customer=this.customer==null? new Customer.Builder().build():this.customer;
+			review.siteUser=this.siteUser==null? new Visitor.Builder().build():this.siteUser;
+			review.name=this.name==null?"":this.name;
 			review.rating=this.rating;
 			review.book=this.book==null?new Book.Builder().build():this.book;
 			review.createdAtEpoch=this.createdAtEpoch;
 			review._isWithinBook=this._isWithinBook;
 			review._isWithinCustomer=this._isWithinCustomer;
+
 			return review;
 		}
 

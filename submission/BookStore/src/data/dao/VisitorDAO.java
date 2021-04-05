@@ -156,20 +156,7 @@ public class VisitorDAO implements DAO{
 					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
-		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-			this.tableJoins.add(
-					new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(VisitorSchema.ID)
-					.withDataAccessParameterPrefix("=")
-					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
-					.build()
-					);
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
-		}
-		
+
 		
 	}
 	public class VisitorVarCharQuery extends BookStoreVarCharQuery<VisitorVarCharQuery,VisitorAttributeAccess,BookStoreVisitorQuery>{
@@ -223,19 +210,7 @@ public class VisitorDAO implements DAO{
 					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
-		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-			this.tableJoins.add(
-					new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(VisitorSchema.ID)
-					.withDataAccessParameterPrefix("=")
-					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
-					.build()
-					);
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
-		}
+
 	}
 	public class VisitorNumberQuery extends BookStoreNumberQuery<VisitorNumberQuery,VisitorAttributeAccess,BookStoreVisitorQuery>{
 		private VisitorAttributeAccess visitorAttributeAccess;
@@ -288,19 +263,7 @@ public class VisitorDAO implements DAO{
 					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
-		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-			this.tableJoins.add(
-					new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(VisitorSchema.ID)
-					.withDataAccessParameterPrefix("=")
-					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
-					.build()
-					);
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
-		}
+
 	}
 	
 	public class VisitorKeyQuery extends BookStoreQuery<VisitorKeyQuery,VisitorAttributeAccess>{
@@ -381,6 +344,32 @@ public class VisitorDAO implements DAO{
 			return  this;
 		}
 		
+		private VisitorKeyQuery isVisitor(HttpServletRequest request) {
+//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
+//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
+//			}
+//			this.dataAccessRequests.get(this.dataSchema.tableName())
+//			.add(new DataAccessString.Builder()
+//					.withTableName(this.dataSchema.tableName())
+//					.withReferenceOperator(this.referenceOperator)
+//					.withAttributeName(visitorSchema.ID)
+//					.withDataAccessParameterPrefix("="+"'")
+//					.withDataAccessParameterSuffix("'")
+//					.withDataAccessParameter(visitor.getId().toString())
+//					.build()
+//					);
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(visitorSchema.ID)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(request.getSession().getId())
+					.build()
+					);
+			return  this;
+		}
+		
 		private VisitorKeyQuery isVisitor(String visitorId) {
 //			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
 //				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
@@ -406,19 +395,7 @@ public class VisitorDAO implements DAO{
 					);
 			return  this;
 		}
-		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
-			this.tableJoins.add(
-					new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(VisitorSchema.ID)
-					.withDataAccessParameterPrefix("=")
-					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
-					.build()
-					);
-			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
-		}
+
 	}
 	
 	public class VisitorAttributeAccess extends AttributeAccess<BookStoreVisitorQuery>{

@@ -97,7 +97,7 @@ public class BookStoreQuery <T extends Query,U extends AttributeAccess> extends 
 		}
 		
 		if(tableNames.contains(customerSchema.tableName()) && tableNames.contains(reviewSchema.tableName())){
-			referenceWirings.add(generateReferenceWiring(customerSchema.tableName(),customerSchema.ID,reviewSchema.tableName(),reviewSchema.CUSTOMER));
+			referenceWirings.add(generateReferenceWiring(customerSchema.tableName(),customerSchema.ID,reviewSchema.tableName(),reviewSchema.SITE_USER));
 			
 		}
 		
