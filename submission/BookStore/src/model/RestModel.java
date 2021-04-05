@@ -5,7 +5,9 @@ import java.util.List;
 import data.beans.Book;
 import data.beans.PurchaseOrder;
 import data.dao.BookDAO;
+import data.dao.CustomerDAO;
 import data.dao.PurchaseOrderDAO;
+import data.query.DataObjectCompiler;
 
 public class RestModel {
 	
@@ -71,21 +73,31 @@ public class RestModel {
 		List<PurchaseOrder> po;
 		
 		//check size of book list and return appropriate response
+		System.out.println( book.size() + " ISBN:" + prodID);
 		if (book.size() == 0)
 			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
-		if (book.size() > 1)
+		else if (book.size() > 1)
 			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
-		else
-		orderString = this.orders.newQueryRequest()
+		else {
+		DataObjectCompiler docCust = new CustomerDAO().newQueryRequest()
+									 .includeAllAttributesInResultFromSchema()
+									 .queryPurchaseOrder()
+									 .includeAllAttributesInResultFromSchema()
+									 .queryBook()
 									 .includeAllAttributesInResultFromSchema()
 									 .queryAttribute()
-									 .wherePurchaseOrderBook()
-									 .isBook(book.get(0))
+									 .whereBookISBN()
+									 .varCharEquals(prodID)
 									 .executeQuery()
-									 .executeCompilation()
-									 .getCompiledBooksJson();
+									 .executeCompilation();
 		
+		docCust.compileCustomers();
+		
+		orderString = docCust.getPurchaseOrderByBookJson();
+		
+		}
 		return orderString;
+		
 	}
 	
 	public String createBookMessage(List<Book> b, String prodID) {
