@@ -406,15 +406,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
@@ -472,15 +463,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
@@ -540,15 +522,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
@@ -636,15 +609,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		

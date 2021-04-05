@@ -96,7 +96,6 @@ public class CartDAO implements DAO{
 			if(!this.attributesToIncludInResults.get(cartSchema.tableName()).contains(cartSchema.ID)) this.attributesToIncludInResults.get(cartSchema.tableName()).add(cartSchema.ID);
 			if(!this.attributesToIncludInResults.get(cartSchema.tableName()).contains(cartSchema.BOOK)) this.attributesToIncludInResults.get(cartSchema.tableName()).add(cartSchema.BOOK);
 			if(!this.attributesToIncludInResults.get(cartSchema.tableName()).contains(cartSchema.AMOUNT)) this.attributesToIncludInResults.get(cartSchema.tableName()).add(cartSchema.AMOUNT);
-			if(!this.attributesToIncludInResults.get(cartSchema.tableName()).contains(cartSchema.USER_TYPE)) this.attributesToIncludInResults.get(cartSchema.tableName()).add(cartSchema.USER_TYPE);
 
 		}
 		
@@ -499,72 +498,7 @@ public class CartDAO implements DAO{
 	
 	}
 	
-	public class CartUserTypeQuery extends CartObjectQuery<CartUserTypeQuery>{
-
-		CartUserTypeQuery(BookStoreCartQuery bookStoreCartQuery, String currentAttributeAccess) {
-			super(bookStoreCartQuery, currentAttributeAccess);
-			// TODO Auto-generated constructor stub
-		}
-
-		CartUserTypeQuery(BookStoreCartQuery bookStoreCartQuery, String currentAttributeAccess,
-				PageRequestMetaData pageRequestMetaData) {
-			super(bookStoreCartQuery, currentAttributeAccess, pageRequestMetaData);
-			// TODO Auto-generated constructor stub
-		}
-
-		public CartUserTypeQuery isVisitor() {
-//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
-//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
-//			}
-//			this.dataAccessRequests.get(this.dataSchema.tableName())
-//			.add(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.VISITOR)
-//					.build()
-//					);
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.VISITOR)
-					.build()
-					);
-			return this;
-		}
-		
-		public CartUserTypeQuery isCustomer() {
-//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
-//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
-//			}
-//			this.dataAccessRequests.get(this.dataSchema.tableName())
-//			.add(new DataAccessString.Builder()
-//					.withTableName(this.dataSchema.tableName())
-//					.withReferenceOperator(this.referenceOperator)
-//					.withAttributeName(CartSchema.USER_TYPE)
-//					.withDataAccessParameterPrefix("="+"'")
-//					.withDataAccessParameterSuffix("'")
-//					.withDataAccessParameter(UserTypes.CUSTOMER)
-//					.build()
-//					);
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
-			return this;
-		}
 	
-	}
 	
 	
 
@@ -577,11 +511,7 @@ public class CartDAO implements DAO{
 			this.bookStoreCartQuery=bookStoreCartQuery;
 		}
 		
-		public CartUserTypeQuery whereCartUserType(){
-			CartUserTypeQuery cartUserTypeQuery= new CartUserTypeQuery(this.bookStoreCartQuery,CartSchema.USER_TYPE);
-			cartUserTypeQuery.setAttribute(this);
-			return cartUserTypeQuery;
-		}
+
 		
 		public CartKeyQuery whereCart(){
 			CartKeyQuery cartKeyQuery= new CartKeyQuery(this.bookStoreCartQuery,CartSchema.ID);

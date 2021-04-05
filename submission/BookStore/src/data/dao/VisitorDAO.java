@@ -145,15 +145,7 @@ public class VisitorDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.VISITOR)
-					.build()
-					);
+
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
 
@@ -198,16 +190,7 @@ public class VisitorDAO implements DAO{
 					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
 					.build()
 					);
-			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.VISITOR)
-					.build()
-					);
+
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
 
@@ -251,16 +234,7 @@ public class VisitorDAO implements DAO{
 					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
 					.build()
 					);
-			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.VISITOR)
-					.build()
-					);
+
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
 
@@ -305,16 +279,7 @@ public class VisitorDAO implements DAO{
 					.withDataAccessParameter(new CartSchema().tableName()+this.referenceOperator+CartSchema.ID)
 					.build()
 					);
-			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.VISITOR)
-					.build()
-					);
+
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
 		
