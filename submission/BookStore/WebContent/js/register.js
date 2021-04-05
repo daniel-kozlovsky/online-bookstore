@@ -64,6 +64,7 @@ function handler(request)
 	{
 		let target = document.getElementById("label-error");
 		
+		target.style.visibility = "visible";
 		target.innerHTML = request.responseText;
 	}
 }

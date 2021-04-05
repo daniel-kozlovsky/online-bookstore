@@ -33,7 +33,7 @@ function handler(request)
 	if(request.readyState == 4 && request.status == 200)
 	{
 		let target = document.getElementById("label-error");
-		
+		target.style.visibility = "visible";
 		target.innerHTML = request.responseText;
 	}
 }

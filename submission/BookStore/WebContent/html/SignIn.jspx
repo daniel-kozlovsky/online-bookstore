@@ -17,19 +17,23 @@
 		title="cse4413" media="screen, print" />
 </head>
 <body>
-	<div id="div-message">
-		<label class="error" id="label-error"></label>
+	<div id="container">
+	<label class="error" id="label-error">.</label>
+		<div id="login-panel">
+			
+			<form action="" method="post">
+				<label for="input-uname">Username: </label>
+				<input type="text" id="input-uname" name="username" placeholder="Username"/>
+				<br/>
+				<label for="input-pword">Password: </label>
+				<input type="password" id="input-pword" name="password" placeholder="Password"/>
+				<br/>
+				<button id="button-login" type="button" onclick="signIn();">Login</button>
+			</form>
+			<a id="a-register" href="${pageContext.request.contextPath}/html/Register.jspx">Register</a>
+		</div>
 	</div>
-	<div id="login-panel">
-		<form action="" method="post">
-			<label for="input-uname">Username: </label>
-			<input type="text" id="input-uname" name="username" placeholder="Username"/>
-			<label for="input-pword">Password: </label>
-			<input type="password" id="input-pword" name="password" placeholder="Password"/>
-			<button type="button" onclick="signIn();">Login</button>
-		</form>
-		<a href="${pageContext.request.contextPath}/html/Register.jspx">Register</a>
-	</div>
+	
 </body>
 </html>
 </jsp:root>
