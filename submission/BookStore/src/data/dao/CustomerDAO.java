@@ -53,6 +53,7 @@ public class CustomerDAO implements DAO{
 	
 	public Customer loginCustomer(String userName, String passWord) {
 		Customer customer = new Customer.Builder().withUserName(userName).build();
+		
 		String queryString="SELECT *  FROM CUSTOMER WHERE USERNAME='"+userName+"' AND PASSWORD='"+passWord+"'" ;
 		Connection connection= null;
 		PreparedStatement preparedStatement=null;
@@ -108,6 +109,7 @@ public class CustomerDAO implements DAO{
 		}else {
 			return new Customer.Builder().withUserName(userName).build();	
 		}
+		int limit=(new ReviewDAO().getReviewCount(customer))*(new PurchaseOrderDAO().getPurchaseOrderRowCount(customer))*60;
 		List<Customer> customersCart= newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
 				.queryCart()
@@ -139,7 +141,7 @@ public class CustomerDAO implements DAO{
 				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
-				.withResultLimit(new PurchaseOrderDAO().getPurchaseOrderRowCount(customer)*5)
+				.withResultLimit(limit)
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
@@ -161,7 +163,7 @@ public class CustomerDAO implements DAO{
 				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
-				.withResultLimit(new ReviewDAO().getReviewCount(customer)*5)
+				.withResultLimit(limit)
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
