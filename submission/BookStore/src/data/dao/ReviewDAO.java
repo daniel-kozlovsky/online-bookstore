@@ -61,7 +61,7 @@ public class ReviewDAO implements DAO{
 		return getReviewCount(customer.getId().toString());
 	}
 	public int getReviewCount(String id){
-		String queryString="SELECT COUNT(BOOK) AS REVIEW_COUNT FROM REVIEW where CUSTOMER='"+id+"' GROUP BY CUSTOMER";
+		String queryString="SELECT COUNT(BOOK) AS REVIEW_COUNT FROM REVIEW where SITE_USER='"+id+"' GROUP BY SITE_USER";
 		Connection connection= null;
 		PreparedStatement preparedStatement=null;
 		ResultSet resultSet=null;

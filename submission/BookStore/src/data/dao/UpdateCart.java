@@ -30,7 +30,7 @@ public class UpdateCart extends DataUpdate{
 	}
 	public void executeClearCart(SiteUser siteUser){
 		if(!siteUser.getCart().isEmpty()) return;
-		String update="DELETE FROM CART WHERE ID='"+siteUser.getId().toString()+"' AND  USER_TYPE='"+siteUser.getUserType()+"'";
+		String update="DELETE FROM CART WHERE ID='"+siteUser.getId().toString()+"'";
 		sendUpdateToDatabase(update);
 		
 	}
@@ -38,7 +38,7 @@ public class UpdateCart extends DataUpdate{
 	
 	public void executeCartBookDeletion(SiteUser siteUser,Book book){
 		if(book==null ||book.getId().isEmpty() ||!siteUser.getCart().isBookInCart(book)) return;
-		String update="DELETE FROM CART WHERE ID='"+siteUser.getId().toString()+"' AND  USER_TYPE='"+siteUser.getUserType()+"' AND BOOK='"+book.getId().toString()+"'";
+		String update="DELETE FROM CART WHERE ID='"+siteUser.getId().toString()+"' AND BOOK='"+book.getId().toString()+"'";
 		sendUpdateToDatabase(update);
 		
 	}
@@ -48,7 +48,7 @@ public class UpdateCart extends DataUpdate{
 
 	public void executeCartInsertion(SiteUser siteUser,Book book, int amount){
 		if(book==null ||book.getId().isEmpty() ||!siteUser.getCart().isBookInCart(book) || amount <=0) return;
-		String update ="INSERT INTO CART (ID,BOOK ,USER_TYPE,AMOUNT )	VALUES 	"+
+		String update ="INSERT INTO CART (ID,BOOK ,AMOUNT )	VALUES 	"+
 				"('"+siteUser.getId().toString()+"','"+book.getId().toString()+"','"+siteUser.getUserType()+"',"+Integer.toString(amount)+")";
 		sendUpdateToDatabase(update);
 		
@@ -61,7 +61,7 @@ public class UpdateCart extends DataUpdate{
 		if(book==null ||book.getId().isEmpty() ||!siteUser.getCart().isBookInCart(book) || amount <=0) {
 			return;
 		}else {
-			String update = "UPDATE CART SET AMOUNT=" + Integer.toString(amount) + " WHERE ID='"+siteUser.getId().toString()+"' AND  USER_TYPE='"+siteUser.getUserType()+"' AND BOOK='"+book.getId().toString()+"'";		
+			String update = "UPDATE CART SET AMOUNT=" + Integer.toString(amount) + " WHERE ID='"+siteUser.getId().toString()+"' AND BOOK='"+book.getId().toString()+"'";		
 			sendUpdateToDatabase(update);
 		}
 

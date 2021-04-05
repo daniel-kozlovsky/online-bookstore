@@ -28,7 +28,6 @@ import data.dao.CartDAO.CartBookQuery;
 import data.dao.CartDAO.CartCustomerQuery;
 import data.dao.CartDAO.CartNumberQuery;
 import data.dao.CartDAO.CartObjectQuery;
-import data.dao.CartDAO.CartUserTypeQuery;
 import data.dao.CartDAO.CartVarCharQuery;
 import data.dao.CustomerDAO.BookStoreCustomerQuery;
 import data.dao.CustomerDAO.CustomerVarCharQuery;
