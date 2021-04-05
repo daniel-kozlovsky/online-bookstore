@@ -119,7 +119,7 @@ public class DataGenerator {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void formatReviews() {
 		List<String> reviews=new ArrayList<String>();
 
@@ -261,7 +261,7 @@ public class DataGenerator {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void generateCarts() {
 		List<String> inserts= new ArrayList<String>();
 		List<String> bookIds= new ArrayList<String>();
@@ -364,6 +364,37 @@ public class DataGenerator {
 //		}
 		
 	}
+//	@Test
+	public void testVisitorDelim() {
+		List<String> visitors= new ArrayList<String>();
+		try {
+			visitors=Files.readAllLines(new File("insertVisitors.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(String line:visitors) {
+			String[] atts = line.split(",");
+			for(String att:atts) {
+//				System.out.println(att);
+				
+			}
+			System.out.println("card");
+			System.out.println(atts[1]); //ID
+			System.out.println(atts[6]);//email
+			System.out.println(atts[7]);//s#
+			System.out.println(atts[8]);//st
+			System.out.println(atts[9]);//postalcode
+			System.out.println(atts[10]);//city
+			System.out.println(atts[11]);//province
+			System.out.println(atts[12]);//country
+			System.out.println(atts[14]);//cardtype
+			System.out.println(atts[15]);//cardnum
+			System.out.println(atts[16]);//exp
+			System.out.println(atts[17].replace(")", ""));//cvv2
+			return;
+		}
+	}
 	
 //	@Test
 	public void testCustomerDelim() {
@@ -381,13 +412,116 @@ public class DataGenerator {
 				
 			}
 			System.out.println("card");
-			System.out.println(atts[1]);
-			System.out.println(atts[14]);
-			System.out.println(atts[15]);
-			System.out.println(atts[16]);
-			System.out.println(atts[17].replace(")", ""));
+			System.out.println(atts[1]); //ID
+			System.out.println(atts[6]);//email
+			System.out.println(atts[7]);//s#
+			System.out.println(atts[8]);//st
+			System.out.println(atts[9]);//postalcode
+			System.out.println(atts[10]);//city
+			System.out.println(atts[11]);//province
+			System.out.println(atts[12]);//country
+			System.out.println(atts[14]);//cardtype
+			System.out.println(atts[15]);//cardnum
+			System.out.println(atts[16]);//exp
+			System.out.println(atts[17].replace(")", ""));//cvv2
 			return;
 		}
+	}
+	
+//	@Test
+	public void delimitBookISBNTest() {
+		List<String> books=new ArrayList<String>();
+
+		try {
+			books=Files.readAllLines(new File("insertBooks.sql").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		FileWriter writer=null;
+		try {
+			writer = new FileWriter("bookIdToISBN.txt"); 
+//			writer.write("INSERT INTO SITE_USER (USER_TYPE,ID) VALUES "+"\n");
+			for(String line:books) {
+				Pattern isbnPattern = Pattern.compile("'([0-9]+)',[0-9]+,[0-9.]+,[0-9]+,[0-9]+\\)");//. represents single character  
+
+//				Pattern isbnPattern = Pattern.compile("([']{1}[0-9]+[']{1})[,][0-9]+[,][0-9]+[,][0-9]+[,]{1}[0-9]+[\\)]");//. represents single character  
+//				Pattern isbnPattern = Pattern.compile("([']{1}[0-9]+[']{1}),[0-9]+,[0-9]+,[0-9]+,[0-9]+[)]");//. represents single character  
+				Matcher isbnMatcher = isbnPattern.matcher(line);  
+				isbnMatcher.find();
+//				System.out.println(isbnMatcher.group(1));
+//				System.out.println(line.substring(2,38));
+				writer.write(line.substring(2,38)+":"+isbnMatcher.group(1)+"\n");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+
+	}
+	
+	@Test
+	public void addISBNTOPo() {
+		List<String> bookIdtoISBN=new ArrayList<String>();
+		List<String> pos=new ArrayList<String>();
+
+		try {
+			bookIdtoISBN=Files.readAllLines(new File("bookIdToISBN.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			pos=Files.readAllLines(new File("PoRaw.txt").toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Map<String, String> ids = new HashMap<String, String>();
+
+		for(String line:bookIdtoISBN) {
+			String[] arr=line.split(":");			
+			ids.put(arr[0], arr[1]);
+		}
+		
+		FileWriter writer=null;
+		try {
+			writer = new FileWriter("PosWithISBNRaw.txt"); 
+//			writer.write("INSERT INTO SITE_USER (USER_TYPE,ID) VALUES "+"\n");
+			for(String line:pos) {
+				String ISBN = ids.get(line.substring(41,77));
+				String editLine = "('"+ISBN+"'," + line.substring(1);
+//				System.out.println(editLine);
+//				return;
+				writer.write(editLine+"\n");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 	
 //	@Test
@@ -395,7 +529,7 @@ public class DataGenerator {
 		List<String> inserts= new ArrayList<String>();
 		List<String> bookIds= new ArrayList<String>();
 		List<String> customers= new ArrayList<String>();
-		List<String> visitorIds=new ArrayList<String>();
+		List<String> visitors=new ArrayList<String>();
 
 		try {
 			bookIds=Files.readAllLines(new File("bookIdsFINAL.txt").toPath());
@@ -411,25 +545,29 @@ public class DataGenerator {
 		}
 		
 		try {
-			visitorIds=Files.readAllLines(new File("visitorIds.txt").toPath());
+			visitors=Files.readAllLines(new File("insertVisitors.sql").toPath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		FileWriter writer=null;
+		List<String> duplicates = new ArrayList();
 		try {
 //			  ID varchar(100) not null,
 //			  BOOK varchar (100) not null,
 //			  AMOUNT int not null,
 //			  USER_TYPE varchar(20) not null,
-			writer = new FileWriter("insertPOsPt3.txt"); 
+			writer = new FileWriter("insertPOsPt1.txt"); 
 //			writer.write("INSERT INTO PURCHASE_ORDER (ID, BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH) VALUES "+"\n");
-			writer.write("INSERT INTO PURCHASE_ORDER (ID,BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES 	");
+//			writer.write("INSERT INTO PURCHASE_ORDER (ID,BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES 	");
+			writer.write("INSERT INTO PURCHASE_ORDER (ID,BOOK,USER_TYPE,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES "); 
 			String[] status= {PurchaseOrderSchema.DELIVERED_STATUS,
 					PurchaseOrderSchema.ORDERED_STATUS,
 					PurchaseOrderSchema.PROCESSED_STATUS,
 					PurchaseOrderSchema.SHIPPED_STATUS,
 					PurchaseOrderSchema.DENIED_STATUS};
+			int countIndex = 0;
+			Map<Integer, Customer> customersData = new LinkedHashMap();
 			for(String line:customers) {
 				int numberPos=((int)(Math.random()*8)+1);
 				String[] atts=line.split(",");
@@ -438,6 +576,29 @@ public class DataGenerator {
 				String cardNumber=atts[15];
 				String cardExpiry=atts[16];
 				String cardCvv2=atts[17].replace(")", "");
+				String email = atts[6];
+				String streetNum = atts[7];
+				String street = atts[8];
+				String postalCode=atts[9];
+				String city=atts[10];
+				String province=atts[11];
+				String country=atts[12];
+				customersData.put(countIndex, new Customer.Builder()
+						.withEmail(email)
+						.withStreetNumber(streetNum)
+						.withStreet(street)
+						.withPostalCode(postalCode)
+						.withCity(city)
+						.withProvince(province)
+						.withCountry(country)
+						.withCreditCardType(cardType)
+						.withCreditCardNumber(cardNumber)
+						.withCreditCardCVV2(cardCvv2)
+						.withCreditCardExpiry(cardExpiry)
+						.build());
+				countIndex++;
+
+
 				
 				
 				for(int j=0;j< numberPos;j++) {
@@ -457,20 +618,99 @@ public class DataGenerator {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+//	writer.write("INSERT INTO PURCHASE_ORDER (ID,BOOK,USER_TYPE,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES "); 
+
 					String postatus=status[((int)(Math.random()*5))];
 					int numberBooks=((int)(Math.random()*8)+1);
 					for(int i=0;i< numberBooks;i++) {
 						int bookIndex=(int)(Math.random()*bookIds.size());
 						String amount=Integer.toString((int)(Math.random()*5)+1);
-						writer.write("("+customerId+",'"+bookIds.get(bookIndex)+"','"+postatus+"',"+amount+","+Long.toString(poEpoch)+
+						String bookId=bookIds.get(bookIndex);
+						String epoch=Long.toString(poEpoch);
+						if(duplicates.contains(customerId+bookId+epoch)) continue;
+						duplicates.add(customerId+bookId+epoch);
+						writer.write("("+customerId+",'"+bookId+
+								"','"+UserTypes.CUSTOMER+
+								"',"+email+
+								","+streetNum+
+								","+street+
+								","+postalCode+
+								","+city+
+								","+province+
+								","+country+
+								",'"+postatus+"',"+
+								amount+","+epoch+
 								","+cardType+","+
-								","+cardNumber+","+
-								","+cardExpiry+","+
-								","+cardCvv2+
+								cardNumber+","+
+								cardExpiry+","+
+								cardCvv2+
 								"),\n");	
 					}
 				}
 
+			}
+			for(String line:visitors) {
+				int numberPos=((int)(Math.random()*8)+1);
+				int randcust=((int)(Math.random()*customersData.keySet().size()));
+				Customer customer =customersData.get(randcust);
+				String id = line.split(",")[1];
+				String cardType=customer.getCreditCard().getCreditCardType();
+				String cardNumber=customer.getCreditCard().getCreditCardNumber();
+				String cardExpiry=customer.getCreditCard().getCreditCardExpiry();
+				String cardCvv2=customer.getCreditCard().getCreditCardCVV2();
+				String email = customer.getEmail();
+				String streetNum = customer.getAddress().getNumber();
+				String street = customer.getAddress().getStreet();
+				String postalCode=customer.getAddress().getPostalCode();
+				String city=customer.getAddress().getCity();
+				String province=customer.getAddress().getProvince();
+				String country=customer.getAddress().getCountry();
+				for(int j=0;j< numberPos;j++) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					int poDay=(int)(Math.random()*(27))+1;
+					String poDayString = Integer.toString(poDay);
+					int poMonth=(int)(Math.random()*11)+1;
+					String poMonthString = Integer.toString(poMonth);
+					String poDateString = ("2020-"+poMonthString+"-"+poDayString).stripLeading().stripTrailing();
+					dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));			
+				    Date date=null;
+				    long poEpoch =0;
+					try {
+						date = dateFormat.parse(poDateString);
+						poEpoch = date.getTime();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+//	writer.write("INSERT INTO PURCHASE_ORDER (ID,BOOK,USER_TYPE,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES "); 
+
+					String postatus=status[((int)(Math.random()*5))];
+					int numberBooks=((int)(Math.random()*10)+1);
+					for(int i=0;i< numberBooks;i++) {
+						int bookIndex=(int)(Math.random()*bookIds.size());
+						String amount=Integer.toString((int)(Math.random()*5)+1);
+						String bookId=bookIds.get(bookIndex);
+						String epoch=Long.toString(poEpoch);
+						if(duplicates.contains(id+bookId+epoch)) continue;
+						duplicates.add(id+bookId+epoch);
+						writer.write("("+id+",'"+bookId+
+								"','"+UserTypes.VISITOR+
+								"',"+email+
+								","+streetNum+
+								","+street+
+								","+postalCode+
+								","+city+
+								","+province+
+								","+country+
+								",'"+postatus+"',"+
+								amount+","+epoch+
+								","+cardType+","+
+								cardNumber+","+
+								cardExpiry+","+
+								cardCvv2+
+								"),\n");	
+					}
+				}
 			}
 			
 		} catch (IOException e) {

@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.Map.Entry;
 import data.beans.Book;
+import data.beans.CreditCard;
 import data.beans.Customer;
 import data.schema.BookSchema;
 import data.schema.CustomerSchema;
@@ -27,6 +28,80 @@ public class UpdateCustomer extends DataUpdate{
 		return new CustomerUpdater(customer);
 	}
 	
+	public void requestUpdateCustomerCreditCard(Customer customer) {
+		
+	}
+	
+	public class InsertCustomerCreditCardType extends CustomerCreditCardInsert{
+
+		private InsertCustomerCreditCardType (Customer customer,CreditCard creditCard) {
+			super(customer,creditCard);
+		}
+		
+		public InsertCustomerCreditCardNumber insertCustomerWithCreditCardType(String creditCardType){
+			return new InsertCustomerCreditCardNumber(customer, new CreditCard.Builder(creditCard).withCreditCardType(creditCardType).build());
+		}
+		
+	}	
+	public class InsertCustomerCreditCardNumber extends CustomerCreditCardInsert{
+
+		private InsertCustomerCreditCardNumber (Customer customer,CreditCard creditCard) {
+			super(customer,creditCard);
+		}
+		
+		public InsertCustomerCreditCardExpiry insertCustomerWithCreditCardNumber(String creditCardNumber){
+			return new InsertCustomerCreditCardExpiry(customer, new CreditCard.Builder(creditCard).withCreditCardNumber(creditCardNumber).build());
+		}
+		
+	}	
+	public class InsertCustomerCreditCardExpiry extends CustomerCreditCardInsert{
+
+		private InsertCustomerCreditCardExpiry (Customer customer,CreditCard creditCard) {
+			super(customer,creditCard);
+		}
+		
+		public InsertCustomerCreditCardCVV2 insertCustomerCreditCardExpiry(String creditCardExpiry){
+			return new InsertCustomerCreditCardCVV2(customer, new CreditCard.Builder(creditCard).withCreditCardExpiry(creditCardExpiry).build());
+		}
+		
+	}	
+	public class InsertCustomerCreditCardCVV2 extends CustomerCreditCardInsert{
+
+		private InsertCustomerCreditCardCVV2 (Customer customer,CreditCard creditCard) {
+			super(customer,creditCard);
+		}
+		
+		public ExecuteCustomerCreditCardInsert insertCustomerWithCreditCardCVV2(String creditCardCVV2){
+			return new ExecuteCustomerCreditCardInsert(customer, new CreditCard.Builder(creditCard).withCreditCardCVV2(creditCardCVV2).build());
+		}
+		
+	}
+	
+	public class ExecuteCustomerCreditCardInsert extends CustomerCreditCardInsert{
+
+		ExecuteCustomerCreditCardInsert(Customer customer, CreditCard creditCard) {
+			super(customer, creditCard);
+		}
+		
+		public 	void executeCustomerCreditCardInsertion(){
+			if(customer==null|| customer.getId()==null|| customer.getId().isEmpty()||
+					creditCard==null || creditCard.getCreditCardCVV2()==null || creditCard.getCreditCardType()==null || creditCard.getCreditCardNumber()==null || creditCard.getCreditCardType()==null||
+					 creditCard.getCreditCardCVV2().isEmpty() || creditCard.getCreditCardType().isEmpty()|| creditCard.getCreditCardNumber().isEmpty() || creditCard.getCreditCardType().isEmpty()) {
+				System.err.println("warning, requested insertion of credit card with empty or null values, insertion failed");
+				return;
+			}
+
+			String update = "UPDATE CUSTOMER SET ";
+			update+=CustomerSchema.CREDIT_CARD+"='"+creditCard.getCreditCardType()+"', ";
+			update+=CustomerSchema.CREDIT_CARD_NUMBER+"='"+creditCard.getCreditCardNumber()+"', ";
+			update+=CustomerSchema.CREDIT_CARD_EXPIRY+"='"+creditCard.getCreditCardExpiry()+"', ";
+			update+=CustomerSchema.CREDIT_CARD_CVV2+"='"+creditCard.getCreditCardCVV2()+"' ";
+			update=update.substring(0,update.length()-1);
+			update+=" WHERE ID='"+customer.getId().toString()+"'";
+			sendUpdateToDatabase(update);			
+		}
+		
+	}
 	
 	public InsertCustomerGivenName requestNewCustomerInsertion() {
 		return new InsertCustomerGivenName(new Customer.Builder().build());
@@ -39,12 +114,20 @@ public class UpdateCustomer extends DataUpdate{
 		}
 	}
 	
+	abstract class CustomerCreditCardInsert extends DataUpdate{
+		protected Customer customer;
+		protected CreditCard creditCard;
+		CustomerCreditCardInsert(Customer customer,CreditCard creditCard){
+			this.creditCard=creditCard;
+		}
+	}
+	
 	public class InsertCustomerGivenName extends CustomerInsert{
 		private InsertCustomerGivenName(Customer customer) {
 			super(customer);
 		}
 		public InsertCustomerSurname  insertCustomerWithGivenName(String givenName){
-			return new InsertCustomerSurname(new Customer.Builder(customer).withGivenName(givenName).build());
+			return new InsertCustomerSurname(new Customer.Builder(customer).withGivenName(surroundWithQuotes(givenName)).build());
 		}
 		
 	}
@@ -56,7 +139,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerUserName  insertCustomerWithSurName(String surName){
-			return new InsertCustomerUserName(new Customer.Builder(customer).withSurName(surName).build());
+			return new InsertCustomerUserName(new Customer.Builder(customer).withSurName(surroundWithQuotes(surName)).build());
 		}
 		
 	}
@@ -67,7 +150,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerPassWord  insertCustomerWithUserName(String userName){
-			return new InsertCustomerPassWord(new Customer.Builder(customer).withUserName(userName).build());
+			return new InsertCustomerPassWord(new Customer.Builder(customer).withUserName(surroundWithQuotes(userName)).build());
 		}
 		
 	}
@@ -78,7 +161,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerEmail  insertCustomerWithPassWord(String password){
-			return new InsertCustomerEmail(new Customer.Builder(customer).withPassword(password).build());
+			return new InsertCustomerEmail(new Customer.Builder(customer).withPassword(surroundWithQuotes(password)).build());
 		}
 		
 	}	
@@ -89,7 +172,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerStreetNumber  insertCustomerWithEmail(String email){
-			return new InsertCustomerStreetNumber(new Customer.Builder(customer).withEmail(email).build());
+			return new InsertCustomerStreetNumber(new Customer.Builder(customer).withEmail(surroundWithQuotes(email)).build());
 		}
 		
 	}	
@@ -100,7 +183,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerStreet  insertCustomerWithStreetNumber(String streetNumber){
-			return new InsertCustomerStreet(new Customer.Builder(customer).withStreetNumber(streetNumber).build());
+			return new InsertCustomerStreet(new Customer.Builder(customer).withStreetNumber(surroundWithQuotes(streetNumber)).build());
 		}
 		
 	}	
@@ -111,7 +194,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerPostalCode  insertCustomerWithStreet(String street){
-			return new InsertCustomerPostalCode(new Customer.Builder(customer).withStreetNumber(street).build());
+			return new InsertCustomerPostalCode(new Customer.Builder(customer).withStreet(surroundWithQuotes(street)).build());
 		}
 		
 	}	
@@ -122,7 +205,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerCity  insertCustomerWithPostalCode(String postalCode){
-			return new InsertCustomerCity(new Customer.Builder(customer).withPostalCode(postalCode).build());
+			return new InsertCustomerCity(new Customer.Builder(customer).withPostalCode(surroundWithQuotes(postalCode)).build());
 		}
 		
 	}	
@@ -133,7 +216,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public InsertCustomerProvince insertCustomerWithCity(String city){
-			return new InsertCustomerProvince(new Customer.Builder(customer).withCity(city).build());
+			return new InsertCustomerProvince(new Customer.Builder(customer).withCity(surroundWithQuotes(city)).build());
 		}
 		
 	}	
@@ -143,7 +226,7 @@ public class UpdateCustomer extends DataUpdate{
 			super(customer);
 		}
 		public InsertCustomerCountry insertCustomerWithProvince(String province){
-			return new InsertCustomerCountry(new Customer.Builder(customer).withProvince(province).build());
+			return new InsertCustomerCountry(new Customer.Builder(customer).withProvince(surroundWithQuotes(province)).build());
 		}
 	}	
 	public class InsertCustomerCountry extends CustomerInsert{
@@ -153,7 +236,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		public ExecuteCustomerInsert insertCustomerWithCountry(String country){
-			return new ExecuteCustomerInsert(new Customer.Builder(customer).withCountry(country).build());
+			return new ExecuteCustomerInsert(new Customer.Builder(customer).withCountry(surroundWithQuotes(country)).build());
 		}
 		
 	}	
@@ -165,12 +248,13 @@ public class UpdateCustomer extends DataUpdate{
 		public 	void executeCustomerInsertion(){
 
 		    String epoch =Long.toString(Instant.now().getEpochSecond());
-			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString().stripLeading().stripTrailing();
+			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString();
 			String userTablesUpdate = "INSERT INTO SITE_USER (ID,USER_TYPE) VALUES ('"+id+"','"+UserTypes.CUSTOMER+"')";
 			sendUpdateToDatabase(userTablesUpdate);
 			String update="INSERT INTO CUSTOMER (USER_TYPE,ID,GIVENNAME,SURNAME,USERNAME,PASSWORD ,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,CREATED_AT_EPOCH) VALUES "+
-					"('"+UserTypes.CUSTOMER+"','"+id+"','"+customer.getGivenName()+"','"+customer.getSurName()+"','"+customer.getUserName()+"','"+customer.getPassword()+"','"+customer.getEmail()+"','"+
-					customer.getAddress().getNumber()+"',"+customer.getAddress().getStreet()+"','"+customer.getAddress().getPostalCode()+"','"+customer.getAddress().getCity()+"','"+customer.getAddress().getProvince()+"','"+customer.getAddress().getCountry()+"',"+epoch+")";
+					"('"+UserTypes.CUSTOMER+"','"+id+"',"+customer.getGivenName()+","+customer.getSurName()+","+customer.getUserName()+","+customer.getPassword()+","+customer.getEmail()+","+
+					customer.getAddress().getNumber()+","+customer.getAddress().getStreet()+","+customer.getAddress().getPostalCode()+","+customer.getAddress().getCity()+","+customer.getAddress().getProvince()+","+customer.getAddress().getCountry()+","+epoch+")";
+			System.out.println("up cust req: "+update);
 			sendUpdateToDatabase(update);
 			
 		}
@@ -240,29 +324,29 @@ public class UpdateCustomer extends DataUpdate{
 			
 		}
 		
-		public CustomerUpdater updateCustomerCreditCardType(String creditCardType){
-			this.updateRequest.put(customerSchema.CREDIT_CARD, surroundWithQuotes(creditCardType));
-			return this;
-			
-		}
-		public CustomerUpdater updateCustomerCreditCardNumber(String creditCardNumber){
-			this.updateRequest.put(customerSchema.CREDIT_CARD_NUMBER, surroundWithQuotes(creditCardNumber));
-			return this;
-			
-		}		
-		
-		public CustomerUpdater updateCustomerCreditCardExpiry(String creditCardExpiry){
-			this.updateRequest.put(customerSchema.CREDIT_CARD_EXPIRY, surroundWithQuotes(creditCardExpiry));
-			return this;
-			
-		}		
-		
-		public CustomerUpdater updateCustomerCreditCardCvv2(String cvv2){
-			this.updateRequest.put(customerSchema.CREDIT_CARD_CVV2, surroundWithQuotes(cvv2));
-			return this;
-			
-		}
-		
+//		public CustomerUpdater updateCustomerCreditCardType(String creditCardType){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD, surroundWithQuotes(creditCardType));
+//			return this;
+//			
+//		}
+//		public CustomerUpdater updateCustomerCreditCardNumber(String creditCardNumber){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD_NUMBER, surroundWithQuotes(creditCardNumber));
+//			return this;
+//			
+//		}		
+//		
+//		public CustomerUpdater updateCustomerCreditCardExpiry(String creditCardExpiry){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD_EXPIRY, surroundWithQuotes(creditCardExpiry));
+//			return this;
+//			
+//		}		
+//		
+//		public CustomerUpdater updateCustomerCreditCardCvv2(String cvv2){
+//			this.updateRequest.put(customerSchema.CREDIT_CARD_CVV2, surroundWithQuotes(cvv2));
+//			return this;
+//			
+//		}
+//		
 		
 		public void executeUpdate() {
 			String update = "UPDATE CUSTOMER SET ";

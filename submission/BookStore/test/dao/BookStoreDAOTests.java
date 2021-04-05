@@ -21,7 +21,7 @@ import data.dao.VisitorDAO;
 
 public class BookStoreDAOTests {
 
-	@Test
+//	@Test
 	void bookDAOVarCharQueryProducesCorrectQuery() {
 		BookDAO bookDAO = new BookDAO();
 		String query =bookDAO.newQueryRequest()
@@ -52,7 +52,7 @@ public class BookStoreDAOTests {
 
 	}
 	
-	@Test
+//	@Test
 	void bookDAONumberQueryProducesCorrectQuery() {
 		BookDAO bookDAO = new BookDAO();
 		String query =bookDAO.newQueryRequest()
@@ -76,7 +76,7 @@ public class BookStoreDAOTests {
 		String expectedResult="SELECT PUBLISH_YEAR,AMOUNT_SOLD,PRICE,ISBN,DESCRIPTION,RATING,CATEGORY,TITLE,ID,AUTHOR FROM BOOK  WHERE PUBLISH_YEAR >= 2000 AND PRICE >= 1 AND PRICE <= 99 AND AMOUNT_SOLD <= 22 ORDER BY AMOUNT_SOLD ASC OFFSET 108 ROWS  FETCH NEXT 36 ROWS ONLY";
 		assertEquals(query, expectedResult,"BookDAO number query did not generate the correct query string");
 	}
-	@Test
+//	@Test
 	void bookDAOConjunctionDisjunctionProducesCorrectQuery() {
 		BookDAO bookDAO = new BookDAO();
 		String query =bookDAO.newQueryRequest()
@@ -109,7 +109,7 @@ public class BookStoreDAOTests {
 
 	}
 
-	@Test
+//	@Test
 	void customerDAOVarCharQueryProducesCorrectQuery() {
 		CustomerDAO customerDAO = new CustomerDAO();
 		String query =customerDAO.newQueryRequest()
@@ -139,7 +139,7 @@ public class BookStoreDAOTests {
 	}
 	
 
-	@Test
+//	@Test
 	void reviewDAOVarCharQueryProducesCorrectQuery() {
 		ReviewDAO reviewDAO = new ReviewDAO();
 		String query =reviewDAO.newQueryRequest()
@@ -168,7 +168,7 @@ public class BookStoreDAOTests {
 
 	}
 	
-	@Test
+//	@Test
 	void reviewDAONumberQueryProducesCorrectQuery() {
 		ReviewDAO reviewDAO = new ReviewDAO();
 		String query =reviewDAO.newQueryRequest()
@@ -189,7 +189,7 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO number query did not generate the correct query string");
 	}
 	
-	@Test
+//	@Test
 	void cartDAOQueryProducesCorrectQuery() {
 		CartDAO cartDAO = new CartDAO();
 		String query =cartDAO.newQueryRequest()
@@ -209,7 +209,7 @@ public class BookStoreDAOTests {
 	}
 
 	
-	@Test
+//	@Test
 	void purchaseOrderDAOVarCharQueryProducesCorrectQuery() {
 		PurchaseOrderDAO purchaseOrderDAO = new PurchaseOrderDAO();
 		String query =purchaseOrderDAO.newQueryRequest()
@@ -232,7 +232,7 @@ public class BookStoreDAOTests {
 	}
 
 	
-	@Test
+//	@Test
 	void visitorDAOQueryProducesCorrectQuery() {
 		VisitorDAO visitorDAO = new VisitorDAO();
 		String query =visitorDAO.newQueryRequest()
@@ -253,7 +253,7 @@ public class BookStoreDAOTests {
 	}
 	
 	
-	@Test
+//	@Test
 	void bookDAOReferenceEmptyResultIncludeHasCorrectQuery() {
 		BookDAO bookDAO = new BookDAO();
 		String query =bookDAO.newQueryRequest()
@@ -264,7 +264,7 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
 	
-	@Test
+//	@Test
 	void referenceResultQueryIsCorrectQuery() {
 		BookDAO bookDAO = new BookDAO();
 		String query =bookDAO.newQueryRequest()
@@ -302,7 +302,7 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
 	
-	@Test
+//	@Test
 	void bookDAOKeyQuery() {
 		BookDAO bookDAO = new BookDAO();
 		String query =bookDAO.newQueryRequest()
@@ -317,7 +317,7 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
 	
-	@Test
+//	@Test
 	void visitorDAOKeyQuery() {
 		VisitorDAO visitorDAO = new VisitorDAO();
 		String query =visitorDAO.newQueryRequest()
@@ -332,7 +332,7 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
 	
-	@Test
+//	@Test
 	void reviewDAOKeyQuery() {
 		ReviewDAO reviewDAO = new ReviewDAO();
 		String query =reviewDAO.newQueryRequest()
@@ -357,7 +357,7 @@ public class BookStoreDAOTests {
 	}
 	
 	
-	@Test
+//	@Test
 	void customerDAOFullQuery() {
 		CustomerDAO customerDAO = new CustomerDAO();
 		String query =customerDAO.newQueryRequest()
@@ -369,7 +369,7 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
 	
-	@Test
+//	@Test
 	void customerDAOKeyQuery() {
 		CustomerDAO customerDAO = new CustomerDAO();
 		String query =customerDAO.newQueryRequest()
@@ -383,7 +383,7 @@ public class BookStoreDAOTests {
 		String expectedResult="SELECT  * FROM CUSTOMER  WHERE ID='fakecustrebv' AND CREATED_AT_EPOCH >= 444 AND CREATED_AT_EPOCH <= 5555 FETCH FIRST 20 ROWS ONLY";
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
-	@Test
+//	@Test
 	void cartDAOKeyQuery() {
 		CartDAO cartDAO = new CartDAO();
 		String query =cartDAO.newQueryRequest()
@@ -404,7 +404,7 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
 	
-	@Test
+//	@Test
 	void purchaseOrderDAOKeyQuery() {
 		PurchaseOrderDAO purchaseOrderDAO = new PurchaseOrderDAO();
 		String query =purchaseOrderDAO.newQueryRequest()

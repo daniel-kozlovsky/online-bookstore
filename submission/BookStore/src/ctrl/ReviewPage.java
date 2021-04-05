@@ -1,6 +1,7 @@
 package ctrl;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import data.beans.Book;
+import data.beans.Review;
 import model.MainPageModel;
 
 /**
@@ -25,10 +28,13 @@ public class ReviewPage extends HttpServlet {
 	
 	private static final String MODEL = "model";
 	
-	private static final String LOAD_REVIEWS = "LOAD_REVIEWS";
-	private static final String COMM = "COMM";
+	private static final String bookID = "bookID";
 	
-	private static final String NUM_COMMENTS = "NUM_COMMENTS";
+	private static final String VIWE_ALL_REVIEWS= "VIWE_ALL_REVIEWS";
+	private static final String NUM_REVIEWS_FOUND = "NUM_REVIEWS_FOUND";
+	private static final String TITLE = "TITLE";
+	private static final String AUTHOR = "AUTHOR";
+	private static final String YEAR = "YEAR";
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -67,17 +73,43 @@ public class ReviewPage extends HttpServlet {
 		HttpSession h = request.getSession();
 		
 		
-		if (request.getParameter(COMM) != null && request.getParameter(COMM).equals(LOAD_REVIEWS))
-		{
-			int numReviews = 0;
+		if (request.getParameter(bookID)!=null) {
 			
-			if (h.getAttribute(NUM_COMMENTS) == null)
-				numReviews = 3;
-			else
-				numReviews = Integer.parseInt( (String) h.getAttribute(NUM_COMMENTS));
+			try {
 			
+				String id =  request.getParameter(bookID);
+				h.setAttribute(bookID, id);
+				setAttributes ( request,  model,  id);
+				String html = getAllReviewsForBook(request, id, model);
+				
+				
+				request.setAttribute(VIWE_ALL_REVIEWS, html);
 			
+			} catch (Exception e) {
+				request.setAttribute(NUM_REVIEWS_FOUND, "0");
+				System.out.println("An error occured." + e.getMessage());
+			}
+		} else if (h.getAttribute(bookID) != null) {
+			try {
+				
+				String id =  (String) h.getAttribute(bookID);
+				h.setAttribute(bookID, id);
+				setAttributes ( request,  model,  id);
+				String html = getAllReviewsForBook(request, id, model);
+				
+				request.setAttribute(VIWE_ALL_REVIEWS, html);
+			
+			} catch (Exception e) {
+				request.setAttribute(NUM_REVIEWS_FOUND, "0");
+				System.out.println("An error occured." + e.getMessage());
+			}
+			
+		} else  {
+			System.out.println("ID = "+request.getParameter(bookID));
+			System.out.println("An error occured. Could have come here only if pressed 'load more reviews'");
 		}
+		
+		request.getRequestDispatcher("html/ProdReviewPage.jspx").forward(request, response);
 	}
 
 	/**
@@ -87,5 +119,58 @@ public class ReviewPage extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
+	
+	/**
+	 * This method returns html tags of reviews for book with id 'id', and sets the request scope attributes
+	 * 
+	 * @param request http request
+	 * @param id	book id
+	 * @param model to communicate with the appropriate databases
+	 * @return
+	 * @throws Exception
+	 */
+	private String getAllReviewsForBook(HttpServletRequest request, String id, MainPageModel model) throws Exception {
+		String html = "";
+		
+		Book b = model.getReviewsForThisBook (id, false, 0);
+		
+		if (b == null) {
+			request.setAttribute(NUM_REVIEWS_FOUND, "0");
+			return "<p> This book has no reviews </p>";
+		}
 
+		Review[] r = b.getReviews();
+		
+		int numPages = (int) Math.ceil( (double) r.length / 10);
+		
+		
+		for (int i = 0; i < r.length; i ++) {
+			
+			html +=   "				<div class=\"review_row\" style=\"margin-top:50px;\">\n"
+					+ "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+r[i].getCustomer().getSurName() + ", "+ r[i].getCustomer().getGivenName() + " " + r[i].getRating() + " / 5 </p>"
+					+ "					<div class=\"container_title  \">"+r[i].getTitle()+"</div>\n"
+					+ "					<p>\n"
+					+ "						"+r[i].getBody()
+					+ "					</p>\n"
+					+ "				</div>\n";
+					
+			
+		}
+		
+		if (r.length == 0)
+			request.setAttribute(NUM_REVIEWS_FOUND, "0");
+		else
+			request.setAttribute(NUM_REVIEWS_FOUND, r.length);
+
+		return html;
+	}
+	
+	private void setAttributes (HttpServletRequest request, MainPageModel model, String id) throws Exception{
+		Book b = model.getBookByID(id);
+		
+		request.setAttribute(TITLE, b.getTitle());
+		request.setAttribute(AUTHOR, b.getAuthor());
+		request.setAttribute(YEAR, b.getPublishYear());
+		
+	}
 }

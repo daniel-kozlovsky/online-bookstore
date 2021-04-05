@@ -89,6 +89,11 @@ public class CustomerDataFetcher extends DataFetcher<Customer>{
 				customer = new Customer.Builder(customer).withProvince(resultSet.getString(prefix+schema.PROVINCE)).build();
 			}
 			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CITY)) {
+				customer = new Customer.Builder(customer).withCity(resultSet.getString(prefix+schema.CITY)).build();
+			}
+			
+			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.POSTAL_CODE)) {
 				customer = new Customer.Builder(customer).withPostalCode(resultSet.getString(prefix+schema.POSTAL_CODE)).build();
 			}
@@ -96,6 +101,26 @@ public class CustomerDataFetcher extends DataFetcher<Customer>{
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.COUNTRY)) {
 				customer = new Customer.Builder(customer).withCountry(resultSet.getString(prefix+schema.COUNTRY)).build();
 			}
+			
+			//
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD)) {
+				customer = new Customer.Builder(customer).withCreditCardType(resultSet.getString(prefix+schema.CREDIT_CARD)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD_NUMBER)) {
+				customer = new Customer.Builder(customer).withCreditCardNumber(resultSet.getString(prefix+schema.CREDIT_CARD_NUMBER)).build();
+			}
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD_EXPIRY)) {
+				customer = new Customer.Builder(customer).withCreditCardExpiry(resultSet.getString(prefix+schema.CREDIT_CARD_EXPIRY)).build();
+			}
+			
+			
+			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREDIT_CARD_CVV2)) {
+				customer = new Customer.Builder(customer).withCreditCardCVV2(resultSet.getString(prefix+schema.CREDIT_CARD_CVV2)).build();
+			}
+			
+
 			
 			if(isRequestAllAttributes || attributesToIncludInResults.get(schema.tableName()).contains(schema.CREATED_AT_EPOCH)) {
 				customer = new Customer.Builder(customer).withCreatedAtEpoch(resultSet.getLong(prefix+schema.CREATED_AT_EPOCH)).build();

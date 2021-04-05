@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,11 +44,58 @@ import data.schema.CustomerSchema;
 import data.schema.DataSchema;
 import data.schema.PurchaseOrderSchema;
 import data.schema.ReviewSchema;
-
+//SELECT COUNT(BOOK) AS REVIEW_COUNT FROM REVIEW where CUSTOMER='988eed34-bad0-3635-a0ae-9e4f72a54306' GROUP BY CUSTOMER
 public class ReviewDAO implements DAO{
 	private ReviewSchema reviewSchema;
 	public ReviewDAO(){
 		this.reviewSchema=new ReviewSchema();
+	}
+	
+	public int getReviewCount(Id id) {
+		return getReviewCount(id.toString());
+	}
+	
+	public int getReviewCount(Customer customer) {
+		return getReviewCount(customer.getId().toString());
+	}
+	public int getReviewCount(String id){
+		String queryString="SELECT COUNT(BOOK) AS REVIEW_COUNT FROM REVIEW where CUSTOMER='"+id+"' GROUP BY CUSTOMER";
+		Connection connection= null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		try {
+			DataSource dataSource=(DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			connection= dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(queryString);
+			resultSet= preparedStatement.executeQuery();
+			while(resultSet.next()) {				
+				return resultSet.getInt("REVIEW_COUNT");
+			}
+
+			
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(preparedStatement!=null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		return 0;
 	}
 	
 	@Override

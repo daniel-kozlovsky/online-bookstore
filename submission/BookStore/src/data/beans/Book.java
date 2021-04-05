@@ -129,11 +129,13 @@ public class Book extends IdObject{
 		}
 		reviewJson+="]";
 
-		return "{"+Bean.jsonMapVarChar("title",this.title.replaceAll("[\"]", ""))+","+
+		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
+				Bean.jsonMapVarChar("title",this.title.replaceAll("[\"]", ""))+","+
 				Bean.jsonMapVarChar("series",this.series.replaceAll("[\"]", ""))+","+
 				Bean.jsonMapVarChar("description",this.description.replaceAll("[\"]", ""))+","+
 				Bean.jsonMapVarChar("category",this.category.replaceAll("[\"]", ""))+","+
 				Bean.jsonMapVarChar("author",this.author)+","+
+				Bean.jsonMapNumber("publishYear",Integer.toString(this.getPublishYear()))+","+
 				Bean.jsonMapVarChar("cover",this.cover.getPath())+","+
 				Bean.jsonMapVarChar("ISBN",this.ISBN)+","+
 				Bean.jsonMapNumber("price",Double.toString(this.price))+","+
@@ -248,6 +250,7 @@ public class Book extends IdObject{
 		}
 
 
+
 		public Builder withAmountSold(int amountSold){
 			this.amountSold=amountSold;
 			return this;
@@ -309,19 +312,20 @@ public class Book extends IdObject{
 
 		public Book build(){
 			Book book=new Book();
-			book.id=this.id;
-			book.title=this.title;
-			book.description=this.description;
-			book.category=this.category;
-			book.author=this.author;
+			book.id=this.id==null?new Id(""):this.id;
+			book.title=this.title==null?"":this.title;
+			book.description=this.description==null?"":this.description;
+			book.category=this.category==null?"":this.category;
+			book.author=this.author==null?"":this.author;
 			book.price=this.price;
-			book.cover=this.cover;
-			book.reviews=this.reviews;
+			book.cover=this.cover==null?new File(""):this.cover;
+			book.reviews=this.reviews==null?new Review[0]:this.reviews;
 			book.rating=this.rating;
 			book.amountSold=this.amountSold;
-			book.series=this.series;
+			book.series=this.series==null?"":this.series;
 			book._isInReview=this._isInReview;
 			book.publishYear=this.publishYear;
+			book.ISBN=this.ISBN==null?"":this.ISBN;
 			return book;
 		}
 

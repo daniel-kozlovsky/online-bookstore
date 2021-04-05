@@ -7,8 +7,7 @@ import java.util.List;
 import data.beans.Cart.Builder;
 import data.beans.IdObject.IdObjectBuilder;
 import data.schema.UserTypes;
-public class Visitor extends User {
-	public Cart cart;
+public class Visitor extends SiteUser {
 	private  long createdAtEpoch;
 	private  long lastAccessedAtEpoch;
 	public static final String userType=UserTypes.VISITOR;
@@ -19,9 +18,7 @@ public class Visitor extends User {
 		return this.userType;
 	}
 	
-	public Cart getCart() {
-		return cart;
-	}
+
 	
 	public long getCreatedAtEpoch() {
 		return createdAtEpoch;
@@ -34,12 +31,6 @@ public class Visitor extends User {
 
 
 
-
-
-	public void setCart(Cart cart) {
-		this.cart = cart;
-	}
-
 	private Visitor() {
 		
 	}
@@ -49,6 +40,7 @@ public class Visitor extends User {
 		private Cart cart;
 		private  long createdAtEpoch;
 		private  long lastAccessedAtEpoch;
+		private PurchaseOrder[] purchaseOrders;
 
 		public Builder(){
 			super();
@@ -56,6 +48,7 @@ public class Visitor extends User {
 			this.id=new Id("");
 			createdAtEpoch=0;
 			lastAccessedAtEpoch=0;
+			this.purchaseOrders=new PurchaseOrder[0];
 		}
 		
 		public Builder(Visitor visitor){
@@ -64,6 +57,7 @@ public class Visitor extends User {
 			this.cart=visitor.cart;
 			this.createdAtEpoch=visitor.createdAtEpoch;
 			this.lastAccessedAtEpoch=visitor.lastAccessedAtEpoch;
+			this.purchaseOrders=visitor.purchaseOrders;
 		}
 
 		public Builder withSessionId(String sessionId){//SUBJECT TO CHANGE
@@ -96,13 +90,28 @@ public class Visitor extends User {
 			this.lastAccessedAtEpoch=Long.parseLong(lastAccessedAtEpoch);
 			return this;
 		}
+		
+		public Builder withPurchaseOrders(PurchaseOrder[] purchaseOrders){
+			this.purchaseOrders=purchaseOrders;
+			return this;
+		}
+
+		public Builder withPurchaseOrders(List<PurchaseOrder> purchaseOrders){
+			PurchaseOrder[] purchaseOrderArr = new PurchaseOrder[purchaseOrders.size()];
+			return withPurchaseOrders(purchaseOrders.toArray(purchaseOrderArr));
+		}
+		public Builder withPurchaseOrders(PurchaseOrder purchaseOrders){
+			this.purchaseOrders=new PurchaseOrder[] {purchaseOrders};
+			return this;
+		}
 
 		public Visitor build(){
 			Visitor visitor=new Visitor();
-			visitor.id=this.id;
-			visitor.cart=this.cart;
+			visitor.id=this.id==null?new Id(""):this.id;
+			visitor.cart=this.cart==null? new Cart.Builder().withId(this.id).build():this.cart;
 			visitor.createdAtEpoch=this.createdAtEpoch;
 			visitor.lastAccessedAtEpoch=this.lastAccessedAtEpoch;
+			visitor.purchaseOrders=this.purchaseOrders==null?new PurchaseOrder[0]:this.purchaseOrders;
 			return visitor;
 		}
 
@@ -112,11 +121,21 @@ public class Visitor extends User {
 
 	@Override
 	public String toJson() {
-		// TODO Auto-generated method stub		
-		return "{"+
+		// TODO Auto-generated method stub	
+		String purchaseOrdersJson="\"purchaseOrders\": [";
+		if (this.purchaseOrders!=null && purchaseOrders.length>0) {
+			for(PurchaseOrder purchaseOrder:this.purchaseOrders) {
+				purchaseOrdersJson+=purchaseOrder.toJson()+",";
+			}
+			purchaseOrdersJson=purchaseOrdersJson.substring(0, purchaseOrdersJson.length() - 1);				
+				
+		}
+		purchaseOrdersJson+="]";
+		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
 		Bean.jsonMapNumber("createdAtEpoch",Long.toString(createdAtEpoch))+","+
-		Bean.jsonMapNumber("lastAccessedAtEpoch",Long.toString(lastAccessedAtEpoch))+
+		Bean.jsonMapNumber("lastAccessedAtEpoch",Long.toString(lastAccessedAtEpoch))+","+
 		Bean.jsonMapNumber("cart",this.cart.toJson())+","+
+		purchaseOrdersJson+
 		"}";
 	}
 }

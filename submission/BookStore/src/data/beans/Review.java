@@ -59,7 +59,9 @@ public class Review implements Bean{
 		String bookJson=isWithinBook()?Bean.jsonMapNumber("book","{}"):Bean.jsonMapNumber("book",this.book.toJson());
 
 
-		return "{"+Bean.jsonMapVarChar("body",this.body.replaceAll("\"", "\\\""))+","+
+		return "{"+Bean.jsonMapVarChar("customer",this.customer.getId().toString())+","+
+				Bean.jsonMapVarChar("book",this.book.getId().toString())+","+
+				Bean.jsonMapVarChar("body",this.body.replaceAll("\"", "\\\""))+","+
 				Bean.jsonMapVarChar("title",this.title.replaceAll("\"", "\\\""))+","+
 				Bean.jsonMapNumber("rating",Integer.toString(this.rating))+","+
 				Bean.jsonMapNumber("createdAtEpoch",Long.toString(this.createdAtEpoch))+","+
@@ -147,11 +149,11 @@ public class Review implements Bean{
 
 		public Review build(){
 			Review review=new Review();
-			review.body=this.body;
-			review.title=this.title;
-			review.customer=this.customer;
+			review.body=this.body==null?"":this.body;
+			review.title=this.title==null?"":this.title;
+			review.customer=this.customer==null? new Customer.Builder().build():this.customer;
 			review.rating=this.rating;
-			review.book=this.book;
+			review.book=this.book==null?new Book.Builder().build():this.book;
 			review.createdAtEpoch=this.createdAtEpoch;
 			review._isWithinBook=this._isWithinBook;
 			review._isWithinCustomer=this._isWithinCustomer;

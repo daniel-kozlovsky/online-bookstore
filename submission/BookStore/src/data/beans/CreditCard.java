@@ -1,6 +1,6 @@
 package data.beans;
 
-public class CreditCard {
+public class CreditCard implements Bean{
 //	CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	
 	private String creditCardType;
 
@@ -65,5 +65,22 @@ public class CreditCard {
 			this.creditCardExpiry=creditCard.creditCardExpiry;
 			this.creditCardType=creditCard.creditCardType;
 		}
+		public CreditCard build() {
+			CreditCard creditCard = new CreditCard();
+			creditCard.creditCardCVV2=this.creditCardCVV2==null?"":this.creditCardCVV2;
+			creditCard.creditCardNumber=this.creditCardNumber==null?"":this.creditCardNumber;
+			creditCard.creditCardExpiry=this.creditCardExpiry==null?"":this.creditCardExpiry;
+			creditCard.creditCardType=this.creditCardType==null?"":this.creditCardType;
+			return creditCard;
+		}
+	}
+	@Override
+	public String toJson() {
+		return  "{"+Bean.jsonMapVarChar("creditCardType",this.creditCardType)+","+
+				Bean.jsonMapVarChar("creditCardNumber",this.creditCardNumber)+","+
+				Bean.jsonMapVarChar("creditCardExpiry",this.creditCardExpiry)+","+
+				Bean.jsonMapVarChar("creditCardCVV2",this.creditCardCVV2)+","+
+				"}"
+				;
 	}
 }

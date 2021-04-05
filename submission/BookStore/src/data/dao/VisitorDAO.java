@@ -22,6 +22,7 @@ import data.dao.CartDAO.BookStoreCartQuery;
 import data.dao.CustomerDAO.BookStoreCustomerQuery;
 import data.dao.CustomerDAO.CustomerNumberQuery;
 import data.dao.CustomerDAO.CustomerVarCharQuery;
+import data.dao.PurchaseOrderDAO.BookStorePurchaseOrderQuery;
 import data.dao.ReviewDAO.ReviewAttributeAccess;
 import data.query.AttributeAccess;
 import data.query.BookStoreNumberQuery;
@@ -33,6 +34,7 @@ import data.schema.BookSchema;
 import data.schema.CartSchema;
 import data.schema.CustomerSchema;
 import data.schema.DataSchema;
+import data.schema.PurchaseOrderSchema;
 import data.schema.ReviewSchema;
 import data.schema.UserTypes;
 import data.schema.VisitorSchema;
@@ -154,6 +156,20 @@ public class VisitorDAO implements DAO{
 					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
+		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+		}
+		
 		
 	}
 	public class VisitorVarCharQuery extends BookStoreVarCharQuery<VisitorVarCharQuery,VisitorAttributeAccess,BookStoreVisitorQuery>{
@@ -207,6 +223,19 @@ public class VisitorDAO implements DAO{
 					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
 		}
+		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
+		}
 	}
 	public class VisitorNumberQuery extends BookStoreNumberQuery<VisitorNumberQuery,VisitorAttributeAccess,BookStoreVisitorQuery>{
 		private VisitorAttributeAccess visitorAttributeAccess;
@@ -258,6 +287,19 @@ public class VisitorDAO implements DAO{
 					.build()
 					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData);
+		}
+		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 	}
 	
@@ -363,6 +405,19 @@ public class VisitorDAO implements DAO{
 					.build()
 					);
 			return  this;
+		}
+		public BookStorePurchaseOrderQuery queryPurchaseOrder() {
+			this.tableJoins.add(
+					new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(VisitorSchema.ID)
+					.withDataAccessParameterPrefix("=")
+					.withDataAccessParameterSuffix("")
+					.withDataAccessParameter(new PurchaseOrderSchema().tableName()+this.referenceOperator+PurchaseOrderSchema.ID)
+					.build()
+					);
+			return new PurchaseOrderDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 	}
 	

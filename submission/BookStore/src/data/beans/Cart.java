@@ -13,30 +13,30 @@ import data.schema.VisitorSchema;
 
 public class Cart extends IdObject {
 	private Map<Book, Integer> books;
-	private User user;
+	private SiteUser siteUser;
 	private String userType;
 //	private Customer customer;
 //	private Visitor visitor;
 
 	private boolean _isWithinCustomer;
-	private boolean _isWithinVisitor;
+	private boolean _isWithinSiteUser;
 
 	@Override
 	public boolean equals(Object object) {
 		Cart other = (Cart) object;
-		return other.user.isEqual(this.user);
+		return other.siteUser.isEqual(this.siteUser);
 	}
 
 	public User getUser() {
-		return this.user;
+		return this.siteUser;
 	}
 
 	public boolean isEmpty() {
 		return this.books.isEmpty();
 	}
 
-	public boolean isCartOfUser(User user) {
-		return user.isEqual(this.user);
+	public boolean isCartOfUser(SiteUser siteUser) {
+		return siteUser.isEqual(this.siteUser);
 	}
 
 	public boolean isBookInCart(Book book) {
@@ -81,24 +81,22 @@ public class Cart extends IdObject {
 	}
 
 	public boolean isVisitorCart() {
-		return this.user.equals("VISITOR");
+		return this.siteUser.getUserType().equals(UserTypes.VISITOR);
 	}
 
 	public boolean isCustomerCart() {
-		return this.user.equals("CUSTOMER");
+		return this.siteUser.getUserType().equals(UserTypes.CUSTOMER);
 	}
 
 	public String getUserType() {
 		return this.userType;
 	}
 
-	public boolean isWithinCustomer() {
-		return this._isWithinCustomer;
+	public boolean isWithinSiteUser() {
+		return this._isWithinSiteUser;
 	}
 
-	public boolean isWithinVisitor() {
-		return this._isWithinVisitor;
-	}
+
 
 	public static class Builder extends IdObjectBuilder<Builder> {
 
@@ -108,14 +106,11 @@ public class Cart extends IdObject {
 //		private Customer customer;
 //		private Visitor visitor;
 
-		private boolean _isWithinCustomer;
-		private boolean _isWithinVisitor;
-
+		private boolean _isWithinSiteUser;
 		public Builder(Cart cart) {
 //			this.user=cart.user;
 			this.books = cart.books;
-			this._isWithinVisitor = cart._isWithinVisitor;
-			this._isWithinCustomer = cart._isWithinCustomer;
+			this._isWithinSiteUser = cart._isWithinSiteUser;
 			this.userType = cart.userType;
 //			if(cart.customer!=null) {
 //				this.customer=cart.customer;
@@ -133,8 +128,7 @@ public class Cart extends IdObject {
 			this.userType = UserTypes.VISITOR;
 //			this.customer=null;
 //			this.visitor=null;
-			this._isWithinVisitor = false;
-			this._isWithinCustomer = false;
+			this._isWithinSiteUser = false;
 		}
 
 		public Builder withUser(Visitor visitor) {
@@ -178,17 +172,11 @@ public class Cart extends IdObject {
 			return this;
 		}
 
-		public Builder withInCustomer() {
-			this._isWithinVisitor = false;
-			this._isWithinCustomer = true;
+		public Builder withInSiteUser() {
+			this._isWithinSiteUser = true;
 			return this;
 		}
 
-		public Builder withInVisitor() {
-			this._isWithinCustomer = false;
-			this._isWithinVisitor = true;
-			return this;
-		}
 
 		public Builder withBookAmount(Book book, int amount) {
 			this.books.put(book, amount);
@@ -223,11 +211,10 @@ public class Cart extends IdObject {
 		public Cart build() {
 			Cart cart = new Cart();
 //			cart.user=this.user;
-			cart.books = this.books;
-			cart.userType = this.userType;
-			cart._isWithinCustomer = this._isWithinCustomer;
-			cart._isWithinVisitor = this._isWithinVisitor;
-			cart.id = this.id;
+			cart.books = this.books==null?new LinkedHashMap<Book, Integer>():this.books;
+			cart.userType = this.userType==null?"":this.userType;
+			cart._isWithinSiteUser = this._isWithinSiteUser;
+			cart.id = this.id==null?new Id(""):this.id;
 //			if(this.userType.equals(UserTypes.CUSTOMER)) {
 //				cart.customer=this.customer;
 //				cart.visitor=null;

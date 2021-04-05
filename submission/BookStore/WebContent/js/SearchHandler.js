@@ -4,6 +4,8 @@
  
 window.onload = setAllVars;
 
+const NUM_REV_PER_PAGE = 4;
+
 var page_num = 1;
 var nextP;
 var prevP;
@@ -20,9 +22,19 @@ function setAllVars() {
 	prevP.addEventListener("mouseout", mouseOut_prev, false);
 	
 	showNextPage(page_num);
+	
+	setTotalNumPages();
 }
 
-
+function setTotalNumPages() {
+	var numBooks = document.getElementsByClassName("book_row");	
+	var numPages = Math.ceil(numBooks.length/ NUM_REV_PER_PAGE);
+	
+	if (numPages == 0)
+		document.getElementById("totalNumPages").textContent = 1;
+	else
+		document.getElementById("totalNumPages").textContent = numPages;
+}
 
 function showNextPageResults(n) {
   var numBooks = document.getElementsByClassName("book_row");	

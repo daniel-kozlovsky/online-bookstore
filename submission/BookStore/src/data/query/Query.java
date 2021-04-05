@@ -65,8 +65,9 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 //	protected Map<String,List<DataAccessString>> dataAccessRequests;
 	protected Map<String,List<DataAccessString>> dataAccessRequestsConjunction;
 	protected Map<String,List<DataAccessString>> dataAccessRequestsDisjunction;
-	protected boolean isDisjunctionMode;
+	public boolean isDisjunctionMode;
 	protected List<DataAccessString> tableJoins;
+	
 	
 	public T queryAsDisjunction() {
 		isDisjunctionMode=true;
@@ -335,11 +336,12 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 			for(Entry<String,List<DataAccessString>> entry : this.dataAccessRequestsConjunction.entrySet()) {
 				for(DataAccessString dataAccessString:entry.getValue()) {
 					count++;
-					if(hasReferences) {
-						conjunctionQueries+=dataAccessString.getReferenceDataAcessString();
-					}else {
-						conjunctionQueries+=dataAccessString.getDataAccessString();	
-					}
+					conjunctionQueries+=dataAccessString.getReferenceDataAcessString();
+//					if(hasReferences) {
+//						conjunctionQueries+=dataAccessString.getReferenceDataAcessString();
+//					}else {
+//						conjunctionQueries+=dataAccessString.getReferenceDataAcessString();	
+//					}
 					conjunctionQueries+=andConnector;
 				
 				}
@@ -356,11 +358,12 @@ public abstract class Query<T extends Query,U extends AttributeAccess> implement
 			for(Entry<String,List<DataAccessString>> entry : this.dataAccessRequestsDisjunction.entrySet()) {
 				for(DataAccessString dataAccessString:entry.getValue()) {
 					count++;
-					if(hasReferences) {
-						disjunctionQueries+=dataAccessString.getReferenceDataAcessString();
-					}else {
-						disjunctionQueries+=dataAccessString.getDataAccessString();	
-					}
+					disjunctionQueries+=dataAccessString.getReferenceDataAcessString();
+//					if(hasReferences) {
+//						disjunctionQueries+=dataAccessString.getReferenceDataAcessString();
+//					}else {
+//						disjunctionQueries+=dataAccessString.getReferenceDataAcessString();	
+//					}
 					disjunctionQueries+=orConnector;
 				
 				}

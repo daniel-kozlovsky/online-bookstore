@@ -116,9 +116,61 @@ public abstract class VarCharQuery<T extends Query,U extends AttributeAccess> ex
 				.withTableName(this.dataSchema.tableName())
 				.withReferenceOperator(this.referenceOperator)
 				.withAttributeName(this.currentAttributeAccess)
-				.withDataAccessParameterPrefix(" like "+"'%")
+				.withDataAccessParameterPrefix("="+"'%")
 				.withDataAccessParameterSuffix("'")
 				.withDataAccessParameter(suffix)
+				.build()
+				);
+		return (T) this;
+	}
+	@Override
+	public T varCharContainsIgnoreCase(String contains) {
+		
+		this.addDataAccessString(new DataAccessString.Builder()
+				.withTableName("LOWER("+this.dataSchema.tableName())
+				.withReferenceOperator(this.referenceOperator)
+				.withAttributeName(this.currentAttributeAccess+")")
+				.withDataAccessParameterPrefix(" like "+"'%")
+				.withDataAccessParameterSuffix("%'")
+				.withDataAccessParameter(contains.toLowerCase().replaceAll("\\s+", " "))
+				.build());
+		return (T) this;
+	}
+	@Override
+	public T varCharEqualsIgnoreCase(String equals){
+		this.addDataAccessString(new DataAccessString.Builder()
+				.withTableName("LOWER("+this.dataSchema.tableName())
+				.withReferenceOperator(this.referenceOperator)
+				.withAttributeName(this.currentAttributeAccess+")")
+				.withDataAccessParameterPrefix("="+"'")
+				.withDataAccessParameterSuffix("'")
+				.withDataAccessParameter(equals.toLowerCase().replaceAll("\\s+", " "))
+				.build()
+				);
+		return (T) this;
+	}
+	@Override
+	public T varCharStartsWithIgnoreCase(String prefix){
+		this.addDataAccessString(new DataAccessString.Builder()
+				.withTableName("LOWER("+this.dataSchema.tableName())
+				.withReferenceOperator(this.referenceOperator)
+				.withAttributeName(this.currentAttributeAccess+")")
+				.withDataAccessParameterPrefix(" like "+"'")
+				.withDataAccessParameterSuffix("%'")
+				.withDataAccessParameter(prefix.toLowerCase().replaceAll("\\s+", " "))
+				.build()
+				);
+		return (T) this;
+	}
+	@Override
+	public T varCharEndsWithIgnoreCase(String suffix){
+		this.addDataAccessString(new DataAccessString.Builder()
+				.withTableName("LOWER("+this.dataSchema.tableName())
+				.withReferenceOperator(this.referenceOperator)
+				.withAttributeName(this.currentAttributeAccess+")")
+				.withDataAccessParameterPrefix("="+"'%")
+				.withDataAccessParameterSuffix("'")
+				.withDataAccessParameter(suffix.toLowerCase().replaceAll("\\s+", " "))
 				.build()
 				);
 		return (T) this;

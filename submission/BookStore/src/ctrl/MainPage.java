@@ -32,9 +32,6 @@ public class MainPage extends HttpServlet {
 	private static final String CUSTOMER = "customer";
 	private static final String VISITOR = "visitor";
     
-	private static final String COMM = "COMM";
-    private static final String AJAX = "AJAX";
-    
     private static final String MODEL = "model";
     
     private static final String AUTHOR = "AUTHOR";
@@ -79,31 +76,11 @@ public class MainPage extends HttpServlet {
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
 		getServletContext().setAttribute("user", VISITOR);
-		
-		if (request.getParameter(COMM) != null && request.getParameter(COMM).equals(AJAX))
-		{
-			System.out.println("THis is the AJAX Section!");
-			if (request.getParameter(ID) != null) {
-				String prodID = request.getParameter(ID);
-				try {
-					response.setContentType("application/json");
-					PrintWriter out = response.getWriter();
-					out.printf(" test "); 
-					out.flush();
-					
-					preparePageRedirection (request, prodID, model);
-					request.getRequestDispatcher("html/ProductPage.jspx").forward(request, response);
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-				}
-			} else {
-				System.out.println("No ID was recieved");
-			}
-		} else {
-			loadPage(request, model);
-			System.out.println("THis is the NON AJAX Section!");
-			request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
-		}
+	
+		loadPage(request, model);
+		System.out.println("THis is the NON AJAX Section!");
+		request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
+
 
 	}
 
@@ -113,37 +90,6 @@ public class MainPage extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-	}
-	
-	/**
-	 * Sets all the appropriate values of the given product in the
-	 * session scope and prepares for redirection
-	 * 
-	 * @param request
-	 * @param prodID
-	 * 			the product identification value
-	 * @param model
-	 * 			a model instance for MainPage
-	 */
-	private void preparePageRedirection (HttpServletRequest request, String prodID, MainPageModel model) throws Exception{
-		HttpSession h = request.getSession();
-		
-		try {
-			Book b = model.getBookByID(prodID);
-			h.setAttribute(ID, prodID);
-			h.setAttribute(AUTHOR, b.getAuthor());
-			h.setAttribute(TITLE, b.getTitle());
-			h.setAttribute(YEAR, b.getPublishYear());
-			h.setAttribute(ISBN, b.getISBN());
-			h.setAttribute(CATEGORY, b.getCategory());
-			h.setAttribute(RATING, b.getRating());
-			h.setAttribute(PRICE, b.getPrice());
-			h.setAttribute(COVER, b.getCover());
-			
-		    
-		} catch (Exception e) {
-			throw new Exception (e.getMessage());
-		}
 	}
 	
 	/**
@@ -249,20 +195,25 @@ public class MainPage extends HttpServlet {
 						   + "	<div class=\"row\">\n";
 		
 		for (int index = 0; index < l.size(); index++) {
-			
-			String func_call = "pageHandler('/BookStore/MainPage/?COMM=AJAX&"
-									+ "ID="+l.get(index).getId()
-									+ "');return true; ";
+
 			
 			if (index < 7) {
 				result_html += "	<div class=\"column slides_"+category+"\" style=\"display:inline;\" >\n"
-							+ "			<button id=\"press\" class=\"book\" onClick=\""+func_call + "\" "
-							+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\"></button>\n"
+						    + "			<form action=\"/BookStore/ProductPage\" method=\"Post\">\n"
+						    + "				<input type=\"hidden\" name=\"bookID\" value=\""+l.get(index).getId()+"\" />"
+							+ "				<button id=\"press\" class=\"book\""
+							+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\">\n"
+							+ "				</button>\n"
+							+ "			</form>"
 							+ "		</div>\n";
 			} else {
 				result_html += "	<div class=\"column slides_"+category+"\" >\n"
-						+ "			<button id=\"press\" class=\"book\"  onClick=\""+func_call + "\" "
-						+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\"></button>\n"
+						+ "			<form action=\"/BookStore/ProductPage\" method=\"Post\">\n"
+					    + "				<input type=\"hidden\" name=\"bookID\" value=\""+l.get(index).getId()+"\" />"
+						+ "				<button id=\"press\" class=\"book\""
+						+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\">\n"
+						+ "				</button>\n"
+						+ "			</form>"
 						+ "		</div>\n";
 			}
 		}

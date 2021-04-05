@@ -97,12 +97,12 @@ public class Address implements Bean{
 
 		public Address build(){
 			Address address=new Address();
-			address.number=this.number;
-			address.street=this.street;
-			address.postalCode=this.postalCode;
-			address.province=this.province;
-			address.country=this.country;
-			address.city=this.city;
+			address.number=this.number==null?"":this.number;
+			address.street=this.street==null?"":this.street;
+			address.postalCode=this.postalCode==null?"":this.postalCode;
+			address.province=this.province==null?"":this.province;
+			address.country=this.country==null?"":this.country;
+			address.city=this.city==null?"":this.city;
 			return address;
 		}
 		
