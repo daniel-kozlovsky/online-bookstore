@@ -5,7 +5,9 @@ import java.util.List;
 import data.beans.Book;
 import data.beans.PurchaseOrder;
 import data.dao.BookDAO;
+import data.dao.CustomerDAO;
 import data.dao.PurchaseOrderDAO;
+import data.query.DataObjectCompiler;
 
 public class RestModel {
 	
@@ -62,8 +64,21 @@ public class RestModel {
 	}
 	
 	public String getOrdersByISBN (String prodID) throws Exception {
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+		String orderString = "";
+		
+		//Retrieve the book based on it's ISBN
+		List<Book> book = this.getBookByISBN(prodID);
+		
+		//Would like to save the orders in this list 
+		List<PurchaseOrder> po;
+		
+		//check size of book list and return appropriate response
+		System.out.println( book.size() + " ISBN:" + prodID);
+		if (book.size() == 0)
+			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
+		else if (book.size() > 1)
+			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
 		String orderString = "";
 		
 		//Retrieve the book based on it's ISBN
@@ -75,40 +90,15 @@ public class RestModel {
 		//check size of book list and return appropriate response
 		if (book.size() == 0)
 			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
+
 		if (book.size() > 1)
 			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
-=======
-		String orderString;
-=======
-		String orderString = "";
->>>>>>> cleaning up before rebase
+		else {
+
 		
-		//Retrieve the book based on it's ISBN
-		List<Book> book = this.getBookByISBN(prodID);
-		
-		//Would like to save the orders in this list 
-		List<PurchaseOrder> po;
-		
-		//check size of book list and return appropriate response
-		if (book.size() == 0)
-			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
-<<<<<<< HEAD
->>>>>>> Added REST for orders methods
-=======
-		if (book.size() > 1)
-			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
->>>>>>> cleaning up before rebase
-		else
-		orderString = this.orders.newQueryRequest()
-									 .includeAllAttributesInResultFromSchema()
-									 .queryAttribute()
-									 .wherePurchaseOrderBook()
-									 .isBook(book.get(0))
-									 .executeQuery()
-									 .executeCompilation()
-									 .getCompiledBooksJson();
-		
+		}
 		return orderString;
+		
 	}
 	
 	public String createBookMessage(List<Book> b, String prodID) {
