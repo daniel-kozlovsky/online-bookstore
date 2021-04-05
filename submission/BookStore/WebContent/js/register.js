@@ -14,6 +14,19 @@ function register()
 	let givenName = document.getElementById("input-given-name").value;
 	let surname = document.getElementById("input-surname").value;
 	
+	let number = document.getElementById("input-number").value;
+	let street = document.getElementById("input-street").value;
+	let city = document.getElementById("input-city").value;
+	let province = document.getElementById("input-province").value;
+	let country = document.getElementById("input-country").value;
+	let postalCode = document.getElementById("input-postal").value;
+	
+	let cardType = document.getElementById("select-cards").value;
+	let ccNumber = document.getElementById("input-cc-number").value;
+	let cvv = document.getElementById("input-cvv").value;
+	let expiry = document.getElementById("input-expiry").value;
+	
+	
 	let url = new URL(registerAddr, window.location.protocol + window.location.host);
 	
 	
@@ -22,6 +35,18 @@ function register()
 	url.searchParams.set("email", email);
 	url.searchParams.set("givenName", givenName);
 	url.searchParams.set("surname", surname);
+	
+	url.searchParams.set("number", number);
+	url.searchParams.set("street", street);
+	url.searchParams.set("city", city);
+	url.searchParams.set("province", province);
+	url.searchParams.set("country", country);
+	url.searchParams.set("postalCode", postalCode);
+	
+	url.searchParams.set("cardType", cardType);
+	url.searchParams.set("ccNumber", ccNumber);
+	url.searchParams.set("cvv", cvv);
+	url.searchParams.set("expiry", expiry);
 	
 	console.log(url.toString());
 	

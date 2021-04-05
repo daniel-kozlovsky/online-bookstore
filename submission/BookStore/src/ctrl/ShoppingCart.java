@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
 import data.beans.Book;
 import data.beans.Cart;
 import data.beans.Customer;
+import data.beans.SiteUser;
+import data.beans.Visitor;
 import model.ShoppingCartModel;
 
 /**
@@ -59,10 +61,15 @@ public class ShoppingCart extends HttpServlet {
 //		m.put(b, 1);
 //		request.setAttribute("books", m);
 		/*****************************************************/
-		 
-		Customer customer = (Customer) session.getAttribute("customer");
-		request.setAttribute("books", customer.getCart().getBooks());
-		double totalPrice = cartModel.getTotalPrice(customer.getCart());
+		
+		
+		SiteUser user = (Customer) session.getAttribute("customer");
+		if(user == null)
+		{
+			user = (Visitor) session.getAttribute("visitor");
+		}
+		request.setAttribute("books", user.getCart().getBooks());
+		double totalPrice = cartModel.getTotalPrice(user.getCart());
 		request.setAttribute("totalPrice", totalPrice);
 		
 		request.getRequestDispatcher(CART_TARGET).forward(request, response);
@@ -75,14 +82,19 @@ public class ShoppingCart extends HttpServlet {
 		
 		response.setContentType("application/text");
 		PrintWriter out = response.getWriter();
-		Customer customer = (Customer) request.getSession().getAttribute("customer");
+		HttpSession session = request.getSession();
+		SiteUser user = (Customer) session.getAttribute("customer");
+		if(user == null)
+		{
+			user = (Visitor) session.getAttribute("visitor");
+		}
 		String isbn = request.getParameter("isbn");
 		int quantity;
 		
 		//remove book
 		if(request.getPathInfo() != null && request.getPathInfo().indexOf("remove") >= 0)
 		{
-			cartModel.removeBook(customer.getCart(), isbn);
+			cartModel.removeBook(user, isbn);
 		}
 		//update price
 		else
@@ -99,8 +111,8 @@ public class ShoppingCart extends HttpServlet {
 			String responseText = "";
 			if(quantity > 0 && !isbn.isEmpty())
 			{
-				cartModel.updateBookQuantity(customer.getCart(), isbn, quantity);
-				responseText = Double.toString(cartModel.getTotalPrice(customer.getCart()));
+				cartModel.updateBookQuantity(user, isbn, quantity);
+				responseText = Double.toString(cartModel.getTotalPrice(user.getCart()));
 			}
 			
 			

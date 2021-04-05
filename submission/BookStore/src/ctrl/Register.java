@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import data.beans.Address;
+import data.beans.CreditCard;
 import data.beans.Customer;
 import model.UserAuthenticationModel;
 
@@ -47,8 +49,36 @@ public class Register extends HttpServlet {
 		String givenName = request.getParameter("givenName");
 		String surname = request.getParameter("surname");
 		
+		String number = request.getParameter("number");
+		String street = request.getParameter("street");
+		String city = request.getParameter("city");
+		String province = request.getParameter("province");
+		String country = request.getParameter("country");
+		String postalCode = request.getParameter("postalCode");
+		
+		String cardType = request.getParameter("cardType");
+		String ccNumber = request.getParameter("ccNumber");
+		String cvv = request.getParameter("cvv");
+		String expiry = request.getParameter("expiry");
+		
 		response.setContentType("application/text");
 		PrintWriter out = response.getWriter();
+		
+		Address address = new Address.Builder()
+				.withNumber(number)
+				.withStreet(street)
+				.withCity(city)
+				.withProvince(province)
+				.withCountry(country)
+				.withPostalCode(postalCode)
+				.build();
+		
+		CreditCard cCard = new CreditCard.Builder()
+				.withCreditCardType(cardType)
+				.withCreditCardNumber(ccNumber)
+				.withCreditCardCVV2(cvv)
+				.withCreditCardExpiry(expiry)
+				.build();
 		
 		Customer customer = new Customer.Builder()
 				.withEmail(email)
@@ -56,11 +86,12 @@ public class Register extends HttpServlet {
 				.withSurName(surname)
 				.withUserName(username)
 				.withPassword(password)
+				.withAddress(address)
+				.withCreditCard(cCard)
 				.build();
 		
-		
 		//validate variables
-		List<String> errors = UAuthModel.validateRegister(username, password, email, givenName, surname);
+		List<String> errors = UAuthModel.validateRegister(customer);
 		String responseText = "";
 		if(!errors.isEmpty())
 		{

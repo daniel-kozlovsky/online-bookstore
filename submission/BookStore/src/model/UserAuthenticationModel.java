@@ -7,6 +7,7 @@ import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpSession;
 
 import data.beans.Customer;
+import data.dao.CartDAO;
 import data.dao.CustomerDAO;
 
 public class UserAuthenticationModel {
@@ -14,10 +15,12 @@ public class UserAuthenticationModel {
 	private static UserAuthenticationModel instance;
 	//Customer currentCustomer;
 	CustomerDAO customerDAO;
+	CartDAO cartDAO;
 	
 	private UserAuthenticationModel()
 	{
 		customerDAO = new CustomerDAO();
+		cartDAO = new CartDAO();
 	}
 	
 	public static UserAuthenticationModel getInstance()
@@ -46,38 +49,77 @@ public class UserAuthenticationModel {
 		return errors;
 	}
 	
-	public List<String> validateRegister(String username, String password, String email, String givenName, String surname)
+	public List<String> validateRegister(Customer customer)
 	{
 		List<String> errors = new ArrayList<String>();
 		
-		if(username.length() <= 0)
+		if(customer.getUserName().length() <= 0)
 		{
 			errors.add("Username cannot be empty");
 		}
-		if(password.length() <= 0)
+		if(customer.getPassword().length() <= 0)
 		{
 			errors.add("Password cannot be empty");
 		}
-		if(email.length() <= 0)
+		if(customer.getEmail().length() <= 0)
 		{
 			errors.add("Email cannot be empty");
 		}
-		if(givenName.length() <= 0)
+		if(customer.getGivenName().length() <= 0)
 		{
 			errors.add("Given name cannot be empty");
 		}
-		if(surname.length() <= 0)
+		if(customer.getSurName().length() <= 0)
 		{
 			errors.add("Surname cannot be empty");
 		}
 		
+//		if(customer.getAddress().getNumber().length() <= 0)
+//		{
+//			errors.add("Street number cannot be empty");
+//		}
+//		if(customer.getAddress().length() <= 0)
+//		{
+//			errors.add("Password cannot be empty");
+//		}
+//		if(customer.getAddress().length() <= 0)
+//		{
+//			errors.add("Email cannot be empty");
+//		}
+//		if(customer.getAddress().length() <= 0)
+//		{
+//			errors.add("Given name cannot be empty");
+//		}
+//		if(customer.getAddress().length() <= 0)
+//		{
+//			errors.add("Surname cannot be empty");
+//		}if(customer.getUserName().length() <= 0)
+//		{
+//			errors.add("Username cannot be empty");
+//		}
+//		if(customer.getPassword().length() <= 0)
+//		{
+//			errors.add("Password cannot be empty");
+//		}
+//		if(customer.getEmail().length() <= 0)
+//		{
+//			errors.add("Email cannot be empty");
+//		}
+//		if(customer.getGivenName().length() <= 0)
+//		{
+//			errors.add("Given name cannot be empty");
+//		}
+//		if(customer.getSurName().length() <= 0)
+//		{
+//			errors.add("Surname cannot be empty");
+//		}
+		
 		return errors;
 	}
 	
-	public void logUserIn(HttpSession session, String username, String password)
+	public Customer logUserIn(String username, String password)
 	{
-		Customer c = customerDAO.loginCustomer(username, password);
-		session.setAttribute("customer", c);
+		return customerDAO.loginCustomer(username, password);
 	}
 	
 	public void logUserOut(HttpSession session, String userName)

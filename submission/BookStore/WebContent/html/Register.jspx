@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" 
-		pageEncoding="UTF-8" session="false"/>
+		pageEncoding="UTF-8" session="true"/>
 	<jsp:output doctype-root-element="html"
 		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
@@ -28,6 +28,33 @@
 			<input type="text" id="input-username"/>
 			<label>Password</label>
 			<input type="password" id="input-password"/>
+			
+			<label>Number/Suite</label>
+			<input type="number" id="input-number"/>
+			<label>Street</label>
+			<input type="text" id="input-street"/>
+			<label>City</label>
+			<input type="text" id="input-city"/>
+			<label>Province</label>
+			<input type="text" id="input-province"/>
+			<label>Country</label>
+			<input type="text" id="input-country"/>
+			<label>Postal Code</label>
+			<input type="text" id="input-postal"/>
+			
+			<label for="select-cards">Card Type</label>
+			<select id="select-cards">
+				<option value="visa">Visa</option>
+				<option value="mastercard">MasterCard</option>
+				<option value="other">Other</option>
+			</select>
+			<label>Credit Card Number</label>
+			<input type="text" id="input-cc-number"/>
+			<label>CVV</label>
+			<input type="text" id="input-cvv"/>
+			<label>Expiry</label>
+			<input type="text" id="input-expiry"/>
+			
 			<button type="button" onClick="register();">Register</button>
 		</form>
 	</div>

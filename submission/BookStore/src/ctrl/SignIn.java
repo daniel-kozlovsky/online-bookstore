@@ -9,8 +9,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import data.beans.Customer;
+import data.beans.Visitor;
 import model.UserAuthenticationModel;
+import model.ShoppingCartModel;
 
 /**
  * Servlet implementation class Login
@@ -18,7 +22,8 @@ import model.UserAuthenticationModel;
 @WebServlet(urlPatterns={"/SignIn", "/SignIn/*"})
 public class SignIn extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	UserAuthenticationModel UAuthModel;  
+	UserAuthenticationModel UAuthModel;
+	ShoppingCartModel shoppingModel;
 	final String MAIN_PAGE_TARGET = "/BookStore/MainPage";
 	
     /**
@@ -26,6 +31,7 @@ public class SignIn extends HttpServlet {
      */
     public SignIn() {
         UAuthModel = UserAuthenticationModel.getInstance();
+        shoppingModel = ShoppingCartModel.getInstance();
     }
 
 	/**
@@ -40,9 +46,10 @@ public class SignIn extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		
+		HttpSession session = request.getSession();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		Visitor visitor = (Visitor) session.getAttribute("visitor");
 		
 		response.setContentType("application/text");
 		PrintWriter out = response.getWriter();
@@ -56,9 +63,25 @@ public class SignIn extends HttpServlet {
 		else
 		{
 			//log user in
-			UAuthModel.logUserIn(request.getSession(), username, password);
-			//go to main page
-			response.sendRedirect(MAIN_PAGE_TARGET);
+			Customer customer = UAuthModel.logUserIn(username, password);
+			if(customer.isLoggedOn())
+			{
+				session.setAttribute("customer", customer);
+				//transfer cart
+				if(!visitor.equals(null))
+				{
+					shoppingModel.addAllFromCart(visitor, customer);
+				}
+				//go to main page
+				request.getRequestDispatcher(MAIN_PAGE_TARGET).forward(request, response);
+				return;
+			}
+			//non existent user
+			else
+			{
+				responseText = "Invalid Credentials!";
+			}
+				
 		}
 		
 		out.printf(responseText);
