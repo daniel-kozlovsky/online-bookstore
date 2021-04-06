@@ -53,6 +53,7 @@ public class CustomerDAO implements DAO{
 	
 	public Customer loginCustomer(String userName, String passWord) {
 		Customer customer = new Customer.Builder().withUserName(userName).build();
+		
 		String queryString="SELECT *  FROM CUSTOMER WHERE USERNAME='"+userName+"' AND PASSWORD='"+passWord+"'" ;
 		Connection connection= null;
 		PreparedStatement preparedStatement=null;
@@ -108,6 +109,9 @@ public class CustomerDAO implements DAO{
 		}else {
 			return new Customer.Builder().withUserName(userName).build();	
 		}
+		int reviewCount = new ReviewDAO().getReviewCount(customer)+1;
+		int poCount = new PurchaseOrderDAO().getPurchaseOrderRowCount(customer)+1;
+		int limit=reviewCount*poCount*60;
 		List<Customer> customersCart= newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
 				.queryCart()
@@ -139,7 +143,7 @@ public class CustomerDAO implements DAO{
 				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
-				.withResultLimit(new PurchaseOrderDAO().getPurchaseOrderRowCount(customer)*5)
+				.withResultLimit(limit)
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
@@ -161,7 +165,7 @@ public class CustomerDAO implements DAO{
 				.isCustomer(customer)
 				.queryBook()
 				.includeAllAttributesInResultFromSchema()
-				.withResultLimit(new ReviewDAO().getReviewCount(customer)*5)
+				.withResultLimit(limit)
 				.executeQuery()
 				.executeCompilation()
 				.compileCustomers();
@@ -384,7 +388,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
@@ -402,15 +406,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
@@ -450,7 +445,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
@@ -468,15 +463,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
@@ -518,7 +504,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
@@ -536,15 +522,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		
@@ -614,7 +591,7 @@ public class CustomerDAO implements DAO{
 					.withAttributeName(CustomerSchema.ID)
 					.withDataAccessParameterPrefix("=")
 					.withDataAccessParameterSuffix("")
-					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.CUSTOMER)
+					.withDataAccessParameter(new ReviewSchema().tableName()+this.referenceOperator+ReviewSchema.SITE_USER)
 					.build()
 					);
 			return new ReviewDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
@@ -632,15 +609,6 @@ public class CustomerDAO implements DAO{
 					.build()
 					);
 			
-			this.addDataAccessString(new DataAccessString.Builder()
-					.withTableName(this.dataSchema.tableName())
-					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(CartSchema.USER_TYPE)
-					.withDataAccessParameterPrefix("="+"'")
-					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(UserTypes.CUSTOMER)
-					.build()
-					);
 			return new CartDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
 		

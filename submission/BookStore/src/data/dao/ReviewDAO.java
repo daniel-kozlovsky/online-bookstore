@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import data.beans.Bean;
 import data.beans.Book;
@@ -24,6 +25,7 @@ import data.beans.Customer;
 import data.beans.Id;
 import data.beans.Review;
 import data.beans.User;
+import data.beans.Visitor;
 import data.dao.BookDAO.BookStoreBookQuery;
 import data.dao.CustomerDAO.BookStoreCustomerQuery;
 import data.dao.PurchaseOrderDAO.BookStorePurchaseOrderQuery;
@@ -59,7 +61,7 @@ public class ReviewDAO implements DAO{
 		return getReviewCount(customer.getId().toString());
 	}
 	public int getReviewCount(String id){
-		String queryString="SELECT COUNT(BOOK) AS REVIEW_COUNT FROM REVIEW where CUSTOMER='"+id+"' GROUP BY CUSTOMER";
+		String queryString="SELECT COUNT(BOOK) AS REVIEW_COUNT FROM REVIEW where SITE_USER='"+id+"' GROUP BY SITE_USER";
 		Connection connection= null;
 		PreparedStatement preparedStatement=null;
 		ResultSet resultSet=null;
@@ -201,12 +203,13 @@ public class ReviewDAO implements DAO{
 					);
 			return new BookDAO().newQueryRequest().setAttributesToIncludInResults(attributesToIncludInResults).setDataAccessRequestsConjunction(this.dataAccessRequestsConjunction).setDataAccessRequestsDisjunction(this.dataAccessRequestsDisjunction).setPageRequestMetaData(pageRequestMetaData).addTableJoins(tableJoins);
 		}
+		
 		public BookStoreCustomerQuery queryCustomer() {
 			this.tableJoins.add(
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(ReviewSchema.CUSTOMER)
+					.withAttributeName(ReviewSchema.SITE_USER)
 					.withDataAccessParameterPrefix("="+"")
 					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new CustomerSchema().tableName()+this.referenceOperator+CustomerSchema.ID)
@@ -219,8 +222,14 @@ public class ReviewDAO implements DAO{
 			if(!this.attributesToIncludInResults.containsKey(reviewSchema.tableName()) && !this.attributesToIncludInResults.get(reviewSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(reviewSchema.tableName()).contains(reviewSchema.BOOK))
 			this.attributesToIncludInResults.get(reviewSchema.tableName()).add(reviewSchema.BOOK);
 			
-			if(!this.attributesToIncludInResults.containsKey(reviewSchema.tableName()) && !this.attributesToIncludInResults.get(reviewSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(reviewSchema.tableName()).contains(reviewSchema.CUSTOMER))
-			this.attributesToIncludInResults.get(reviewSchema.tableName()).add(reviewSchema.CUSTOMER);
+			if(!this.attributesToIncludInResults.containsKey(reviewSchema.tableName()) && !this.attributesToIncludInResults.get(reviewSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(reviewSchema.tableName()).contains(reviewSchema.SITE_USER))
+			this.attributesToIncludInResults.get(reviewSchema.tableName()).add(reviewSchema.SITE_USER);
+			
+			if(!this.attributesToIncludInResults.containsKey(reviewSchema.tableName()) && !this.attributesToIncludInResults.get(reviewSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(reviewSchema.tableName()).contains(reviewSchema.USER_TYPE))
+			this.attributesToIncludInResults.get(reviewSchema.tableName()).add(reviewSchema.USER_TYPE);
+			
+			if(!this.attributesToIncludInResults.containsKey(reviewSchema.tableName()) && !this.attributesToIncludInResults.get(reviewSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(reviewSchema.tableName()).contains(reviewSchema.NAME))
+			this.attributesToIncludInResults.get(reviewSchema.tableName()).add(reviewSchema.NAME);
 
 		}
 	}
@@ -256,7 +265,7 @@ public class ReviewDAO implements DAO{
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(ReviewSchema.CUSTOMER)
+					.withAttributeName(ReviewSchema.SITE_USER)
 					.withDataAccessParameterPrefix("="+"")
 					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new CustomerSchema().tableName()+this.referenceOperator+CustomerSchema.ID)
@@ -298,7 +307,7 @@ public class ReviewDAO implements DAO{
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(ReviewSchema.CUSTOMER)
+					.withAttributeName(ReviewSchema.SITE_USER)
 					.withDataAccessParameterPrefix("="+"")
 					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new CustomerSchema().tableName()+this.referenceOperator+CustomerSchema.ID)
@@ -345,7 +354,7 @@ public class ReviewDAO implements DAO{
 					new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(ReviewSchema.CUSTOMER)
+					.withAttributeName(ReviewSchema.SITE_USER)
 					.withDataAccessParameterPrefix("="+"")
 					.withDataAccessParameterSuffix("")
 					.withDataAccessParameter(new CustomerSchema().tableName()+this.referenceOperator+CustomerSchema.ID)
@@ -356,20 +365,20 @@ public class ReviewDAO implements DAO{
 	}
 	
 	
-	public class ReviewCustomerQuery extends ReviewObjectQuery<ReviewCustomerQuery>{
+	public class ReviewSiteUserQuery extends ReviewObjectQuery<ReviewSiteUserQuery>{
 
 
-		ReviewCustomerQuery(BookStoreReviewQuery bookStoreReviewQuery, String currentAttributeAccess) {
+		ReviewSiteUserQuery(BookStoreReviewQuery bookStoreReviewQuery, String currentAttributeAccess) {
 			super(bookStoreReviewQuery, currentAttributeAccess);
 			// TODO Auto-generated constructor stub
 		}
-		ReviewCustomerQuery(BookStoreReviewQuery bookStoreReviewQuery, String currentAttributeAccess,
+		ReviewSiteUserQuery(BookStoreReviewQuery bookStoreReviewQuery, String currentAttributeAccess,
 				PageRequestMetaData pageRequestMetaData) {
 			super(bookStoreReviewQuery, currentAttributeAccess, pageRequestMetaData);
 			// TODO Auto-generated constructor stub
 		}
 
-		public ReviewCustomerQuery isCustomer(Customer customer) {
+		public ReviewSiteUserQuery isCustomer(Customer customer) {
 //			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
 //				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
 //			}
@@ -386,10 +395,36 @@ public class ReviewDAO implements DAO{
 			this.addDataAccessString(new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(ReviewSchema.CUSTOMER)
+					.withAttributeName(ReviewSchema.SITE_USER)
 					.withDataAccessParameterPrefix("="+"'")
 					.withDataAccessParameterSuffix("'")
 					.withDataAccessParameter(customer.getId().toString())
+					.build()
+					);
+			return  this;
+		}
+		
+		public ReviewSiteUserQuery isVisitor(HttpServletRequest request) {
+//			if(!this.dataAccessRequests.containsKey(dataSchema.tableName())) {
+//				this.dataAccessRequests.put(this.dataSchema.tableName(), new ArrayList<DataAccessString>());
+//			}
+//			this.dataAccessRequests.get(this.dataSchema.tableName())
+//			.add(new DataAccessString.Builder()
+//					.withTableName(this.dataSchema.tableName())
+//					.withReferenceOperator(this.referenceOperator)
+//					.withAttributeName(ReviewSchema.CUSTOMER)
+//					.withDataAccessParameterPrefix("="+"'")
+//					.withDataAccessParameterSuffix("'")
+//					.withDataAccessParameter(customer.getId().toString())
+//					.build()
+//					);
+			this.addDataAccessString(new DataAccessString.Builder()
+					.withTableName(this.dataSchema.tableName())
+					.withReferenceOperator(this.referenceOperator)
+					.withAttributeName(ReviewSchema.SITE_USER)
+					.withDataAccessParameterPrefix("="+"'")
+					.withDataAccessParameterSuffix("'")
+					.withDataAccessParameter(request.getSession().getId())
 					.build()
 					);
 			return  this;
@@ -467,10 +502,10 @@ public class ReviewDAO implements DAO{
 			this.addDataAccessString(new DataAccessString.Builder()
 					.withTableName(this.dataSchema.tableName())
 					.withReferenceOperator(this.referenceOperator)
-					.withAttributeName(reviewSchema.CUSTOMER)
+					.withAttributeName(reviewSchema.SITE_USER)
 					.withDataAccessParameterPrefix("="+"'")
 					.withDataAccessParameterSuffix("'")
-					.withDataAccessParameter(review.getCustomer().getId().toString())
+					.withDataAccessParameter(review.getSiteUser().getId().toString())
 					.build()
 					);
 //			this.dataAccessRequests.get(this.dataSchema.tableName())
@@ -505,7 +540,7 @@ public class ReviewDAO implements DAO{
 		}
 		
 		public ReviewKeyQuery whereReview(){
-			ReviewKeyQuery reviewKeyQuery= new ReviewKeyQuery(this.bookStoreReviewQuery,ReviewSchema.CUSTOMER);
+			ReviewKeyQuery reviewKeyQuery= new ReviewKeyQuery(this.bookStoreReviewQuery,ReviewSchema.SITE_USER);
 			reviewKeyQuery.setAttribute(this);
 			return reviewKeyQuery;
 		}
@@ -538,8 +573,8 @@ public class ReviewDAO implements DAO{
 			return reviewBookQuery;
 		}
 		
-		public ReviewCustomerQuery whereReviewCustomer(){
-			ReviewCustomerQuery reviewCustomerQuery= new ReviewCustomerQuery(this.bookStoreReviewQuery,PurchaseOrderSchema.ID);
+		public ReviewSiteUserQuery whereReviewCustomer(){
+			ReviewSiteUserQuery reviewCustomerQuery= new ReviewSiteUserQuery(this.bookStoreReviewQuery,PurchaseOrderSchema.ID);
 			reviewCustomerQuery.setAttribute(this);
 			return reviewCustomerQuery;
 		}

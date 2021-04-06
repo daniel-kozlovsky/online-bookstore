@@ -70,10 +70,8 @@ public class BookTestCtrl extends HttpServlet {
 		String passwd = "Walterpassword";
 
 		Customer s = user.loginCustomer(username, passwd);
-		for(PurchaseOrder po: s.getPurchaseOrders()) {
-			System.out.println(po.toJson());
-		}
-		
+		System.out.println(s.toJson());
+//		
 //		PrintWriter out = response.getWriter();
 //      response.setContentType("text");
 //      response.setCharacterEncoding("UTF-8");
@@ -92,11 +90,25 @@ public class BookTestCtrl extends HttpServlet {
 //				.executeCompilation()
 //				;
 //		docCust.compileCustomers();
-
+//
 //		System.out.println(docCust.getCompiledCustomersJson());
       //9781442468450
 
-////      Customer query
+//		new BookDAO().newQueryRequest()
+//        .includeAllAttributesInResultFromSchema()
+//        .queryAttribute()
+//        .whereBook()
+//        .isBook("b7441b2a-0739-3641-a78f-1d973daee854")
+//        .queryReview()
+//        .includeAllAttributesInResultFromSchema()
+//        .queryAttribute()
+//        .whereReviewRating()
+//        .withResultLimit(10)
+//        .withDescendingOrderOf()
+//        .executeQuery()
+//        .executeCompilation()
+//        .compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);
+//      Customer query
 //		DataObjectCompiler docCust=
 //      new CustomerDAO().newQueryRequest()
 //      .includeAllAttributesInResultFromSchema()
@@ -109,7 +121,9 @@ public class BookTestCtrl extends HttpServlet {
 //      .varCharEquals("9781442468450")
 //      .executeQuery()
 //      .executeCompilation();
-//		
+//		docCust.compileCustomers();
+//	System.out.println(docCust.getPurchaseOrderJson());
+		
 ////	Visitor Query	
 //      System.out.println(docCust.getPurchaseOrderByBookJson());
 //      DataObjectCompiler docVis=
@@ -160,6 +174,8 @@ public class BookTestCtrl extends HttpServlet {
 //				.queryAttribute()
 //				.whereBook()
 //				.isBook("b7441b2a-0739-3641-a78f-1d973daee854")
+//				.queryReview()
+//				.includeAllAttributesInResultFromSchema()
 //				.executeQuery()
 //				.executeCompilation()
 //				.compileBooks().stream().map(abook->abook.toJson()).forEach(System.out::println);

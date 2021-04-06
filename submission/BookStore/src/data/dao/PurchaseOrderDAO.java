@@ -28,7 +28,6 @@ import data.dao.CartDAO.CartBookQuery;
 import data.dao.CartDAO.CartCustomerQuery;
 import data.dao.CartDAO.CartNumberQuery;
 import data.dao.CartDAO.CartObjectQuery;
-import data.dao.CartDAO.CartUserTypeQuery;
 import data.dao.CartDAO.CartVarCharQuery;
 import data.dao.CustomerDAO.BookStoreCustomerQuery;
 import data.dao.CustomerDAO.CustomerVarCharQuery;
@@ -299,9 +298,7 @@ public class PurchaseOrderDAO implements DAO{
 			
 			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName()) && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).contains(purchaseOrderSchema.BOOK))
 			this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).add(purchaseOrderSchema.BOOK);
-			
-			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName()) && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).contains(purchaseOrderSchema.USER_TYPE))
-			this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).add(purchaseOrderSchema.USER_TYPE);
+
 			
 			if(!this.attributesToIncludInResults.containsKey(purchaseOrderSchema.tableName()) && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).isEmpty() && !this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).contains(purchaseOrderSchema.ISBN))
 			this.attributesToIncludInResults.get(purchaseOrderSchema.tableName()).add(purchaseOrderSchema.ISBN);

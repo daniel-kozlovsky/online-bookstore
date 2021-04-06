@@ -79,7 +79,7 @@ public class CreditCard implements Bean{
 		return  "{"+Bean.jsonMapVarChar("creditCardType",this.creditCardType)+","+
 				Bean.jsonMapVarChar("creditCardNumber",this.creditCardNumber)+","+
 				Bean.jsonMapVarChar("creditCardExpiry",this.creditCardExpiry)+","+
-				Bean.jsonMapVarChar("creditCardCVV2",this.creditCardCVV2)+","+
+				Bean.jsonMapVarChar("creditCardCVV2",this.creditCardCVV2)+
 				"}"
 				;
 	}

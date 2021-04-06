@@ -179,8 +179,7 @@ public class Book extends IdObject{
 			this.rating=book.rating;
 			this.series=book.series;
 			this._isInReview=book._isInReview;
-			this.publishYear=book.publishYear;
-			
+			this.publishYear=book.publishYear;			
 		}
 		
 		public Builder(){

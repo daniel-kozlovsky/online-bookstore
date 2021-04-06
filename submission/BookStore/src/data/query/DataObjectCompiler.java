@@ -57,6 +57,7 @@ public class DataObjectCompiler {
 	private Map<Id,Book>   bookResults;
 	private Map<String,Review>   reviewResults;
 	private Map<Id,List<Review>>   customerReviewResults;
+	private Map<Id,List<Review>>  visitorReviewResults;
 	private Map<Id,List<Review>>   bookReviewResults;
 	private Map<Id,Visitor>   visitorResults;
 	private Map<Id,Customer>   customerResults;
@@ -102,6 +103,7 @@ public class DataObjectCompiler {
 		}
 		this.compileCustomerResults=new LinkedList<Customer>();
 		this.compileBookResults=new LinkedList<Book>();
+		this.visitorReviewResults=new LinkedHashMap<Id, List<Review>>();
 //		this.compilePurchaseOrderResults= new LinkedList<PurchaseOrder>();
 		this.queryString=queryString;
 		this.attributesIncludedInResults=attributesIncludedInResults;
@@ -323,12 +325,18 @@ public class DataObjectCompiler {
 				if(!reviewOfBooks.containsKey(bookId) || reviewOfBooks.get(bookId)==null) {
 					reviewOfBooks.put(bookId, new LinkedList<Review>());
 				}
-				Customer customer =new Customer.Builder(review.getCustomer()).withinReview().build();
-				if(customerResults.containsKey(review.getCustomer().getId())) {
-					customer =new Customer.Builder(customerResults.get(review.getCustomer().getId())).withinReview().build();
+				SiteUser siteUser=null;
+				if(review.isReviewByACustomer()) {
+					siteUser=(SiteUser)new Customer.Builder((Customer)review.getSiteUser()).withinReview().build();
+				}else {
+					siteUser=(SiteUser)new Visitor.Builder((Visitor)review.getSiteUser()).build();
+				}
+
+				if(customerResults.containsKey(review.getSiteUser().getId())) {
+					siteUser =new Customer.Builder(customerResults.get(review.getSiteUser().getId())).withinReview().build();
 				}
 				
-				reviewOfBooks.get(bookId).add(new Review.Builder(review).withCustomer(customer).withinBook().build());
+				reviewOfBooks.get(bookId).add(new Review.Builder(review).withSiteUser(siteUser).withinBook().build());
 				
 			}
 
@@ -432,67 +440,50 @@ public class DataObjectCompiler {
 
 		return getBeanJson("visitors",beans);
 	}
-	
-	public String getPurchaseOrderByBookJson() {
-		return getPurchaseOrderByBookJson(this.compileCustomerResults,this.compileVisitorResults);
-	}
-	
-	public String getPurchaseOrderByBookWithVisitorsJson(List<Visitor> visitors) {
-		return getPurchaseOrderByBookJson(this.compileCustomerResults,visitors);
-	}
-	
-	public String getPurchaseOrderByBookWithCustomersJson(List<Customer> customers) {
-		return getPurchaseOrderByBookJson(customers,this.compileVisitorResults);
-	}
-	
-	public String getPurchaseOrderByBookJson(List<Customer> compileCustomerResults, List<Visitor> compileVisitorResults) {
-		List<Book> compiledBooks=compileBooks();
-		Map<Book,List<Customer>> booksToCustomer = new LinkedHashMap<Book,List<Customer>>();
-		int count=0;
-		
-			
-			
-			for(Book book: compiledBooks) {
-				for(Customer customer:compileCustomerResults) {
-					count++;
-					for(PurchaseOrder purchaseOrder:customer.getPurchaseOrders()) {
-						if(purchaseOrder.isBookInPurchaseOrder(book)) {
-							if(!booksToCustomer.containsKey(book)) {
-								booksToCustomer.put(book, new LinkedList<Customer>());
-							}
-							if(!booksToCustomer.get(book).contains(customer)) {
-								booksToCustomer.get(book).add(customer);
-							}
-						}
-
-					}
-				}
-			}			
-		
-		
-		
-		Map<Book,List<Visitor>> booksToVisitor = new LinkedHashMap<Book,List<Visitor>>();
-			
-			for(Book book: compiledBooks) {
-				for(Visitor visitor:compileVisitorResults) {
-					count++;
-					for(PurchaseOrder purchaseOrder:visitor.getPurchaseOrders()) {
-						if(purchaseOrder.isBookInPurchaseOrder(book)) {
-							if(!booksToVisitor.containsKey(book)) {
-								booksToVisitor.put(book, new LinkedList<Visitor>());
-							}
-							if(!booksToVisitor.get(book).contains(visitor)) {
-								booksToVisitor.get(book).add(visitor);
-							}
-						}
-
-					}
-				}
-			}				
-		
-		return getPurchaseOrderJson(compiledBooks,booksToVisitor,booksToCustomer);
-		
-	}
+//	
+//	public String getPurchaseOrderByBookJson() {
+//		return getPurchaseOrderByBookJson(this.compileCustomerResults,this.compileVisitorResults);
+//	}
+//	
+//	public String getPurchaseOrderByBookWithVisitorsJson(List<Visitor> visitors) {
+//		return getPurchaseOrderByBookJson(this.compileCustomerResults,visitors);
+//	}
+//	
+//	public String getPurchaseOrderByBookWithCustomersJson(List<Customer> customers) {
+//		return getPurchaseOrderByBookJson(customers,this.compileVisitorResults);
+//	}
+//	
+//	public String getPurchaseOrderByBookJson(List<Customer> compileCustomerResults, List<Visitor> compileVisitorResults) {
+//		List<Book> compiledBooks=compileBooks();
+//		Map<Book,List<Customer>> booksToCustomer = new LinkedHashMap<Book,List<Customer>>();
+//		int count=0;
+//		
+//			
+//			
+//			for(Book book: compiledBooks) {
+//				for(Customer customer:compileCustomerResults) {
+//					count++;
+//					for(PurchaseOrder purchaseOrder:customer.getPurchaseOrders()) {
+//						if(purchaseOrder.isBookInPurchaseOrder(book)) {
+//							if(!booksToCustomer.containsKey(book)) {
+//								booksToCustomer.put(book, new LinkedList<Customer>());
+//							}
+//							if(!booksToCustomer.get(book).contains(customer)) {
+//								booksToCustomer.get(book).add(customer);
+//							}
+//						}
+//
+//					}
+//				}
+//			}			
+//		
+//		
+//		
+//			
+//		
+//		return getPurchaseOrderJson(compiledBooks,booksToVisitor,booksToCustomer);
+//		
+//	}
 	
 //	private String getPurchaseOrderCustomerJson(Map<Book,List<Customer>> booksToCustomer) {
 //		String result= "{"+"\""+"purchaseOrders"+"\""+":"+"[";
@@ -533,28 +524,33 @@ public class DataObjectCompiler {
 //		return result;
 //	}
 	
-	private String getPurchaseOrderJson(List<Book> books,Map<Book,List<Visitor>> booksToVisitor,Map<Book,List<Customer>> booksToCustomer) {
-		String result= "{"+"\""+"purchaseOrders"+"\""+":"+"[";
-		for(Book book :books) {
-			result+="{\"book\":"+ book.toJson()+",";
-			result+="\"amountSold\":"+ book.getAmountSold()+",";
-			if(!booksToVisitor.isEmpty()) {
-				result+="\"visitors\":[";
-				if(booksToVisitor.containsKey(book)) {
-					for(Visitor visitor:booksToVisitor.get(book)) {
-						List<PurchaseOrder> pos=new LinkedList<PurchaseOrder>();
-						for(PurchaseOrder purchaseOrder:visitor.getPurchaseOrders()) {
-							if(purchaseOrder.isBookInPurchaseOrder(book)) {
-								pos.add(purchaseOrder);
+	public String getPurchaseOrderJson() {
+		List<Book> compiledBooks=compileBooks();
+		Map<Book,List<Customer>> booksToCustomer = new LinkedHashMap<Book,List<Customer>>();
+	
+			
+			
+			for(Book book: compiledBooks) {
+				for(Customer customer:compileCustomerResults) {
+
+					for(PurchaseOrder purchaseOrder:customer.getPurchaseOrders()) {
+						if(purchaseOrder.isBookInPurchaseOrder(book)) {
+							if(!booksToCustomer.containsKey(book)) {
+								booksToCustomer.put(book, new LinkedList<Customer>());
+							}
+							if(!booksToCustomer.get(book).contains(customer)) {
+								booksToCustomer.get(book).add(customer);
 							}
 						}
-						result+=new Visitor.Builder(visitor).withPurchaseOrders(pos).build().toJson()+",";
+
 					}
-					result=result.substring(0,result.length()-1);
-					result+="],";
 				}
-				
-			}
+			}			
+		String result= "{"+"\""+"purchaseOrders"+"\""+":"+"[";
+		for(Book book :compiledBooks) {
+			result+="{\"book\":"+ book.toJson()+",";
+			result+="\"amountSold\":"+ book.getAmountSold()+",";
+			result+="\"rating\":"+book.getRating()+",";
 			if(!booksToCustomer.isEmpty()) {
 				result+="\"customers\":[";
 				if(booksToCustomer.containsKey(book)) {
@@ -731,18 +727,27 @@ public class DataObjectCompiler {
 				if(attributesIncludedInResults.containsKey(reviewTableName)) {
 					Review review=reviewDataFetcher.resultSetToBean(resultSet);
 					Id reviewBookId =review.getBook().getId();
-					Id reviewCustomerId=review.getCustomer().getId();
+					Id reviewSiteUserId=review.getSiteUser().getId();
 //					String reviewKey=reviewCustomerId+reviewBookId;
 //					reviewResults.put(reviewKey, review);	
-					if(!customerReviewResults.containsKey(reviewCustomerId)||customerReviewResults.get(reviewCustomerId)==null) {
-						customerReviewResults.put(reviewCustomerId, new LinkedList<Review>());
+					if(review.isReviewByACustomer() ) {
+						if(!customerReviewResults.containsKey(reviewSiteUserId)||customerReviewResults.get(reviewSiteUserId)==null) {
+							customerReviewResults.put(reviewSiteUserId, new LinkedList<Review>());
+						}
+						customerReviewResults.get(reviewSiteUserId).add(review);
 					}
-					customerReviewResults.get(reviewCustomerId).add(review);
+					if(!review.isReviewByACustomer() ) {
+						if(!visitorReviewResults.containsKey(reviewSiteUserId)||visitorReviewResults.get(reviewSiteUserId)==null) {
+							visitorReviewResults.put(reviewSiteUserId, new LinkedList<Review>());
+						}
+						visitorReviewResults.get(reviewSiteUserId).add(review);
+					}
 					
 					if(!bookReviewResults.containsKey(reviewBookId)||bookReviewResults.get(reviewBookId)==null) {
 						bookReviewResults.put(reviewBookId, new LinkedList<Review>());
 					}
 					bookReviewResults.get(reviewBookId).add(review);
+					
 				}
 				
 			}

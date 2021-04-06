@@ -1,6 +1,5 @@
 package ctrl;
 
-//import static org.junit.jupiter.api.DynamicTest.stream; //junit dependency is scoped for test. This won't work
 
 import java.io.File;
 import java.io.FileWriter;
