@@ -13,64 +13,76 @@
 <head>
 	<title>Cart</title>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/cart.js">;</script>
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/cart.css" type="text/css"
+		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
 </head>
 <body>
-	<c:forEach var="book" items="${requestScope.books}">
-		<div id="div-${book.key.ISBN}">
-			<img src="/BookStore/res/book_images/covers/${book.key.cover}"></img>
-			<div>
-				<table>
-	            <caption>${book.key.title}</caption>
-	            <tr>
-	                <th>Price</th>
-	                <td>${book.key.price}</td>
-	            </tr>
-	            <tr>
-	                <th>Author</th>
-	                <td>${book.key.author}</td>
-	            </tr>
-	            <tr>
-	                <th>Description</th>
-	                <td>${book.key.description}</td>
-	            </tr>
-	            <tr>
-	                <th>Publish Year</th>
-	                <td>${book.key.publishYear}</td>
-	            </tr>
-	            <tr>
-	                <th>Category</th>
-	                <td>${book.key.category}</td>
-	            </tr>
-	            <tr>
-	                <th>Rating</th>
-	                <td>${book.key.rating}</td>
-	            </tr>
-	            <tr>
-	                <th>ISBN</th>
-	                <td>${book.key.ISBN}</td>
-	            </tr>
-	            <tr>
-	                <th>Amount Sold</th>
-	                <td>${book.key.amountSold}</td>
-	            </tr>
-	        </table>
-	        <label>Quantity</label>
-	        <input class="quantity" type="number" min="1" value="${book.value}"
-	        	name="${book.key.ISBN}" id="input-${book.key.ISBN}" oninput="updateQuantity(this.name, this.value);"/>
-	        	
-	        <button name="${book.key.ISBN}" id="button-${book.key.ISBN}" type="button" onclick="removeBook(this.name);">remove</button>
-			</div>
-		</div>
-	</c:forEach>
+	<h1>Shopping Cart</h1>
 	
-	<div>
-		<label>TOTAL PRICE: <span id="span-price">${requestScope.totalPrice}</span></label>
-		<button type="button" onclick=";">Payment</button>
+	<div id="cart-container">
+		<c:if test="${fn:length(requestScope.books) lt 1 }">
+			<hr/>
+			<label id="label-empty">Shopping Cart is empty</label>
+		</c:if>
+		<c:forEach var="book" items="${requestScope.books}">
+			<hr/>
+			<div class="book" id="div-${book.key.ISBN}">
+				<img src="/BookStore/res/book_images/covers/${book.key.cover}"></img>
+				<div class="info-panel">
+					<table class="info-table">
+		            <caption>${book.key.title}</caption>
+		            <tr>
+		                <th>Price</th>
+		                <td>${book.key.price}</td>
+		            </tr>
+		            <tr>
+		                <th>Author</th>
+		                <td>${book.key.author}</td>
+		            </tr>
+		            <tr>
+		                <th>Description</th>
+		                <td>${book.key.description}</td>
+		            </tr>
+		            <tr>
+		                <th>Publish Year</th>
+		                <td>${book.key.publishYear}</td>
+		            </tr>
+		            <tr>
+		                <th>Category</th>
+		                <td>${book.key.category}</td>
+		            </tr>
+		            <tr>
+		                <th>Rating</th>
+		                <td>${book.key.rating}</td>
+		            </tr>
+		            <tr>
+		                <th>ISBN</th>
+		                <td>${book.key.ISBN}</td>
+		            </tr>
+		            <tr>
+		                <th>Amount Sold</th>
+		                <td>${book.key.amountSold}</td>
+		            </tr>
+		        </table>
+		        <label>Quantity</label>
+		        <input class="quantity" type="number" min="1" value="${book.value}"
+		        	name="${book.key.ISBN}" id="input-${book.key.ISBN}" oninput="updateQuantity(this.name, this.value);"/>
+		        	
+		        <button name="${book.key.ISBN}" id="button-${book.key.ISBN}" type="button" onclick="removeBook(this.name);">Remove from Cart</button>
+				</div>
+			</div>
+		</c:forEach>
 	</div>
+	<c:if test="${fn:length(requestScope.books) gt 0 }">
+		<div id="div-total">
+			<label>TOTAL PRICE: <span id="span-price">${requestScope.totalPrice}</span></label>
+			<button type="button" onclick=";">Payment</button>
+		</div>
+	</c:if>
 </body>
 </html>
 </jsp:root>
