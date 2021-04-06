@@ -60,7 +60,7 @@
 		
 		${requestScope['BOOKS_IN_ORDER']}
 		
-		<FORM action="${pageContext.request.contextPath}/Orders" method="Get">
+		<!-- <FORM action="${pageContext.request.contextPath}/Orders" method="Get">
 			<div class="row">
 				<div class="column_1_3">
 					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/1984__George_Orwell_1230004544609.jpg" alt="search" /> 
@@ -132,7 +132,7 @@
 					</div>
 				</div>
 			</div>
-		</FORM>	
+		</FORM>	 -->
 	</div>
 	
 	<!-- footer -->

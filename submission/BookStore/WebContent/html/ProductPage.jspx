@@ -79,7 +79,15 @@
 					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
 				</div>
 				<div class="row">
-					<p style="margin-left:0px;"><button class="button addProduct" type="addProduct">add product</button></p>
+					<div class="column_1_3">
+						<p style="margin-left:0px;"><button class="button addProduct" name="addProduct" id="addProduct" type="addProduct">add product</button></p>
+					</div>
+					<FORM action="ProductPage" method="Get">
+						<div class="column_1_3">
+							<input id="bookID" name="bookID" value="${requestScope['bookID']}" type="hidden"></input>
+							<p style="margin-left:0px;"><button class="button addReview" id="addReview" name="addReview" type="addReview" value="true">add review</button></p>
+						</div>
+					</FORM>
 				</div>
 			</div>
 		</div>

@@ -26,7 +26,7 @@ function setAllVars() {
 }
 
 function setTotalNumPages() {
-	var numOrders = document.getElementsByClassName("row");	
+	var numOrders = document.getElementsByClassName("entry");	
 	var numPages = Math.ceil(numOrders.length/ NUM_REV_PER_PAGE);
 	
 	if (numPages == 0)
@@ -37,10 +37,10 @@ function setTotalNumPages() {
 
 
 function showNextPageOrders(n) {
-  var numOrders = document.getElementsByClassName("row");	
+  var numOrders = document.getElementsByClassName("entry");	
   var numPages = Math.ceil(numOrders.length/ NUM_REV_PER_PAGE);
   
-  console.log("num pages = "+numPages + ", currently on page: "+ page_num + ". Number fo books = "+numOrders)
+  console.log("num pages = "+numPages + ", currently on page: "+ page_num + ". Number of books = "+numOrders)
   
   if (page_num + n <= numPages && page_num + n >= 1)
   	showNextPage(page_num += n);
@@ -48,7 +48,7 @@ function showNextPageOrders(n) {
 
 // mouse hover listeners
 function mouseOver_next() {
-  var numOrders = document.getElementsByClassName("row");	
+  var numOrders = document.getElementsByClassName("entry");	
   var numPages = Math.ceil(numOrders.length/ NUM_REV_PER_PAGE);
   
   if (page_num >= numPages)
@@ -63,7 +63,7 @@ function mouseOut_next() {
 }
 
 function mouseOver_prev() {
-  var numOrders = document.getElementsByClassName("row");	
+  var numOrders = document.getElementsByClassName("entry");	
   var numPages = Math.ceil(numOrders.length/ NUM_REV_PER_PAGE);
   
   if (page_num <= 1)
@@ -78,7 +78,7 @@ function mouseOut_prev() {
 }
 
 function showNextPage(n) {
-	var numOrders = document.getElementsByClassName("row");	
+	var numOrders = document.getElementsByClassName("entry");	
 	var numPages = Math.ceil(numOrders.length/ NUM_REV_PER_PAGE);
 	
 	var i;

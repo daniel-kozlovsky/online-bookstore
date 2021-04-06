@@ -78,14 +78,14 @@ header
   float: left;
   width: 33.33%;
   padding: 10px;
-  height: 300px; /* Should be removed. Only for demonstration */
+  height: 400px; /* Should be removed. Only for demonstration */
 }
 
 .column_2_3 {
   float: left;
   width: 66.66%;
   padding: 10px;
-  height: 300px; /* Should be removed. Only for demonstration */
+  height: 400px; /* Should be removed. Only for demonstration */
 }
 
 /* Clear floats after the columns */
@@ -93,7 +93,9 @@ header
 	content: "";
 	display: table;
 	clear: both;
+	margin:30px;
 }
+
 * {
   box-sizing: border-box;
   grid-row-gap: 50px;

@@ -59,7 +59,8 @@
 		
 		<header>Review for ${requestScope['TITLE']}, by ${requestScope['AUTHOR']}</header>
 		
-		<form action="${pageContext.request.contextPath}/Orders" method="Get">
+		<form action="${pageContext.request.contextPath}/${requestScope['redirectTo']}" method="Get">
+
 			<div class="rate">
 			
 				<label for="star5" title="text">5 stars</label>
@@ -117,11 +118,13 @@
 			<BR/>
 			<BR/>
 			<input id="title" name="title" type="text" placeholder="Title" style="width:100%;">${requestScope['title']}</input>
-			<input id="bookID" name="bookID" value="$requestScope['bookID']" type="hidden"></input>
+			
+			<!-- <c:if test="${requestScope['redirectTo'] eq Orders}"> -->
+				<input id="bookID" name="bookID" value="${requestScope['bookID']}" type="hidden"></input>
+			<!--</c:if>		-->
 			<textarea id="body" rows="15" cols="1" name="body" style="width: 100%;" placeholder="Enter review here:" class='formtext'><jsp:text />${requestScope['body']}</textarea>
 			
-			
-		  <input class="button addReview" type="submit" name="review_form" id="review_form"></input>
+		    <input class="button addReview" type="submit" name="review_form" id="review_form"></input>
 		</form>
 	</div>
 

@@ -4,15 +4,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import data.beans.Address;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.PurchaseOrder;
 import data.beans.Review;
+import data.beans.SiteUser;
+import data.beans.Visitor;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
 import data.dao.PurchaseOrderDAO;
 import data.dao.ReviewDAO;
+import data.dao.VisitorDAO;
 
 
 public class MainPageModel {
@@ -22,6 +27,7 @@ public class MainPageModel {
 	private CustomerDAO user;
 	private PurchaseOrderDAO order;
 	private ReviewDAO review;
+	private VisitorDAO visitor;
 	
 	public MainPageModel() {};
 	
@@ -267,16 +273,29 @@ public class MainPageModel {
 	 * @param book_id
 	 * @throws Exception
 	 */
-	public void addReview (Customer customer, String title, String body, int rate, String book_id) throws Exception{
+	public void addReview (SiteUser customer, String title, String body, int rate, String book_id) throws Exception{
+		Book b;
 		
-		Book b = getBookByID(book_id);
-						
-		review.newUpdateRequest()
-			.requestNewReviewInsertion(customer, b)
-			.insertReviewWithTitle(title)
-			.insertReviewWithBody(body)
-			.insertReviewWithRating(rate)
-			.executeReviewInsertion();
+		try {
+			b = getBookByID(book_id);
+		} catch (Exception e) {
+			throw new Exception("ERROR: book was not found in the database! "+ e.getMessage());
+		}
+		
+		try {
+		
+			review.newUpdateRequest()
+				.requestNewReviewInsertion(customer, b)
+				.insertReviewWithTitle(title)
+				.insertReviewWithBody(body)
+				.insertReviewWithRating(rate)
+				.executeReviewInsertion();
+			
+			
+			
+		} catch (Exception e) {
+			throw new Exception("There was an error adding the review: " + e.getMessage() + " " + e.getCause());
+		}
 	}
 	
 	/**
@@ -318,22 +337,51 @@ public class MainPageModel {
 	 * @throws Exception 
 	 */
 	public List<Review> getReview (Customer customer, String bookID) throws Exception {
-		
-		Book b = this.getBookByID(bookID);
-		
-		List<Customer> s = review.newQueryRequest()
-			.includeAllAttributesInResultFromSchema()
-			.queryAttribute()
-			.whereReviewBook()
-			.isBook(b)
-			.queryAttribute()
-			.whereReviewCustomer()
-			.isCustomer(customer)
-			.executeQuery()
-			.executeCompilation()
-			.compileCustomers();
 			
-		return s.get(0).getReviews();
+//		Book b = this.getBookByID(bookID);
+		Book b = this.getBookByID("025a99fd-ee0d-31f0-bff7-fd50e1289bfb");
+		Customer tmp = user.loginCustomer("PVilleda2532", "Perrypassword");
+		try {
+			List<Customer> s = review.newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereReviewBook()
+				.isBook(b)
+				.queryAttribute()
+				.whereReviewCustomer()
+				.isCustomer(tmp)
+				.withResultLimit(Integer.MAX_VALUE)
+				.executeQuery()
+				.executeCompilation()
+				.compileCustomers();
+			
+			System.out.println("num reviews found = "+s.size());
+			
+			return s.get(0).getReviews();
+		} catch (Exception e) {
+			throw new Exception ("ERROR: review by this username for this book was not found!");
+		}
+	}
+	
+	/**
+	 * Given only a username, which is unique, find the customer
+	 * 
+	 * @param username
+	 * @return
+	 * @throws Exception
+	 */
+	public Customer getUserByUsername (String username) throws Exception{
+		
+		List<Customer> c = user.newQueryRequest()
+								.includeAllAttributesInResultFromSchema()
+								.queryAttribute()
+								.whereCustomerUserName()
+								.varCharEquals(username)
+								.withResultLimit(Integer.MAX_VALUE)
+								.executeQuery()
+								.executeCompilation()
+								.compileCustomers();
+		return c.get(0);
 	}
 	
 	public Customer getUser (String username, String passwd) {
@@ -404,9 +452,7 @@ public class MainPageModel {
 		} else 
 			throw new Exception ("Problem updating information - "
 					+ "this email already exists in the database. Try a different one or login with "
-					+ "the other account!");
-	
-		
+					+ "the other account!");		
 		try {
 			user.newUpdateRequest()
 				.requestUpdateExistingCustomer(customer)
@@ -426,6 +472,10 @@ public class MainPageModel {
 		}
 	}
 	
+	public Visitor getVisitor(HttpServletRequest request) {
+		return visitor.getVisitor(request);
+	}
+	
 	//getInstance will return that ONE instance of the pattern 
 	//with the the DAO objects initialized..
 	public static MainPageModel getInstance()throws ClassNotFoundException{
@@ -434,7 +484,9 @@ public class MainPageModel {
 			instance.book = new BookDAO();
 			instance.review = new ReviewDAO();
 			instance.user = new CustomerDAO();
-		}
+			instance.visitor = new VisitorDAO();
+		}	
+		
 		return instance;
 	}
 }
