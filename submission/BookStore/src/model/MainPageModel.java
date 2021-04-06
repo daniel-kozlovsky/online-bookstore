@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import data.beans.Address;
 import data.beans.Book;
 import data.beans.Customer;
 import data.beans.PurchaseOrder;
@@ -101,19 +102,25 @@ public class MainPageModel {
 		else
 			num = Integer.MAX_VALUE;
 		
+		try {
+			this.getBookByID("941cc27e-d5e7-3ab6-bb3d-c7891b5b50f7");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("ERROR: Didn't find the book!");
+			e.printStackTrace();
+		}
+		
 		List<Book> b = book.newQueryRequest()
 			.includeAllAttributesInResultFromSchema()
 			.queryAttribute()
 			.whereBook()
 			.isBook(prodID)
-			.withResultLimit(num)
 			.queryReview()
 			.includeAllAttributesInResultFromSchema()
 			.queryAttribute()
 			.whereReviewRating()
+			.withResultLimit(num)
 			.withDescendingOrderOf()
-			.queryCustomer()
-			.includeAllAttributesInResultFromSchema()
 			.executeQuery()
 			.executeCompilation()
 			.compileBooks();
@@ -206,57 +213,66 @@ public class MainPageModel {
 	 * Identifies the customer with username and password, then finds all the order
 	 * transactions and books related to that customer
 	 * 
-	 * @param username	
-	 * @param passwd
+	 * @param customer
 	 * @return
 	 * @throws Exception
 	 */
-	public List<PurchaseOrder> getCustomerOrders(String username, String passwd) throws Exception{
+	public PurchaseOrder[] getCustomerOrders(Customer customer) throws Exception{
 		List<PurchaseOrder> p = null;
 		Map<Long, PurchaseOrder> m;
-		
+		PurchaseOrder[] p1;
 		try {
-			System.out.println("here! 1 ");
-			Customer s = user.loginCustomer(username, passwd);
-			System.out.println("here! 2");
+//			System.out.println("here! 1 ");
+//			System.out.println("here! 2");
 			
-			m = s.getCreatedAtEpochToPurchaseOrders();
-			System.out.println("here! 3");
+			List<Customer> c = user.newQueryRequest()
+					.includeAllAttributesInResultFromSchema()
+					.queryPurchaseOrder()
+					.queryAttribute()
+					.wherePurchaseOrderCustomer()
+					.isCustomer(customer)
+					.withResultLimit(Integer.MAX_VALUE)
+					.executeQuery()
+					.executeCompilation()
+					.compileCustomers()
+					;
+			p1 = c.get(0).getPurchaseOrders();
 			
-			Iterator iterator = m.entrySet().iterator(); 
+			//p1 = s.getPurchaseOrders();
+//			System.out.println("here! 3");
 			
-			System.out.println("here! 4 iterator = "+iterator.hasNext());
-			
-			if (iterator.hasNext()) {
-				Map.Entry me = (Map.Entry) iterator.next(); 
-				p.add((PurchaseOrder) me.getValue());
-			}
+//			Iterator iterator = m.entrySet().iterator(); 
+//			
+//			System.out.println("here! 4 iterator = "+iterator.hasNext());
+//			
+//			if (iterator.hasNext()) {
+//				Map.Entry me = (Map.Entry) iterator.next(); 
+//				p.add((PurchaseOrder) me.getValue());
+//			}
 			
 			System.out.println("p.size() = "+p.size());
 		} catch (Exception e) {
 			throw new Exception("Couldn't find username and password in the database!");
 		}
-		return p;
+		return p1;
 	}
 	
 	/**
-	 * Adds a review of the customer with the provided username and password
+	 * Adds a review of the customer
 	 * 
-	 * @param username
-	 * @param passwd
+	 * @param customer
 	 * @param title
 	 * @param body
 	 * @param rate
 	 * @param book_id
 	 * @throws Exception
 	 */
-	public void addReview (String username, String passwd, String title, String body, int rate, String book_id) throws Exception{
+	public void addReview (Customer customer, String title, String body, int rate, String book_id) throws Exception{
 		
 		Book b = getBookByID(book_id);
-		Customer c = user.loginCustomer(username, passwd);
 						
 		review.newUpdateRequest()
-			.requestNewReviewInsertion(c, b)
+			.requestNewReviewInsertion(customer, b)
 			.insertReviewWithTitle(title)
 			.insertReviewWithBody(body)
 			.insertReviewWithRating(rate)
@@ -266,21 +282,18 @@ public class MainPageModel {
 	/**
 	 * Checks if the customer reviewed the product previously or not
 	 * 
-	 * @param username
-	 * @param passwd
+	 * @param customer
 	 * @param book_id
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean didCustomerAddReview (String username, String passwd, String book_id) throws Exception {
-		
-		Customer c = user.loginCustomer(username, passwd);
+	public boolean didCustomerAddReview (Customer customer, String book_id) throws Exception {
 		
 		List<Book> b = review.newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
 				.queryAttribute()
 				.whereReviewCustomer()
-				.isCustomer(c)
+				.isCustomer(customer)
 				.queryBook()
 				.queryAttribute()
 				.whereBook()
@@ -299,17 +312,118 @@ public class MainPageModel {
 	 * Gived the reviewID, it returns the Review object which identifies 
 	 * with that id
 	 * 
-	 * @param reviewID
+	 * @param customer
+	 * @param bookID
 	 * @return
+	 * @throws Exception 
 	 */
-	public Review getReview (String reviewID) {
+	public List<Review> getReview (Customer customer, String bookID) throws Exception {
 		
-//		review.newQueryRequest()
-//			.includeAllAttributesInResultFromSchema()
-//			.queryAttribute()
-//			.whe
-//		
-		return null;
+		Book b = this.getBookByID(bookID);
+		
+		List<Customer> s = review.newQueryRequest()
+			.includeAllAttributesInResultFromSchema()
+			.queryAttribute()
+			.whereReviewBook()
+			.isBook(b)
+			.queryAttribute()
+			.whereReviewCustomer()
+			.isCustomer(customer)
+			.executeQuery()
+			.executeCompilation()
+			.compileCustomers();
+			
+		return s.get(0).getReviews();
+	}
+	
+	public Customer getUser (String username, String passwd) {
+		return user.loginCustomer(username, passwd);
+	}
+	
+	/**
+	 * Updates the user entry 
+	 * 
+	 * @param username
+	 * @param passwd
+	 * @param customer
+	 * @param name
+	 * @param last_name
+	 * @param email
+	 * @param street
+	 * @param street_num
+	 * @param city
+	 * @param province
+	 * @param country
+	 * @param postal_code
+	 * @throws Exception
+	 */
+	public void updateUserInfo (String username, String passwd, 
+								Customer customer, String name,
+								String last_name, String email,
+								String street, String street_num, 
+								String city, String province, 
+								String country, String postal_code) throws Exception {
+		
+		
+		List<Customer> c = user.newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereCustomerUserName()
+				.varCharEquals(username)
+				.executeQuery()
+				.executeCompilation()
+				.compileCustomers();
+		
+		// username doesn't exist or stays the same for the same user
+		if (c.size() == 0 || c.size() == 1 && c.get(0).getId().isEqual(customer.getId())) {
+			user.newUpdateRequest()
+			.requestUpdateExistingCustomer(customer)
+			.updateCustomerUserName(username)
+			.executeUpdate();
+			
+		} else {
+			throw new Exception ("Problem updating information - "
+					+ "there exists a username in the database with the same "
+					+ "usrname. Try a different name!");
+		}
+		
+		c = user.newQueryRequest()
+			.includeAllAttributesInResultFromSchema()
+			.queryAttribute()
+			.whereCustomerEmail()
+			.varCharEquals(email)
+			.executeQuery()
+			.executeCompilation()
+			.compileCustomers();
+		
+		if (c.size() == 0 || c.size() == 1 && c.get(0).getId().isEqual(customer.getId())) {
+			user.newUpdateRequest()
+			.requestUpdateExistingCustomer(customer)
+			.updateCustomerEmail(email)
+			.executeUpdate();
+		} else 
+			throw new Exception ("Problem updating information - "
+					+ "this email already exists in the database. Try a different one or login with "
+					+ "the other account!");
+	
+		
+		try {
+			user.newUpdateRequest()
+				.requestUpdateExistingCustomer(customer)
+				.updateCustomerCity(city)
+				.updateCustomerCountry(country)
+				.updateCustomerGivenName(name)
+				.updateCustomerPassword(passwd)
+				.updateCustomerPostalCode(postal_code)
+				.updateCustomerProvince(province)
+				.updateCustomerStreet(street)
+				.updateCustomerStreetNumber(street_num)
+				.updateCustomerSurName(last_name)
+				.executeUpdate()
+				;
+		} catch (Exception e) {
+			throw new Exception("Troble updating the information! " + e.getMessage());
+		}
 	}
 	
 	//getInstance will return that ONE instance of the pattern 

@@ -44,10 +44,17 @@ public class Orders extends HttpServlet {
     private static final String TITLE = "TITLE";
     private static final String BOOKS_IN_ORDER = "BOOKS_IN_ORDER";
     
-    private static final String  USER_ORDERS = "USER_ORDERS";
+    private static final String USER_ORDERS = "USER_ORDERS";
     private static final String rate = "rate";
     private static final String title = "title";
     private static final String body = "body";
+    private static final String epoch = "epoch";
+    
+    private static final String ONE_STAR = "ONE_STAR";
+    private static final String TWO_STAR = "TWO_STAR";
+    private static final String THREE_STAR = "THREE_STAR";
+    private static final String FOUR_STAR = "FOUR_STAR";
+    private static final String FIVE_STAR = "FIVE_STAR";
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -85,28 +92,36 @@ public class Orders extends HttpServlet {
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
 		//getServletContext().setAttribute("user", CUSTOMER);
-//			String username = (String) getServletContext().getAttribute(USERNAME);
-//			String passwd = (String) getServletContext().getAttribute(PASSWD);
+//			Customer customer = (Customer) h.getAttribute(user);
 		
 		String username="WRitter163";
 		String passwd = "Walterpassword";
+		Customer customer = model.getUser(username, passwd);
+		System.out.println(customer.getGivenName() + " " + customer.getSurName() + " " + customer.getUserName() + " " +
+					customer.getPassword() + " " + customer.getEmail() + " " + customer.getUserType() + " " +
+					customer.getAddress().getNumber());
+		
+		for (PurchaseOrder po: customer.getPurchaseOrders())
+			System.out.println(po.toJson());
 		
 		// customer just submitted a review - add review to database and go back to customer's specific order
 		if (request.getParameter(review_form) != null) {
 			try {
 				System.out.println("Review was successfully submitted!");
 				request.setAttribute(ORDER_ID, h.getAttribute(ORDER_ID));
+				request.setAttribute(epoch, h.getAttribute(epoch));
 				String order_id = (String) h.getAttribute(ORDER_ID);
 				
 				int rank = Integer.parseInt(request.getParameter(rate));
 				String this_title = request.getParameter(title);
 				String this_body = request.getParameter(body);
 				String book_id = request.getParameter(bookID);
+				Long this_epoch = Long.parseLong(request.getParameter(epoch));
 				
 				// add review 
-				model.addReview(username, passwd, this_title, this_body, rank, book_id);
+				model.addReview(customer, this_title, this_body, rank, book_id);
 				
-				String html = loadIndividualOrder(order_id, model, username, passwd);
+				String html = loadIndividualOrder(model, customer, this_epoch);
 				request.setAttribute(BOOKS_IN_ORDER, html);
 				
 				request.getRequestDispatcher("html/ProdOrderView.jspx").forward(request, response);
@@ -119,12 +134,17 @@ public class Orders extends HttpServlet {
 		// user selects a specific order to view
 		else if (request.getParameter(ORDER_ID)!= null) {
 			try {
-			    String order = request.getParameter(ORDER_ID);
-				request.setAttribute(ORDER_ID, order);
-				h.setAttribute(ORDER_ID, order);
+			    String order_id = request.getParameter(ORDER_ID);
+			    Long this_epoch = Long.parseLong(request.getParameter(epoch));
 				
-				String order_id = (String) request.getAttribute(ORDER_ID);
-				String html = loadIndividualOrder(order_id, model, username, passwd);
+			    request.setAttribute(ORDER_ID, order_id);
+				
+				h.setAttribute(epoch, epoch);
+				h.setAttribute(ORDER_ID, order_id);
+				
+				System.out.println("\torder id="+order_id+"\n\tepoch="+this_epoch);
+				
+				String html = loadIndividualOrder(model, customer, this_epoch);
 				
 				request.setAttribute(BOOKS_IN_ORDER, html);
 			
@@ -133,30 +153,34 @@ public class Orders extends HttpServlet {
 				System.out.println("There was a problem going back form orders to a specific order page! " +e.getMessage());
 			}
 			
-		// user selects adding a review	
-		} else if (request.getParameter(addReview) != null){
+		// user selects adding/ editing/ reviewing a review	
+		} else if (request.getParameter(viewReview) != null || request.getParameter(addReview) != null) {
 			try {
 				String book_id = request.getParameter(bookID);
-				String title = request.getParameter(TITLE);
-				String author = request.getParameter(AUTHOR);
-				request.setAttribute(bookID, book_id);
-				request.setAttribute(TITLE, title);
-				request.setAttribute(AUTHOR, author);
 				
-				request.getRequestDispatcher("html/Review.jspx").forward(request, response);
-			} catch (Exception e) {
-				System.out.println("There was a problem going back form a specific order page to writing its review! " +e.getMessage());
-			}
-			
-		} else if (request.getParameter(viewReview) != null) {
-			try {
-				Review review = model.getReview(request.getParameter(reviewID));
+				//<<================================================
+				// TO DO
+				List<Review> review = model.getReview(customer, book_id);
+				Review r = review.get(0);
+				//================================================>>
 				
-				request.setAttribute(rate, review.getRating());
-				request.setAttribute(title, review.getTitle());
-				request.setAttribute(body, review.getBody()); 
+				int rating_number = r.getRating();
+				
+				if (rating_number == 1)
+					request.setAttribute(ONE_STAR, 1);
+				else if (rating_number == 2)
+					request.setAttribute(TWO_STAR, 2);
+				else if (rating_number == 3)
+					request.setAttribute(THREE_STAR, 3);
+				else if (rating_number == 4)
+					request.setAttribute(FOUR_STAR, 4);
+				else if (rating_number == 5)
+					request.setAttribute(FIVE_STAR, 5);
+				
+				
+				request.setAttribute(title, r.getTitle());
+				request.setAttribute(body, r.getBody()); 
 	
-				String book_id = request.getParameter(bookID);
 				String title = request.getParameter(TITLE);
 				String author = request.getParameter(AUTHOR);
 				request.setAttribute(bookID, book_id);
@@ -169,15 +193,14 @@ public class Orders extends HttpServlet {
 			}
 		} else {
 			try {
-				String html = loadPage( username,  passwd,  model);
+				String html = loadPage(customer,  model);
 				request.setAttribute(USER_ORDERS, html);
 				
 				request.getRequestDispatcher("html/Orders.jspx").forward(request, response);
 			} catch (Exception e) {
 				System.out.println("Error loading user's orders! "+e.getMessage());
 			}
-		}
-		
+		}	
 	}
 
 	/**
@@ -188,22 +211,27 @@ public class Orders extends HttpServlet {
 		doGet(request, response);
 	}
 	
-	private String loadPage(String username, String passwd, MainPageModel model) {
+	private String loadPage(Customer customer, MainPageModel model) {
 		
-		List<PurchaseOrder> orders = null;
+		PurchaseOrder[] orders = null;
 		String html = "";
 		
 		try {
-			orders = model.getCustomerOrders(username, passwd);
-			System.out.println("orders: "+orders.size());
-			for (int i = 0; i < orders.size(); i ++) {
+			//<<==============================================
+			// TO DO - check functionality
+			orders = customer.getPurchaseOrders();
+			//==============================================>>
+			
+			System.out.println("orders: "+orders.length);
+			for (int i = 0; i < orders.length; i ++) {
 			
 				html += 
 				 	  "						<tr class=\"row\">\n"
-				 	  + "						<th>"+orders.get(i).getId()+"</th>\n"
-				 	  + "						<th>"+orders.get(i).getStatus()+"</th>\n"
-				 	  + "						<th>"+orders.get(i).getBooks().size()+"</th>\n"
-				 	  + "						<th><button style=\"width:90%;height:90%;\" id=\"orderID\" name=\"orderID\" value=\""+orders.get(i).getId()+"\">view order</button></th>\n"
+				 	  + "						<th>"+orders[i].getId()+"</th>\n"
+				 	  + "						<th>"+orders[i].getStatus()+"</th>\n"
+				 	  + "						<th>"+orders[i].getBooks().size()+"</th>\n"
+				 	  +	"						<input tupe=\"hidden\" id=\""+ORDER_ID+" name=\""+ORDER_ID+"\" value=\""+orders[i].getId()+"\"\"></input>"	
+				 	  + "						<th><button style=\"width:90%;height:90%;\" id=\""+epoch+"\" name=\""+epoch+"\" value=\""+orders[i].getCreatedAtEpoch()+"\">view order</button></th>\n"
 				 	  + "					</tr>";
 			}
 		} catch (Exception e) {
@@ -214,12 +242,19 @@ public class Orders extends HttpServlet {
 		return html;
 	}
 	
-	private String loadIndividualOrder(String order_id, MainPageModel model, String username, String passwd) throws Exception {
+	private String loadIndividualOrder(MainPageModel model, Customer customer, Long epoch) throws Exception {
 		String html = "";
-		
 		PurchaseOrder order = null;
+		Iterator iterator = null;
+		
+		// <<================================================
+		// TO DO
+		order = customer.getPurchaseOrderByCreatedAtEpoch(epoch);
+		System.out.println("order = "+order);
+		//================================================>>
+		
 		Map<Book, Integer> books = order.getBooks();
-		Iterator iterator = books.entrySet().iterator(); 
+		iterator = books.entrySet().iterator(); 
 		
 		while (iterator.hasNext()) {
 			
@@ -229,10 +264,13 @@ public class Orders extends HttpServlet {
 			String book_id = b.getId().toString();
 			
 			String review = ""; 
-			if (model.didCustomerAddReview(username, passwd, book_id)) 
-				review += "Review already submitted\n";
+			// <<================================================
+			// TO DO
+			if (model.didCustomerAddReview(customer, book_id)) 
+			//================================================>>
+				review += "<p style=\"margin-left:0px;\"><button id=\""+viewReview+"\" name=\""+viewReview+"\" class=\"button "+viewReview+"\" type=\""+viewReview+"\">view your review</button></p>\n";
 			else
-				review += "<p style=\"margin-left:0px;\"><button id=\"addReview\" name=\"addReview\" class=\"button addReview\" type=\"addReview\" value=\""+b.getId()+"\">write a review</button></p>\n";
+				review += "<p style=\"margin-left:0px;\"><button id=\""+addReview+"\" name=\""+addReview+"\" class=\"button "+addReview+"\"  type=\""+addReview+"\">write a review</button></p>\n";
 			
 			html += 
 					"		<FORM action=\"/BookStore/Orders\" method=\"Post\">\n"
@@ -252,9 +290,9 @@ public class Orders extends HttpServlet {
 					+ "						<p style=\"color:red;font-weight:bold;margin-left:0px;\">$"+b.getPrice()+"</p>\n"
 					+ "					</div>\n"
 					+ "					<div class=\"row\">\n"
-					+ "						<input type=\"hidden\" id=\"TITLE\" name=\"TITLE\" value=\""+b.getTitle()+"\"></input>\n"
-					+ "						<input type=\"hidden\" id=\"AUTHOR\" name=\"AUTHOR\" value=\""+b.getAuthor()+"\"></input>\n"
-					+ "						<input type=\"hidden\" id=\"bookID\" name=\"bookID\" value=\""+b.getId()+"\"></input>\n"
+					+ "						<input type=\"hidden\" id=\""+TITLE+"\" name=\""+TITLE+"\" value=\""+b.getTitle()+"\"></input>\n"
+					+ "						<input type=\"hidden\" id=\""+AUTHOR+"\" name=\""+AUTHOR+"\" value=\""+b.getAuthor()+"\"></input>\n"
+					+ "						<input type=\"hidden\" id=\""+bookID+"\" name=\""+bookID+"\" value=\""+b.getId()+"\"></input>\n"
 					+ "						" + review
 					+ "					</div>\n"
 					+ "				</div>\n"

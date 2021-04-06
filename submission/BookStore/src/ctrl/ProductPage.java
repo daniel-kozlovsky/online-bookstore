@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import data.beans.Book;
+import data.beans.Customer;
 import data.beans.Review;
 import model.MainPageModel;
 
@@ -156,8 +157,18 @@ public class ProductPage extends HttpServlet {
 		
 		for (int i = 0; i < r.length; i ++) {
 			
+			String tmpLine = "";
+			
+			if (r[i].getUserType().equals("CUSTOMER")) {
+				Customer customer = (Customer) r[i].getSiteUser();
+				
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + r[i].getRating() + " / 5 </p>";
+			} else {
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> <i> site visitor </i> " + r[i].getRating() + " / 5 </p>";
+			}
+				
 			html +=   "				<div class=\"review_row\" style=\"margin-top:50px;\">\n"
-					+ "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+r[i].getCustomer().getSurName() + ", "+ r[i].getCustomer().getGivenName() + " " + r[i].getRating() + " / 5 </p>"
+					+ tmpLine
 					+ "					<div class=\"container_title  \">"+r[i].getTitle()+"</div>\n"
 					+ "					<p>\n"
 					+ "						"+r[i].getBody()

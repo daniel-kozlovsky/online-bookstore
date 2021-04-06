@@ -56,228 +56,224 @@
 	</div>
 	
 	<!-- A table displaying user's purchases -->
-	<!-- <c:if test="${applicationScope['user'] eq 'customer'}"> -->
-		<div class="table_section">
-		
-			<header>Purchase History</header>
-		   <form action="${pageContext.request.contextPath}/Orders" method="Post">
-				<table>
-					<tr>
-						<th style="font-weight: bold;">Order ID</th>
-						<th style="font-weight: bold;">Status</th>
-						<th style="font-weight: bold;">Amount</th>
-						<th style="font-weight: bold;">View Order</th>
-					</tr>
-					${requestScope['USER_ORDERS']}
-					<!-- <tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;" id="orderID" name="orderID" value="988eed34-bad0-3635-a0ae-9e4f72a54306">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID <input type="hidden" value="123456789"></input></th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$40</th>
-						<th>DELIVERED</th>
-						<th>24</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$5000</th>
-						<th>yes</th>
-						<th>2000</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">cannot write review until product is delivered</button></th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$40</th>
-						<th>DELIVERED</th>
-						<th>24</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$5000</th>
-						<th>yes</th>
-						<th>2000</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">cannot write review until product is delivered</button></th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr>
-					
-					<tr class="row">
-						<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
-						<th>$50</th>
-						<th>DELIVERED</th>
-						<th>2</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th><button style="width:90%;height:90%;">write review</button></th>
-					</tr>
-					<tr class="row">
-						<th>some review ID</th>
-						<th>$500</th>
-						<th>pending</th>
-						<th>20</th>
-						<th><button style="width:90%;height:90%;">view order</button></th>
-						<th>cannot write review until product is delivered</th>
-					</tr> -->
-				</table>
-				<button  id="prevP" class="showMore"  onClick="showNextPageOrders(-1)">Previous Page</button>
-				<span id="pageNum">1</span>  / <span id="totalNumPages">1</span>
-				<button id="nextP" class="showMore" onClick="showNextPageOrders(1)">Next Page</button>
-			</form>
-		</div>
-	<!-- </c:if> -->
+	<div class="table_section">
+	
+		<header>Purchase History</header>
+	   <form action="${pageContext.request.contextPath}/Orders" method="Get">
+			<table>
+				<tr>
+					<th style="font-weight: bold;">Order ID</th>
+					<th style="font-weight: bold;">Status</th>
+					<th style="font-weight: bold;">Amount</th>
+					<th style="font-weight: bold;">View Order</th>
+				</tr>
+				${requestScope['USER_ORDERS']}
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<input type="hidden" id="orderID" name="orderID" value="988eed34-bad0-3635-a0ae-9e4f72a54306"></input>
+					<th><button style="width:90%;height:90%;" id="epoch" name="epoch" value="1594166400000">view order</button></th>
+				</tr>
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<input type="hidden" id="orderID" name="orderID" value="988eed34-bad0-3635-a0ae-9e4f72a54306"></input>
+					<th><button style="width:90%;height:90%;" id="epoch" name="epoch" value="1594166400000">view order</button></th>
+				</tr>
+				<!-- 
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$40</th>
+					<th>DELIVERED</th>
+					<th>24</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$5000</th>
+					<th>yes</th>
+					<th>2000</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">cannot write review until product is delivered</button></th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$40</th>
+					<th>DELIVERED</th>
+					<th>24</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$5000</th>
+					<th>yes</th>
+					<th>2000</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">cannot write review until product is delivered</button></th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr>
+				
+				<tr class="row">
+					<th>988eed34-bad0-3635-a0ae-9e4f72a54306</th>
+					<th>$50</th>
+					<th>DELIVERED</th>
+					<th>2</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th><button style="width:90%;height:90%;">write review</button></th>
+				</tr>
+				<tr class="row">
+					<th>some review ID</th>
+					<th>$500</th>
+					<th>pending</th>
+					<th>20</th>
+					<th><button style="width:90%;height:90%;">view order</button></th>
+					<th>cannot write review until product is delivered</th>
+				</tr> -->
+			</table>
+			<button  id="prevP" class="showMore"  onClick="showNextPageOrders(-1)">Previous Page</button>
+			<span id="pageNum">1</span>  / <span id="totalNumPages">1</span>
+			<button id="nextP" class="showMore" onClick="showNextPageOrders(1)">Next Page</button>
+		</form>
+	</div>
 	
 	<!-- footer -->
 	<footer>
