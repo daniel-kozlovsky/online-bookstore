@@ -60,11 +60,15 @@ function register()
 
 function handler(request)
 {
-	if(request.readyState == 4 && request.status == 200)
+	if(request.readyState == 4 && request.status == 403)
 	{
 		let target = document.getElementById("label-error");
 		
 		target.style.visibility = "visible";
 		target.innerHTML = request.responseText;
+	}
+	else if( request.status == 200)
+	{
+		window.location.href = "/BookStore/SignIn";
 	}
 }

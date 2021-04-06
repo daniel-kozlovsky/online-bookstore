@@ -122,7 +122,7 @@ public class UserAuthenticationModel {
 		return customerDAO.loginCustomer(username, password);
 	}
 	
-	public void logUserOut(HttpSession session, String userName)
+	public void logUserOut(HttpSession session)
 	{
 		session.setAttribute("customer", null);
 	}

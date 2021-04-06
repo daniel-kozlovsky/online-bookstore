@@ -24,7 +24,7 @@ public class SignIn extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	UserAuthenticationModel UAuthModel;
 	ShoppingCartModel shoppingModel;
-	final String MAIN_PAGE_TARGET = "/BookStore/MainPage";
+	final String MAIN_PAGE_TARGET = "/BookStore";
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -37,8 +37,11 @@ public class SignIn extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		UAuthModel.logUserOut(request.getSession());
+		response.sendRedirect(MAIN_PAGE_TARGET);
+		//reload page?
 	}
 
 	/**
@@ -58,6 +61,7 @@ public class SignIn extends HttpServlet {
 		String responseText = "";
 		if(!errors.isEmpty())
 		{
+			response.setStatus(403);
 			responseText = errors.toString();
 		}
 		else
@@ -68,25 +72,26 @@ public class SignIn extends HttpServlet {
 			{
 				session.setAttribute("customer", customer);
 				//transfer cart
-				if(!visitor.equals(null))
+				if(visitor != null)
 				{
 					shoppingModel.addAllFromCart(visitor, customer);
 				}
 				//go to main page
-				request.getRequestDispatcher(MAIN_PAGE_TARGET).forward(request, response);
-				return;
+				
+				//response.sendRedirect(MAIN_PAGE_TARGET);
+				//return;
+				//request.getRequestDispatcher(MAIN_PAGE_TARGET).forward(request, response);
 			}
 			//non existent user
 			else
 			{
+				response.setStatus(403);
 				responseText = "Invalid Credentials!";
-			}
 				
+			}
 		}
-		
 		out.printf(responseText);
 		out.flush();
-		
 	}
 
 }

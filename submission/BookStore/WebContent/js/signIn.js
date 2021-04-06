@@ -30,10 +30,19 @@ function signIn()
 
 function handler(request)
 {
-	if(request.readyState == 4 && request.status == 200)
+	console.log(request.status);
+	if(request.readyState == 4)
 	{
-		let target = document.getElementById("label-error");
-		target.style.visibility = "visible";
-		target.innerHTML = request.responseText;
+		if(request.status == 403)
+		{
+			let target = document.getElementById("label-error");
+			target.style.visibility = "visible";
+			target.innerHTML = request.responseText;
+		}
+		else if(request.status == 200)
+		{
+			window.location.href = "/BookStore";
+		}
+		
 	}
 }

@@ -95,20 +95,23 @@ public class Register extends HttpServlet {
 		String responseText = "";
 		if(!errors.isEmpty())
 		{
+			response.setStatus(403);
 			responseText = errors.toString();
 		}
 		else
 		{
+			
 			UAuthModel.registerUser(customer);
 			
 			if(UAuthModel.isUserRegistered(username))
 			{
 				//continue to sign in page
-				request.getRequestDispatcher(SIGNIN_TARGET).forward(request, response);
-				return;
+				//request.getRequestDispatcher(SIGNIN_TARGET).forward(request, response);
+				//return;
 			}
 			else
 			{
+				response.setStatus(403);
 				responseText = "Something went wrong. Please Try again later.";
 				//error
 			}
