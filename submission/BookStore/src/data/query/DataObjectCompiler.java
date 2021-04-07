@@ -735,6 +735,9 @@ public class DataObjectCompiler {
 							customerReviewResults.put(reviewSiteUserId, new LinkedList<Review>());
 						}
 						customerReviewResults.get(reviewSiteUserId).add(review);
+						if(!customerResults.containsKey(reviewSiteUserId)) {
+							this.customerResults.put(reviewSiteUserId, new Customer.Builder().withId(reviewSiteUserId).withUserName(review.getName()).build());
+						}
 					}
 					if(!review.isReviewByACustomer() ) {
 						if(!visitorReviewResults.containsKey(reviewSiteUserId)||visitorReviewResults.get(reviewSiteUserId)==null) {

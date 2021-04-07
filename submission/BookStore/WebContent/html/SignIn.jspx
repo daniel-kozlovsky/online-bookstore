@@ -1,17 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" 
-		pageEncoding="UTF-8" session="false"/>
+		pageEncoding="UTF-8" session="true"/>
 	<jsp:output doctype-root-element="html"
 		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
 		omit-xml-declaration="true" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Insert title here</title>
+	<title>Login</title>
+	<script type="text/javascript" src="/BookStore/js/signIn.js">;</script>
+	<link rel="StyleSheet" href="/BookStore/css/signIn.css" type="text/css" title="signInStyle" media="screen, print"/>
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
+		title="cse4413" media="screen, print" />
 </head>
 <body>
-
+	<div id="container">
+	<label class="error" id="label-error">.</label>
+		<div id="login-panel">
+			
+			<form action="" method="post">
+				<label for="input-uname">Username: </label>
+				<input type="text" id="input-uname" name="username" placeholder="Username"/>
+				<br/>
+				<label for="input-pword">Password: </label>
+				<input type="password" id="input-pword" name="password" placeholder="Password"/>
+				<br/>
+				<button id="button-login" type="button" onclick="signIn();">Login</button>
+			</form>
+			<a id="a-register" href="${pageContext.request.contextPath}/html/Register.jspx">Register</a>
+		</div>
+	</div>
+	
 </body>
 </html>
 </jsp:root>
