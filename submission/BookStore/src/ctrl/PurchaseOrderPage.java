@@ -111,7 +111,7 @@ public class PurchaseOrderPage extends HttpServlet {
 			      out.flush();
 			      out.printf(errorJson("emptyCartError","your cart is empty please add items before checking out")); 
 			      out.close();			      
-			      }	else if(!isCustomerLoggedIn(request)) {//TODO: NEGATE THIS AFTER
+			      }	else if(isCustomerLoggedIn(request)) {//TODO: NEGATE THIS AFTER
 			    	  System.out.println("ajax request recevied emptu cart");
 				      response.setContentType("application/json");
 				      PrintWriter out = response.getWriter();

@@ -3,26 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Checkout</title>
-<link rel="stylesheet" type='text/css'  href="/BookStore/css/loader.css">
+<link rel="stylesheet" type='text/css'  href="/BookStore/css/animations.css">
 <script type="text/javascript" src="/BookStore/js/purchaseOrderHandler.js"></script>
 </head>
-<body onload="pageLoadMain('/BookStore/PurchaseOrder');">
+<body  onload="pageLoadMain('/BookStore/PurchaseOrder');">
 
 		
 		
 		
 		
-		<form action="PurchaseOrder" method="POST" id="purchaseOrder" onsubmit="return validatePurchaseOrder();">
-	<div id="purchaseOrderInputs">
+	<form  action="PurchaseOrder" method="POST" id="purchaseOrder" onsubmit="return validatePurchaseOrder();">
+	<div>
 	<fieldset id="addressBox">
 	<legend>Saved Address</legend>	
 	<div id="address"></div>
 	</fieldset>
-	<fieldset id="creditCardBox">
+	<fieldset id="creditCardBox" >
 	<legend>Saved Credit Card</legend>	
 	<div id="creditCard"></div>
 	</fieldset>
-			<fieldset id="newAddressBox">
+	<div class="collapsible" >
+			<fieldset id="newAddressBox"  class="expand" >
+
 	<legend>New Address</legend>	
 
 
@@ -62,9 +64,11 @@
 			</select>
 			<label for="newAddress">Use this address for future checkouts</label>
 			<input type="checkbox" id="newAddress" name="newAddress"></input>
+
 				</fieldset>
-				
-							<fieldset id="newCreditCardBox">
+			</div>	
+			<div class="collapsible" >
+							<fieldset id="newCreditCardBox" class="expand">
 		<legend>New Credit Card</legend>	
 			<label for="creditCardType"><br>Credit Card</br></label>
 			<select name="creditCardType" id="creditCardType">
@@ -80,7 +84,7 @@
 			<label for="newCreditCard">Use this credit card for future checkouts</label>
 			<input type="checkbox" id="newCreditCard" name="newCreditCard"></input>
 			</fieldset>
-			
+			</div>
 		<button action="submit" name="submitPurchaseOrder" id="submitPurchaseOrder" value="true">Next</button>
 		
 		</div>

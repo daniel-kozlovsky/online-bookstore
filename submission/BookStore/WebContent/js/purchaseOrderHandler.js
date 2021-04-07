@@ -102,11 +102,11 @@ const register=()=>{
 }
 
 const defaultAdressCheckHTML=		`<label for=\x22defaultAddress\x22>use default address on account?`+
-	`<input type=\x22checkbox\x22 id=\x22defaultAddress\x22 name=\x22defaultAddress\x22></input>`+
+	`<input type=\x22checkbox\x22 id=\x22defaultAddress\x22 name=\x22defaultAddress\x22 onclick=\x22defaultAddressCheck()\x22></input>`+
 	`</label>`;
 	
 const defaultCreditCardCheckHTML=	`<label for=\x22defaultCreditCard\x22>use default credit card on account?`+
-	`<input type=\x22checkbox\x22 id=\x22defaultCreditCard\x22 name=\x22defaultCreditCard\x22></input>`+
+	`<input type=\x22checkbox\x22 id=\x22defaultCreditCard\x22 name=\x22defaultCreditCard\x22 onclick=\x22defaultCreditCardCheck()\x22></input>`+
 	`</label>`;
 
 
@@ -116,6 +116,24 @@ const signInRegisterButtonsHTML=`
 
 
 
+const defaultAddressCheck=()=>{
+	if(document.getElementById('defaultAddress') && document.getElementById('defaultAddress').checked){
+            	   document.getElementById("newAddressBox").disabled=true;            	 
+	}else{
+		document.getElementById("newAddressBox").disabled=false;
+	}
+		document.getElementById("newAddressBox").classList.toggle('expand')
+	document.getElementById("newAddressBox").classList.toggle('collapse')
+}
+const defaultCreditCardCheck=()=>{
+	if(document.getElementById('defaultCreditCard') && document.getElementById('defaultCreditCard').checked){
+	 document.getElementById("newCreditCardBox").disabled=true;            	 
+	}else{
+	 document.getElementById("newCreditCardBox").disabled=false;
+	}
+			document.getElementById("newCreditCardBox").classList.toggle('expand')
+	document.getElementById("newCreditCardBox").classList.toggle('collapse')
+}
 const cartHTML=(cart)=>{
 let html=`<table><tr><td>Cover</td><td>Title</td><td>Quantity</td> </tr>`;
 cart.books.forEach(cartBook=>{

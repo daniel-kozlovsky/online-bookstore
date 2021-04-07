@@ -38,3 +38,17 @@ https://loading.io/css/
     transform: rotate(360deg);
   }
 }
+
+
+.collapsible {
+  overflow: hidden;
+}
+
+.collapse {
+  margin-top: -100%;
+  transition: all 1s;
+}
+
+.expand {
+   margin-top: 0;
+}
