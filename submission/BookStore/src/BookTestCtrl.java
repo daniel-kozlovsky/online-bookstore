@@ -32,6 +32,7 @@ import data.beans.Visitor;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
 import data.dao.PurchaseOrderDAO;
+import data.dao.ReviewDAO;
 import data.dao.UpdateBook;
 import data.dao.UpdateCustomer;
 import data.dao.UpdateReview;
@@ -65,12 +66,25 @@ public class BookTestCtrl extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("do get");
-		CustomerDAO user =new CustomerDAO();
-		String username="WRitter163";
-		String passwd = "Walterpassword";
-
-		Customer s = user.loginCustomer(username, passwd);
-		System.out.println(s.toJson());
+		new ReviewDAO().newQueryRequest()
+				.includeAllAttributesInResultFromSchema()
+				.queryAttribute()
+				.whereReviewBook()
+				.isBook(new Book.Builder().withId(new Id("025a99fd-ee0d-31f0-bff7-fd50e1289bfb")).build())
+				.queryAttribute()
+				.whereReviewCustomer()
+				.isCustomer(new Customer.Builder().withId(new Id("28a99318-aa6b-323c-bdac-925ff92ecaca")).build())
+				.withResultLimit(20)
+				.executeQuery()
+				.executeCompilation()
+				.compileCustomers()
+				.stream().map(abook->abook.toJson()).forEach(System.out::println);
+//		CustomerDAO user =new CustomerDAO();
+//		String username="WRitter163";
+//		String passwd = "Walterpassword";
+//
+//		Customer s = user.loginCustomer(username, passwd);
+//		System.out.println(s.toJson());
 //		
 //		PrintWriter out = response.getWriter();
 //      response.setContentType("text");
