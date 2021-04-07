@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import data.beans.Customer;
 import data.beans.Visitor;
 import model.UserAuthenticationModel;
+import model.MainPageModel;
 import model.ShoppingCartModel;
 
 /**
@@ -42,8 +43,15 @@ public class SignIn extends HttpServlet {
 		System.out.println("\n\n\t\tLogin out\n\n");
 		UAuthModel.logUserOut(request.getSession());
 		
-		HttpSession session = request.getSession();
-
+		try {
+			HttpSession session = request.getSession();
+			MainPageModel model;
+			model = MainPageModel.getInstance();
+			session.setAttribute("visitor", model.getVisitor(request));
+		} catch (ClassNotFoundException e) {
+			
+		}
+		
 		response.sendRedirect(MAIN_PAGE_TARGET); // redirects to main page
 	}
 
