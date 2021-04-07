@@ -28,18 +28,12 @@ import model.MainPageModel;
 @WebServlet("/Orders")
 public class Orders extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String CUSTOMER = "customer";
-	private static final String VISITOR = "visitor";
     
     private static final String MODEL = "model";
-    private static final String USERNAME = "USERNAME";
-    private static final String PASSWD = "PASSWD";
-    private static final String ORDER_ID = "orderID";
     private static final String review_form = "review_form";
     private static final String addReview = "addReview";
     private static final String viewReview = "viewReview";
     private static final String bookID = "bookID";
-    private static final String reviewID = "reviewID";
     private static final String AUTHOR = "AUTHOR";
     private static final String TITLE = "TITLE";
     private static final String BOOKS_IN_ORDER = "BOOKS_IN_ORDER";
@@ -91,15 +85,13 @@ public class Orders extends HttpServlet {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
-		//getServletContext().setAttribute("user", CUSTOMER);
-//			Customer customer = (Customer) h.getAttribute(user);
+		Customer customer = (Customer) h.getAttribute("customer");
 		
-		String username="PVilleda2532";
-		String passwd = "Perrypassword";
-		Customer customer = model.getUser(username, passwd);
-
+		System.out.println("\n\nCustomer ID: "+customer.getId() + "\n\n");
+		
 		// customer just submitted a review - add review to database and go back to customer's specific order
 		if (request.getParameter(review_form) != null) {
+
 			try {
 				System.out.println("\t1. get epoch! this_epoch = "+h.getAttribute(epoch));
 				long this_epoch = (long) h.getAttribute(epoch);
@@ -118,7 +110,6 @@ public class Orders extends HttpServlet {
 				System.out.println("\t5. get book id!");
 				String book_id = request.getParameter(bookID);
 				
-				
 				// add review 
 				System.out.println("About to add review!");
 				model.addReview(customer, this_title, this_body, rank, book_id);
@@ -127,6 +118,10 @@ public class Orders extends HttpServlet {
 				
 				String html = loadIndividualOrder(model, customer, this_epoch);
 				request.setAttribute(BOOKS_IN_ORDER, html);
+				
+				
+				h.setAttribute("customer", customer);
+				System.out.println("\n\nCustomer ID: "+customer.getId() + "\n\n");
 				
 				request.getRequestDispatcher("html/ProdOrderView.jspx").forward(request, response);
 				
@@ -140,11 +135,15 @@ public class Orders extends HttpServlet {
 			try {
 			    Long this_epoch = Long.parseLong(request.getParameter(epoch));
 				h.setAttribute(epoch, this_epoch);
-				
+
 				String html = loadIndividualOrder(model, customer, this_epoch);
-				
 				request.setAttribute(BOOKS_IN_ORDER, html);
 			
+				
+				h.setAttribute("customer", customer);
+				System.out.println("\n\nCustomer ID: "+customer.getId() + "\n\n");
+				
+				
 				request.getRequestDispatcher("html/ProdOrderView.jspx").forward(request, response);
 			} catch (Exception e) {
 				System.out.println("There was a problem going back form orders to a specific order page! " +e.getMessage());
@@ -155,14 +154,9 @@ public class Orders extends HttpServlet {
 			try {
 				String book_id = request.getParameter(bookID);
 				
-				//<<================================================
-				// TO DO
 				if (request.getParameter(viewReview) != null) {
-					System.out.println("\t\t==========> HERE! <============= ");
 					List<Review> review = model.getReview(customer, book_id);
-					System.out.println("\t\t==========> HERE! <=============");
 					Review r = review.get(0);
-					System.out.println("\t\t==========> HERE! <=============");
 					
 					
 					int rating_number = r.getRating();
@@ -182,7 +176,6 @@ public class Orders extends HttpServlet {
 					request.setAttribute(title, r.getTitle());
 					request.setAttribute(body, r.getBody()); 
 				}
-				//================================================>>
 				
 				String title = request.getParameter(TITLE);
 				String author = request.getParameter(AUTHOR);
@@ -190,6 +183,12 @@ public class Orders extends HttpServlet {
 				request.setAttribute(TITLE, title);
 				request.setAttribute(AUTHOR, author);
 				request.setAttribute("redirectTo", "Orders");
+
+				
+				h.setAttribute("customer", customer);
+				System.out.println("\n\nCustomer ID: "+customer.getId() + "\n\n");
+				
+				
 				request.getRequestDispatcher("html/Review.jspx").forward(request, response);
 			
 			} catch (Exception e) {
@@ -215,16 +214,20 @@ public class Orders extends HttpServlet {
 		doGet(request, response);
 	}
 	
+	/**
+	 * This method loads all the orders for this customer
+	 * 
+	 * @param customer
+	 * @param model
+	 * @return
+	 */
 	private String loadPage(Customer customer, MainPageModel model) {
 		
 		PurchaseOrder[] orders = null;
 		String html = "";
 		
 		try {
-			//<<==============================================
-			// TO DO - check functionality
 			orders = customer.getPurchaseOrders();
-			//==============================================>>
 			
 			System.out.println("orders: "+orders.length);
 			Iterator iterator;
@@ -264,16 +267,22 @@ public class Orders extends HttpServlet {
 		return html;
 	}
 	
+	/**
+	 * this method loads all the books associated with the specified order
+	 * 
+	 * @param model
+	 * @param customer
+	 * @param epoch
+	 * @return
+	 * @throws Exception
+	 */
 	private String loadIndividualOrder(MainPageModel model, Customer customer, Long epoch) throws Exception {
 		String html = "";
 		PurchaseOrder order = null;
 		Iterator iterator = null;
 		
-		// <<================================================
-		// TO DO
 		order = customer.getPurchaseOrderByCreatedAtEpoch(epoch);
 		System.out.println("order = "+order);
-		//================================================>>
 		
 		Map<Book, Integer> books = order.getBooks();
 		iterator = books.entrySet().iterator(); 
@@ -286,16 +295,15 @@ public class Orders extends HttpServlet {
 			String book_id = b.getId().toString();
 			
 			String review = ""; 
-			// <<================================================
-			// TO DO
+
 			if (model.didCustomerAddReview(customer, book_id)) 
-			//================================================>>
+
 				review += "<p style=\"margin-left:0px;\"><button id=\""+viewReview+"\" name=\""+viewReview+"\" class=\"button "+viewReview+"\" type=\""+viewReview+"\">view your review</button></p>\n";
 			else
 				review += "<p style=\"margin-left:0px;\"><button id=\""+addReview+"\" name=\""+addReview+"\" class=\"button "+addReview+"\"  type=\""+addReview+"\">write a review</button></p>\n";
 			
 			html += 
-					"		<FORM action=\"/BookStore/Orders\" method=\"Get\">\n"
+					"		<FORM action=\"/BookStore/Orders\" method=\"Post\">\n"
 					+ "			<div class=\"row\">\n"
 					+ "				<div class=\"column_1_3\">\n"
 					+ "					<img class=\"prod_img\" style=\"float:center;height:100%;\" src=\"/BookStore/res/book_images/covers/"+b.getCover()+"\" alt=\"search\" /> \n"

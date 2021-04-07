@@ -1,6 +1,5 @@
 package ctrl;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,20 +27,8 @@ import model.MainPageModel;
 @WebServlet({"/MainPage","/MainPage/*"})
 public class MainPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String CUSTOMER = "customer";
-	private static final String VISITOR = "visitor";
     
     private static final String MODEL = "model";
-    
-    private static final String AUTHOR = "AUTHOR";
-    private static final String TITLE = "TITLE";
-    private static final String YEAR = "YEAR";
-    private static final String ISBN = "ISBN";
-    private static final String CATEGORY = "CATEGORY";
-    private static final String RATING = "RATING";
-    private static final String PRICE = "PRICE";
-    private static final String ID = "ID";
-    private static final String COVER = "COVER";
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -73,8 +60,6 @@ public class MainPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
-		
-		getServletContext().setAttribute("user", CUSTOMER);
 	
 		loadPage(request, model);
 		request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);

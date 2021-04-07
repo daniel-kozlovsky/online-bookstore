@@ -69,8 +69,6 @@ public class ReviewPage extends HttpServlet {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
-		getServletContext().setAttribute("user", VISITOR);
-		
 		HttpSession h = request.getSession();
 		
 		if (request.getParameter(bookID)!=null) {
@@ -89,6 +87,8 @@ public class ReviewPage extends HttpServlet {
 				request.setAttribute(NUM_REVIEWS_FOUND, "0");
 				System.out.println("An error occured." + e.getMessage());
 			}
+
+		// used reload the review page (send user back from where it came from)
 		} else if (h.getAttribute(bookID) != null) {
 			try {
 				
@@ -103,7 +103,8 @@ public class ReviewPage extends HttpServlet {
 				request.setAttribute(NUM_REVIEWS_FOUND, "0");
 				System.out.println("An error occured." + e.getMessage());
 			}
-			
+		
+		// ERROR - should nott be here
 		} else  {
 			System.out.println("ID = "+request.getParameter(bookID));
 			System.out.println("An error occured. Could have come here only if pressed 'load more reviews'");
@@ -175,6 +176,14 @@ public class ReviewPage extends HttpServlet {
 		return html;
 	}
 	
+	/**
+	 * Sets the attributes related to review of a book
+	 * 
+	 * @param request
+	 * @param model
+	 * @param id
+	 * @throws Exception
+	 */
 	private void setAttributes (HttpServletRequest request, MainPageModel model, String id) throws Exception{
 		Book b = model.getBookByID(id);
 		

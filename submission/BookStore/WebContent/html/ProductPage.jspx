@@ -20,13 +20,13 @@
 <body>
 	<!-- Navigation bar -->
 	<div class="nav_bar">
-		<a href="MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
-		<a class="padding hovering" href="MainPage">Home</a>
+		<a href="${pageContext.request.contextPath}/MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding hovering" href="${pageContext.request.contextPath}/MainPage">Home</a>
 		<c:choose>
 			<!-- customer -->
-		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding hovering" href="Orders">Orders</a>
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
+		  	<c:when test="${not empty sessionScope['customer']}">
+				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
 		  	</c:when>
 
 		  	<!-- visitor -->
@@ -38,7 +38,7 @@
 	  	</c:choose>
 		
 		<!-- shopping cart -->
-	  	<a href="${pageContext.request.contextPath}/html/Cart.jspx" style="float:right;" >
+	  	<a href="${pageContext.request.contextPath}/ShoppingCart" style="float:right;" >
 	  		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/shoppingCart.png" alt="checkout" />
   		</a>
 	  	
@@ -79,13 +79,18 @@
 					<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
 				</div>
 				<div class="row">
-					<div class="column_1_3">
-						<p style="margin-left:0px;"><button class="button addProduct" name="addProduct" id="addProduct" type="addProduct">add product</button></p>
-					</div>
+					<FORM action="ProductPage" method="Get">
+						<div class="column_1_3">
+							<input id="bookID" name="bookID" value="${requestScope['bookID']}" type="hidden"></input>
+							<p style="margin-left:0px;"><button class="button addProduct" name="addProduct" id="addProduct" type="addProduct" value="true">add product</button></p>
+							<label style="color:red">${requestScope['success']}</label>
+						</div>
+					</FORM>
 					<FORM action="ProductPage" method="Get">
 						<div class="column_1_3">
 							<input id="bookID" name="bookID" value="${requestScope['bookID']}" type="hidden"></input>
 							<p style="margin-left:0px;"><button class="button addReview" id="addReview" name="addReview" type="addReview" value="true">add review</button></p>
+							<label style="color:red">${requestScope['review_success']}</label>
 						</div>
 					</FORM>
 				</div>

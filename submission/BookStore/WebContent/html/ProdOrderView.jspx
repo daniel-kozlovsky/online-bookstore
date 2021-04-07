@@ -20,13 +20,13 @@
 <body>
 	<!-- Navigation bar -->
 	<div class="nav_bar">
-		<a href="MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
-		<a class="padding hovering" href="MainPage">Home</a>
+		<a href="${pageContext.request.contextPath}/MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding hovering" href="${pageContext.request.contextPath}/MainPage">Home</a>
 		<c:choose>
 			<!-- customer -->
-		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding active" href="${pageContext.request.contextPath}/html/Orders.jspx">Orders</a>
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
+		  	<c:when test="${not empty sessionScope['customer']}">
+				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
 		  	</c:when>
 
 		  	<!-- visitor -->
@@ -38,7 +38,7 @@
 	  	</c:choose>
 		
 		<!-- shopping cart -->
-	  	<a href="${pageContext.request.contextPath}/html/Cart.jspx" style="float:right;" >
+	  	<a href="${pageContext.request.contextPath}/ShoppingCart" style="float:right;" >
 	  		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/shoppingCart.png" alt="checkout" />
   		</a>
 	  	
@@ -46,10 +46,9 @@
 		<div class="search_bar">
 	  		<form action="${pageContext.request.contextPath}/Search" method="Post">
 	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
-	    		
-	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">
-	    		
+	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">	    		
 	    		</button> 
+
 	    	</form>
 	  	</div>
 	</div>
@@ -60,79 +59,6 @@
 		
 		${requestScope['BOOKS_IN_ORDER']}
 		
-		<!-- <FORM action="${pageContext.request.contextPath}/Orders" method="Get">
-			<div class="row">
-				<div class="column_1_3">
-					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/1984__George_Orwell_1230004544609.jpg" alt="search" /> 
-				</div>
-				<div class="column_1_3">
-					<div class="row">
-						<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
-					</div>
-					<div class="row" >
-						ISBN: fasdfadf <BR />
-						Quantity: 3
-					</div>
-					<div class="row">
-						<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
-					</div>
-					<div class="row">
-						<input type="hidden" id="TITLE" name="TITLE" value="This is a title"></input>
-						<input type="hidden" id="AUTHOR" name="AUTHOR" value="author"></input>
-						<input type="hidden" id="bookID" name="bookID" value="988eed34-bad0-3635-a0ae-9e4f72a54306"></input>
-						<p style="margin-left:0px;"><button id="addReview" name="addReview" class="button addReview" type="addReview" value="988eed34-bad0-3635-a0ae-9e4f72a54306">write a review</button></p>
-					</div>
-				</div>
-			</div>
-		</FORM>
-		
-		<FORM action="${pageContext.request.contextPath}/Orders" method="Get">
-			<div class="row">
-				<div class="column_1_3">
-					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
-				</div>
-				<div class="column_2_3">
-					<div class="row">
-						<h2>${requestScope['TITLE']}, ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
-					</div>
-					<div class="row" >
-						ISBN: ${requestScope['ISBN']}
-					</div>
-					<div class="row">
-						<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
-					</div>
-					<div class="row">
-						<input type="hidden" id="TITLE" name="TITLE" value="This is a title"></input>
-						<input type="hidden" id="AUTHOR" name="AUTHOR" value="author"></input>
-						<input type="hidden" id="bookID" name="bookID" value="988eed34-bad0-3635-a0ae-9e4f72a54306"></input>
-						<input type="hidden" id="reviewID" name="reviewID" value="f86e4678-f6af-30d6-82ef-e9b4792e8669"></input>
-						<p style="margin-left:0px;"><button id="viewReview" name="viewReview" class="button viewReview" type="viewReview">view your review</button></p>
-					</div>
-				</div>
-			</div>
-		</FORM>
-		
-		<FORM action="${pageContext.request.contextPath}/Orders" method="Post">
-			<div class="row">
-				<div class="column_1_3">
-					<img class="prod_img" style="float:center;height:100%;" src="${pageContext.request.contextPath}/res/book_images/covers/${requestScope['COVER']}" alt="search" /> 
-				</div>
-				<div class="column_2_3">
-					<div class="row">
-						<h2>${requestScope['TITLE']} , ${requestScope['YEAR']}</h2> <h3>by ${requestScope['AUTHOR']}</h3>
-					</div>
-					<div class="row" >
-						ISBN: ${requestScope['ISBN']}
-					</div>
-					<div class="row">
-						<p style="color:red;font-weight:bold;margin-left:0px;">$${requestScope['PRICE']}</p>
-					</div>
-					<div class="row">
-						<p style="margin-left:0px;"><button class="button addReview" type="addReview">write a review</button></p>
-					</div>
-				</div>
-			</div>
-		</FORM>	 -->
 	</div>
 	
 	<!-- footer -->

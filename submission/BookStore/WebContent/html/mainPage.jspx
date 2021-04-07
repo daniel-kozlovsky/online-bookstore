@@ -44,9 +44,9 @@
 		<a class="padding active" href="#home">Home</a>
 		<c:choose>
 			<!-- customer -->
-		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding hovering" href="Orders">Orders</a>
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
+		  	<c:when test="${sessionScope['customer'] != null}">
+				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
 		  	</c:when>
 
 		  	<!-- visitor -->

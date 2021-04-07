@@ -23,7 +23,6 @@ import model.MainPageModel;
 public class UserPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String MODEL = "model";
-	private static final String user = "user";
 	
 	private static final String NAME = "name";
 	private static final String USERNAME = "username";
@@ -76,16 +75,18 @@ public class UserPage extends HttpServlet {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
-		//Customer customer = (Customer) h.getAttribute(user);
+		Customer customer = (Customer) h.getAttribute("customer");
 		
-		String this_username="SPhillips4588";
-		String passwd = "Scottpassword";
-		Customer customer = model.getUser(this_username, passwd);
-
+		System.out.println("\n\n\t customer " + customer+"\n\n");
+		
+		String this_username = customer.getUserName();
+		String passwd = customer.getPassword();
 		String this_name = customer.getGivenName();
 		String this_last_name =  customer.getSurName();
 		String this_email = customer.getEmail();
 		Address address =  customer.getAddress();
+		
+		System.out.println("\t"+this_username + "\n\t"+passwd+"\n\t"+this_name+"\n\t"+this_last_name+"\n\t"+this_email);
 		
 		if (request.getParameter(update_information) != null) {
 			
@@ -109,7 +110,8 @@ public class UserPage extends HttpServlet {
 				model.updateUserInfo(username, password, customer, name, surname, email, 
 									 street, street_num, city, province, country, postal_code);
 				
-				customer = model.getUser(this_username, passwd);
+				customer = model.getUser(username, passwd); // will update the current instance in the session
+				h.setAttribute("customer", customer);
 				
 				String msg = "Personal information was successfully updated! You can continue browsing the store";
 				request.setAttribute(USERNAME, customer.getUserName());

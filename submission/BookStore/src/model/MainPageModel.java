@@ -108,14 +108,6 @@ public class MainPageModel {
 		else
 			num = Integer.MAX_VALUE;
 		
-		try {
-			this.getBookByID("941cc27e-d5e7-3ab6-bb3d-c7891b5b50f7");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("ERROR: Didn't find the book!");
-			e.printStackTrace();
-		}
-		
 		List<Book> b = book.newQueryRequest()
 			.includeAllAttributesInResultFromSchema()
 			.queryAttribute()
@@ -147,8 +139,6 @@ public class MainPageModel {
 	public List<Book>  prepSearchResult (String input) {
 		
 		int maxNum = book.getNumberBooks();
-		
-		
 		
 		List<Book> b= book.newQueryRequest()
 						.includeAllAttributesInResultFromSchema()
@@ -216,39 +206,6 @@ public class MainPageModel {
 	}
 	
 	/**
-	 * Identifies the customer with username and password, then finds all the order
-	 * transactions and books related to that customer
-	 * 
-	 * @param customer
-	 * @return
-	 * @throws Exception
-	 */
-//	public PurchaseOrder[] getCustomerOrders(Customer customer) throws Exception{
-//		List<PurchaseOrder> p = null;
-//		Map<Long, PurchaseOrder> m;
-//		PurchaseOrder[] p1;
-//		try {
-//			List<Customer> c = user.newQueryRequest()
-//					.includeAllAttributesInResultFromSchema()
-//					.queryPurchaseOrder()
-//					.queryAttribute()
-//					.wherePurchaseOrderCustomer()
-//					.isCustomer(customer)
-//					.withResultLimit(Integer.MAX_VALUE)
-//					.executeQuery()
-//					.executeCompilation()
-//					.compileCustomers()
-//					;
-//			p1 = c.get(0).getPurchaseOrders();
-//			
-//			System.out.println("p.size() = "+p.size());
-//		} catch (Exception e) {
-//			throw new Exception("Couldn't find username and password in the database!");
-//		}
-//		return p1;
-//	}
-	
-	/**
 	 * Adds a review of the customer
 	 * 
 	 * @param customer
@@ -267,19 +224,52 @@ public class MainPageModel {
 			throw new Exception("ERROR: book was not found in the database! "+ e.getMessage());
 		}
 		
-		try {
+		List<Customer> c = user.newQueryRequest()
+						.includeAllAttributesInResultFromSchema()
+						.queryAttribute()
+						.whereCustomer()
+						.isCustomer((Customer) customer)
+						.executeQuery()
+						.executeCompilation()
+						.compileCustomers();
 		
-			review.newUpdateRequest()
-				.requestNewReviewInsertion(customer, b)
-				.insertReviewWithTitle(title)
-				.insertReviewWithBody(body)
-				.insertReviewWithRating(rate)
-				.executeReviewInsertion();
+		System.out.println("\n\nc.length = "+c.size()+"\n");
+		
+		// need to update information
+		if (c.size() == 1 && this.didCustomerAddReview(c.get(0), book_id)) {
+			try {
+				
+				List<Review> this_review = getReview(c.get(0),  book_id);
+				
+				System.out.println("\n\n this review = "+this_review.size()+"\n");
+				
+				review.newUpdateRequest()
+					.requestUpdateReview(c.get(0), this_review.get(0))
+					.updateReviewBody(body)
+					.updateReviewRating(rate)
+					.updateReviewTitle(title)
+					.executeUpdate();
+
+				System.out.println("\n\n Done updating review! \n");
+				
+			} catch (Exception e) {
+				throw new Exception("There was an error adding the review: " + e.getMessage() + " " + e.getCause());
+			}
+		}
+		// need to insert information
+		else {
+			try {
 			
-			
-			
-		} catch (Exception e) {
-			throw new Exception("There was an error adding the review: " + e.getMessage() + " " + e.getCause());
+				review.newUpdateRequest()
+					.requestNewReviewInsertion((SiteUser)customer, b)
+					.insertReviewWithTitle(title)
+					.insertReviewWithBody(body)
+					.insertReviewWithRating(rate)
+					.executeReviewInsertion();
+				
+			} catch (Exception e) {
+				throw new Exception("There was an error adding the review: " + e.getMessage() + " " + e.getCause());
+			}
 		}
 	}
 	
@@ -323,9 +313,8 @@ public class MainPageModel {
 	 */
 	public List<Review> getReview (Customer customer, String bookID) throws Exception {
 			
-//		Book b = this.getBookByID(bookID);
-		Book b = this.getBookByID("025a99fd-ee0d-31f0-bff7-fd50e1289bfb");
-		Customer tmp = user.loginCustomer("PVilleda2532", "Perrypassword");
+		Book b = this.getBookByID(bookID);
+		
 		try {
 			List<Customer> s = review.newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
@@ -334,7 +323,7 @@ public class MainPageModel {
 				.isBook(b)
 				.queryAttribute()
 				.whereReviewCustomer()
-				.isCustomer(tmp)
+				.isCustomer(customer)
 				.withResultLimit(Integer.MAX_VALUE)
 				.executeQuery()
 				.executeCompilation()

@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import data.beans.Book;
+import data.beans.Cart;
 import data.beans.Customer;
+import data.beans.Visitor;
 import data.beans.Review;
 import data.beans.Visitor;
 import model.MainPageModel;
@@ -24,8 +26,6 @@ import model.MainPageModel;
 @WebServlet("/ProductPage")
 public class ProductPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String CUSTOMER = "customer";
-	private static final String VISITOR = "visitor";
 	
 	private static final String MODEL = "model";
 
@@ -84,18 +84,72 @@ public class ProductPage extends HttpServlet {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
-		getServletContext().setAttribute("user", VISITOR);
 		HttpSession h = request.getSession();
 		
-//		Customer customer = (Customer) h.getAttribute(user);
-		
-		String username="PVilleda2532";
-		String passwd = "Perrypassword";
-		Customer customer = model.getUser(username, passwd);
-		
+		//----------------------------------------------------------------
+		//---------------------- Adds product to cart  -------------------
+		if (request.getParameter("addProduct") != null ) {
+			String book_id = request.getParameter(bookID);
+			request.setAttribute(bookID, book_id);
+			
+			System.out.println("\tADDING A BOOK TO CART:\tbook_id = " + book_id);
+			
+			// ------ customer ------
+			if (h.getAttribute("customer") != null) {
+				
+				try {				
+					Customer customer = (Customer) h.getAttribute("customer");
+					Cart cart = customer.getCart();
+					
+					System.out.println("\t num of books in cart BEFORE adding product: "+cart.getBooks().size());
+					
+					//================================ TO DO ============================
+					//============== Check if user keeps the pointer to that updated cart
+					if (!cart.isBookInCart(model.getBookByID(book_id)))
+						cart.addBookAmount(model.getBookByID(book_id), 1);
+					
+					System.out.println("\t num of books in cart AFTER adding product: "+cart.getBooks().size());
+					System.out.println("\t num of books in CUSTOMER's cart AFTER adding product: "+customer.getCart().getBooks().size());
+					
+					h.setAttribute("customer", customer);
+					
+					request.setAttribute("success", "Product added successfully");
+				} catch (Exception e) {
+					System.out.println("ERROR - Failed to add book to customer cart! "+e.getMessage());
+				}
+			
+			// ------ visitor ------
+			} else {
+				try {
+					Visitor visitor;
+					if (h.getAttribute("visitor") == null) 
+						 visitor = model.getVisitor(request);
+					else
+						visitor = (Visitor) h.getAttribute("visitor");
+					
+					Cart cart = visitor.getCart();
+
+					if (!cart.isBookInCart(model.getBookByID(book_id)))
+						cart.addBookAmount(model.getBookByID(book_id), 1);
+					
+					h.setAttribute("visitor", visitor);
+				
+					request.setAttribute("success", "Product added successfully");
+				} catch (Exception e) {
+					System.out.println("ERROR - Failed to add book to visitor's cart! "+e.getMessage());
+				}
+			}
+			
+			try {
+				completeProductLoad( request,  model,  book_id);
+				request.getRequestDispatcher("html/ProductPage.jspx").forward(request, response);
+			} catch (Exception e) { 
+				System.out.println("Problem loading the page after addig to cart! " + e.getMessage()); 
+			}
+			
 		//----------------------------------------------------------------
 		//---------------- redirect user to add a review  ----------------
-		if (request.getParameter("addReview") != null) {
+		} else if (request.getParameter("addReview") != null) {
 			System.out.println("==========> HERE 1 <==========");
 			String book_id;
 			
@@ -105,7 +159,9 @@ public class ProductPage extends HttpServlet {
 				book_id = (String) h.getAttribute(bookID);
 			
 			// if a user is loged in
-			if (h.getAttribute("CUSTOMER") != null) {
+			if (h.getAttribute("customer") != null) {
+				
+				Customer customer = (Customer) h.getAttribute("customer");
 				
 				try {
 					// give customer option to update his review or check it out
@@ -152,16 +208,15 @@ public class ProductPage extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 		
 		//----------------------------------------------------------------
 		//------------------ initial loading of the page  ----------------
 		else if (request.getParameter(bookID) != null) {
 			System.out.println("==========> HERE 3 <==========");
+			String book_id =  request.getParameter(bookID);
+			h.setAttribute(bookID, book_id);
 			try {
-				
-				String book_id =  request.getParameter(bookID);
 				
 				//----------------------------------------------------------------
 				//---------------- user just submitted a review  -----------------
@@ -178,32 +233,39 @@ public class ProductPage extends HttpServlet {
 					System.out.println("\t4. get body!");
 					String this_body = request.getParameter(body);
 					
-					
 					// update database with this user
-					if (h.getAttribute("CUSTOMER") != null) {
+					if (h.getAttribute("customer") != null) {
+
+						Customer customer = (Customer) h.getAttribute("customer");
 						
 						// add review 
-						System.out.println("About to add review!");
+						System.out.println("About to add Customer review!");
 						model.addReview(customer, this_title, this_body, rank, book_id);
 					} 
 					// update database anonymously
 					else {
 						// add review  anonymously
 						Visitor visitor = model.getVisitor(request);
-						System.out.println("About to add review!");
+						System.out.println("About to add Visitor review!");
 						model.addReview(visitor, this_title, this_body, rank, book_id);
 					}
 					
+					request.setAttribute("review_success", "review was added successfully");
 				}
 				
-				h.setAttribute(bookID, book_id);
 				request.setAttribute(bookID, book_id);
 				
-				String html = getTop10Reviews(request, model, book_id);
-				setAttributes (request,  model,  book_id);
+				completeProductLoad( request,  model,  book_id);
 				
-				request.setAttribute(VIWE_SOME_REVIEWS, html);
 			}catch (Exception e) {
+				
+				request.setAttribute(bookID, book_id);
+				try {
+					completeProductLoad( request,  model,  book_id);
+					
+				} catch (Exception e1) {
+					System.out.println("An error occured." + e1.getMessage());
+				}
 				System.out.println("An error occured." + e.getMessage());
 			}
 			
@@ -217,11 +279,8 @@ public class ProductPage extends HttpServlet {
 				String id =  (String) h.getAttribute(bookID);
 				request.setAttribute(bookID, id);
 				h.setAttribute(bookID, id);
-				String html = getTop10Reviews(request, model, id);
 				
-				setAttributes (request,  model,  id);
-				
-				request.setAttribute(VIWE_SOME_REVIEWS, html);
+				completeProductLoad( request,  model,  id);
 			
 			} catch (Exception e) {
 				System.out.println("An error occured." + e.getMessage());
@@ -287,16 +346,14 @@ public class ProductPage extends HttpServlet {
 			
 			String tmpLine = "";
 			
-			double rate = (double)((int)Math.ceil(r[i].getRating() * 100))/100;
+			double rate = (double)((int)(Math.ceil(r[i].getRating() * 100)))/100;
 			
 			if (r[i].getUserType().equals("CUSTOMER")) {
 				Customer customer = model.getUserByUsername(r[i].getSiteUser());
 				
-//				Customer customer = model.getUserByUsername(r[i].getName());
-				
-				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + r[i].getRating() + " / 5 </p>";
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + rate+ " / 5 </p>";
 			} else {
-				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> <i> site visitor </i> " + r[i].getRating() + " / 5 </p>";
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> <i> site visitor </i> " + rate + " / 5 </p>";
 			}
 				
 			html +=   "				<div class=\"review_row\" style=\"margin-top:50px;\">\n"
@@ -311,6 +368,14 @@ public class ProductPage extends HttpServlet {
 		}
 
 		return html;
+	}
+	
+	private void completeProductLoad(HttpServletRequest request, MainPageModel model, String id) throws Exception {
+		String html = getTop10Reviews(request, model, id);
+		
+		setAttributes (request,  model,  id);
+		
+		request.setAttribute(VIWE_SOME_REVIEWS, html);
 	}
 
 }
