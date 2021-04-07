@@ -91,19 +91,30 @@ public class PurchaseOrderPage extends HttpServlet {
 //	    		  //
 //	    	  }
 //	      }
-		
-	      if(isAjaxRequest(request)) {
+  	  if(request.getAttribute("error")!=null) {
+		  String custJson=getCustomerJson();
+	      response.setContentType("application/json");
+	      PrintWriter out = response.getWriter();
+	      out.flush();
+	      out.printf("{\"error\":\""+request.getAttribute("error")+"\","+custJson.substring(1,custJson.length()));
+	      out.close();
+	  }else  if(isAjaxRequest(request)) {
 //	    	  Customer customer=getCustomer();
-	    	  System.out.println("ajax request recevied");
-		      response.setContentType("application/json");
-		      PrintWriter out = response.getWriter();
-		      out.flush();
-		      out.printf(getCustomerJson());
+	    	  
+
+		    	  System.out.println("ajax request recevied");
+			      response.setContentType("application/json");
+			      PrintWriter out = response.getWriter();
+			      out.flush();
+			      out.printf(getCustomerJson()); 
+			      out.close();
+	    	  
+
 //		      if(isCheckoutCartEmpty()) {
 		    	  
 //		    	  out.printf(statusJson(emptyCartStatus));
 //		      }
-		      out.close();
+		     
 	      }else {
 	    	  request.getRequestDispatcher("/html/PurchaseOrder.html").forward(request, response);
 //		      if(isCheckoutCartEmpty()) {		    	  
@@ -132,16 +143,14 @@ public class PurchaseOrderPage extends HttpServlet {
 			}
 				
 		}else {
+			request.setAttribute("error", "error from respons obj");
+//			doGet(request,response);
+//			request.getRequestDispatcher("/html/PurchaseOrder.html").forward(request, response);
 			PrintWriter out = response.getWriter();
-			 out.flush();
-			 out.println("<script type=\"text/javascript\">");
-			 out.println("alert('password didn't matched ');");
-			 out.println("</script>");
-		      response.setContentType("application/json");
-		      PrintWriter out = response.getWriter();
-		      out.flush();
-		      out.printf("nani");
-		      out.close();
+			out.flush();
+			   out.println("<meta http-equiv='refresh' content='3;URL=/BookStore/PurchaseOrder'>");//redirects after 3 seconds
+			   out.println("<p style='color:red;'>User or password incorrect!</p>");
+			   out.close();
 		}
 		
 	}
@@ -155,7 +164,7 @@ public class PurchaseOrderPage extends HttpServlet {
 	}
 	
 	private boolean isValidPurchaseOrder() {
-		return true;
+		return false;
 	}
 	
 	private String statusJson(String status) {

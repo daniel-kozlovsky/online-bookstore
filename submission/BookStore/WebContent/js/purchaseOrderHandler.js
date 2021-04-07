@@ -60,7 +60,10 @@ const pageLoad =(address)=>{
     request.onreadystatechange = ()=>{
             if ((request.readyState == 4) && (request.status == 200)){            
                  let data=JSON.parse(request.responseText);
-                 console.log(data.creditCard); 
+
+                 if(data.error){
+                 	alert(data.error)
+                 }
                   if(data.status){
             	  	if(data.status===''){
             	  	history.back();
