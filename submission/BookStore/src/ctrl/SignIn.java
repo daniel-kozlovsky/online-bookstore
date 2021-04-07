@@ -42,7 +42,7 @@ public class SignIn extends HttpServlet {
 		System.out.println("\n\n\t\tLogin out\n\n");
 		UAuthModel.logUserOut(request.getSession());
 		
-		System.out.println("\t\tcameFromPage="+request.getParameter("cameFromPage"));
+		HttpSession session = request.getSession();
 
 		response.sendRedirect(MAIN_PAGE_TARGET); // redirects to main page
 	}

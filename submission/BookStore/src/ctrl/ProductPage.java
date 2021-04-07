@@ -127,6 +127,7 @@ public class ProductPage extends HttpServlet {
 					else
 						visitor = (Visitor) h.getAttribute("visitor");
 					
+					
 					Cart cart = visitor.getCart();
 
 					if (!cart.isBookInCart(model.getBookByID(book_id)))
@@ -245,9 +246,15 @@ public class ProductPage extends HttpServlet {
 					// update database anonymously
 					else {
 						// add review  anonymously
-						Visitor visitor = model.getVisitor(request);
+						
+						Visitor visitor;
+						if (h.getAttribute("visitor") == null) 
+							 visitor = model.getVisitor(request);
+						else
+							visitor = (Visitor) h.getAttribute("visitor");
+						
 						System.out.println("About to add Visitor review!");
-						model.addReview(visitor, this_title, this_body, rank, book_id);
+						model.addAnonymousReview(visitor, this_title, this_body, rank, book_id);
 					}
 					
 					request.setAttribute("review_success", "review was added successfully");
@@ -310,16 +317,17 @@ public class ProductPage extends HttpServlet {
 	private void setAttributes (HttpServletRequest request, MainPageModel model, String id) throws Exception{
 		Book b = model.getBookByID(id);
 		
+		double this_rate = (double)((int)(Math.ceil(b.getRating() * 100)))/100;
+		
 		request.setAttribute(TITLE, b.getTitle());
 		request.setAttribute(AUTHOR, b.getAuthor());
 		System.out.println("year of "+b.getId() + " is " + b.getPublishYear());
 		request.setAttribute(YEAR, b.getPublishYear());
 		request.setAttribute(COVER, b.getCover());
 		request.setAttribute(PRICE, b.getPrice());
-		request.setAttribute(RATING, b.getRating());
+		request.setAttribute(RATING, this_rate);
 		request.setAttribute(ISBN, b.getISBN());
-		request.setAttribute(CATEGORY, b.getCategory());
-		
+		request.setAttribute(CATEGORY, b.getCategory());	
 	}
 	
 	private String getTop10Reviews(HttpServletRequest request, MainPageModel model, String id) throws Exception {
@@ -340,20 +348,20 @@ public class ProductPage extends HttpServlet {
 		System.out.println("number of reviews= " + r.length);
 		
 		int numPages = (int) Math.ceil( (double) r.length / 10);
-		
+		double this_rate;
 		
 		for (int i = 0; i < r.length; i ++) {
 			
 			String tmpLine = "";
 			
-			double rate = (double)((int)(Math.ceil(r[i].getRating() * 100)))/100;
+			this_rate = (double)((int)(Math.ceil(r[i].getRating() * 100)))/100;
 			
 			if (r[i].getUserType().equals("CUSTOMER")) {
 				Customer customer = model.getUserByUsername(r[i].getSiteUser());
 				
-				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + rate+ " / 5 </p>";
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + this_rate+ " / 5 </p>";
 			} else {
-				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> <i> site visitor </i> " + rate + " / 5 </p>";
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> <i> site visitor </i> " + this_rate + " / 5 </p>";
 			}
 				
 			html +=   "				<div class=\"review_row\" style=\"margin-top:50px;\">\n"
@@ -363,10 +371,8 @@ public class ProductPage extends HttpServlet {
 					+ "						"+r[i].getBody()
 					+ "					</p>\n"
 					+ "				</div>\n";
-					
-			
 		}
-
+		
 		return html;
 	}
 	

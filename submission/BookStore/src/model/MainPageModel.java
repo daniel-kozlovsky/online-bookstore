@@ -215,6 +215,51 @@ public class MainPageModel {
 	 * @param book_id
 	 * @throws Exception
 	 */
+	public void addAnonymousReview (SiteUser vis, String title, String body, int rate, String book_id) throws Exception{
+		Book b;
+		
+		try {
+			b = getBookByID(book_id);
+		} catch (Exception e) {
+			throw new Exception("ERROR: book was not found in the database! "+ e.getMessage());
+		}
+		
+//		List<Visitor> v = visitor.newQueryRequest()
+//				.includeAllAttributesInResultFromSchema()
+//				.queryAttribute()
+//				.whereVisitor()
+//				.isVisitor((Visitor) vis)
+//				.executeQuery()
+//				.executeCompilation()
+//				.compileVisitors();
+////		
+//		System.out.println("\n\nc.length = "+v.size()+"\n");
+		
+		// need to insert information
+		try {
+			review.newUpdateRequest()
+				.requestNewReviewInsertion(vis, b)
+				.insertReviewWithTitle(title)
+				.insertReviewWithBody(body)
+				.insertReviewWithRating(rate)
+				.executeReviewInsertion();
+			
+		} catch (Exception e) {
+			throw new Exception("There was an error adding the review: " + e.getMessage() + " " + e.getCause());
+		}
+		
+	}
+	
+	/**
+	 * Adds a review of the customer
+	 * 
+	 * @param customer
+	 * @param title
+	 * @param body
+	 * @param rate
+	 * @param book_id
+	 * @throws Exception
+	 */
 	public void addReview (SiteUser customer, String title, String body, int rate, String book_id) throws Exception{
 		Book b;
 		
