@@ -290,9 +290,9 @@ public class ProductPage extends HttpServlet {
 			double rate = (double)((int)Math.ceil(r[i].getRating() * 100))/100;
 			
 			if (r[i].getUserType().equals("CUSTOMER")) {
+				Customer customer = model.getUserByUsername(r[i].getSiteUser());
 				
-//				Customer customer = (Customer) r[i].getSiteUser();
-				Customer customer = model.getUserByUsername(r[i].getName());
+//				Customer customer = model.getUserByUsername(r[i].getName());
 				
 				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + r[i].getRating() + " / 5 </p>";
 			} else {

@@ -149,7 +149,7 @@ public class ReviewPage extends HttpServlet {
 			String tmpLine = "";
 			
 			if (r[i].getUserType().equals("CUSTOMER")) {
-				Customer customer = (Customer) r[i].getSiteUser();
+				Customer customer = model.getUserByUsername(r[i].getSiteUser());
 				
 				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + r[i].getRating() + " / 5 </p>";
 			} else {

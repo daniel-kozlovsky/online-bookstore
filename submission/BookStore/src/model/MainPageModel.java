@@ -223,45 +223,30 @@ public class MainPageModel {
 	 * @return
 	 * @throws Exception
 	 */
-	public PurchaseOrder[] getCustomerOrders(Customer customer) throws Exception{
-		List<PurchaseOrder> p = null;
-		Map<Long, PurchaseOrder> m;
-		PurchaseOrder[] p1;
-		try {
-//			System.out.println("here! 1 ");
-//			System.out.println("here! 2");
-			
-			List<Customer> c = user.newQueryRequest()
-					.includeAllAttributesInResultFromSchema()
-					.queryPurchaseOrder()
-					.queryAttribute()
-					.wherePurchaseOrderCustomer()
-					.isCustomer(customer)
-					.withResultLimit(Integer.MAX_VALUE)
-					.executeQuery()
-					.executeCompilation()
-					.compileCustomers()
-					;
-			p1 = c.get(0).getPurchaseOrders();
-			
-			//p1 = s.getPurchaseOrders();
-//			System.out.println("here! 3");
-			
-//			Iterator iterator = m.entrySet().iterator(); 
+//	public PurchaseOrder[] getCustomerOrders(Customer customer) throws Exception{
+//		List<PurchaseOrder> p = null;
+//		Map<Long, PurchaseOrder> m;
+//		PurchaseOrder[] p1;
+//		try {
+//			List<Customer> c = user.newQueryRequest()
+//					.includeAllAttributesInResultFromSchema()
+//					.queryPurchaseOrder()
+//					.queryAttribute()
+//					.wherePurchaseOrderCustomer()
+//					.isCustomer(customer)
+//					.withResultLimit(Integer.MAX_VALUE)
+//					.executeQuery()
+//					.executeCompilation()
+//					.compileCustomers()
+//					;
+//			p1 = c.get(0).getPurchaseOrders();
 //			
-//			System.out.println("here! 4 iterator = "+iterator.hasNext());
-//			
-//			if (iterator.hasNext()) {
-//				Map.Entry me = (Map.Entry) iterator.next(); 
-//				p.add((PurchaseOrder) me.getValue());
-//			}
-			
-			System.out.println("p.size() = "+p.size());
-		} catch (Exception e) {
-			throw new Exception("Couldn't find username and password in the database!");
-		}
-		return p1;
-	}
+//			System.out.println("p.size() = "+p.size());
+//		} catch (Exception e) {
+//			throw new Exception("Couldn't find username and password in the database!");
+//		}
+//		return p1;
+//	}
 	
 	/**
 	 * Adds a review of the customer
@@ -370,18 +355,22 @@ public class MainPageModel {
 	 * @return
 	 * @throws Exception
 	 */
-	public Customer getUserByUsername (String username) throws Exception{
-		
-		List<Customer> c = user.newQueryRequest()
-								.includeAllAttributesInResultFromSchema()
-								.queryAttribute()
-								.whereCustomerUserName()
-								.varCharEquals(username)
-								.withResultLimit(Integer.MAX_VALUE)
-								.executeQuery()
-								.executeCompilation()
-								.compileCustomers();
-		return c.get(0);
+	public Customer getUserByUsername (SiteUser s) throws Exception{
+		try {
+			List<Customer> c =user.newQueryRequest()
+							.includeAllAttributesInResultFromSchema()
+							.queryAttribute()
+							.whereCustomer()
+							.isCustomer((Customer) s)
+							.withResultLimit(Integer.MAX_VALUE)
+							.executeQuery()
+							.executeCompilation()
+							.compileCustomers();
+
+			return c.get(0);
+		} catch (Exception e) {
+			throw new Exception("ERROR retriving customer using siteUser");
+		}
 	}
 	
 	public Customer getUser (String username, String passwd) {
