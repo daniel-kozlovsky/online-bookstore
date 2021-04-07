@@ -30,13 +30,13 @@ return	`<div><span class=\x22label\x22>Number</span>:<span class=\x22value\x22>$
 
 
 
-const purchaseOrderSubmission =(address)=>{
+const purchaseOrderSubmissionGET =(address)=>{
 	let isDefaultAddressChecked=document.getElementById('defaultAddress').checked;
 	let isDefaultCreditCardChecked=document.getElementById('defaultCreditCard').checked;
 	let isNewAddressChecked=document.getElementById('newAddress').checked;
 	let isNewCreditCardChecked=document.getElementById('newCreditCard').checked;
     let request = new XMLHttpRequest()
-    request.open("GET", address+`?defaultAddress=${isDefaultAddressChecked}&defaultCreditCard=${isDefaultCreditCardChecked}&newAddress=${isNewAddressChecked}&newCreditCard=${isNewCreditCardChecked}`, true);
+    request.open("POST", address+`?defaultAddress=${isDefaultAddressChecked}&defaultCreditCard=${isDefaultCreditCardChecked}&newAddress=${isNewAddressChecked}&newCreditCard=${isNewCreditCardChecked}`, true);
     request.onreadystatechange = ()=>{
             if ((request.readyState == 4) && (request.status == 200)){
                  let data=JSON.parse(request.responseText);
@@ -46,6 +46,10 @@ const purchaseOrderSubmission =(address)=>{
     request.send(null);
 }
 
+const validatePurchaseOrder =()=>{
+	alert('validating')
+	return true;
+}
 
 
 const pageLoad =(address)=>{

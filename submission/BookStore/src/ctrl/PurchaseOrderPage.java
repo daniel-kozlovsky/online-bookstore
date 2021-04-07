@@ -24,7 +24,7 @@ public class PurchaseOrderPage extends HttpServlet {
 	private static final String loginSignUpPage="SignIn.jspx";
 	private static final String cartPage="Cart.jspx";
 	private static final String emptyCartCheckoutPage="/html/EmptyPurchaseOrder.html";
-	
+	private static final String confirmationCheckoutPage="/html/PurchaseOrderConfirmation.html";
 	private static final String customerInfoStage="custInfoStage";
 	private static final String reviewStage="reviewStage";
 	private static final String confirmationStage="confirmationStage";
@@ -123,7 +123,27 @@ public class PurchaseOrderPage extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+//		doGet(request, response);
+		
+		
+		if(request.getParameter("submitPurchaseOrder")!=null && !request.getParameter("submitPurchaseOrder").equals("true")) {
+			if(isValidPurchaseOrder()) {
+				request.getRequestDispatcher(confirmationCheckoutPage).forward(request, response);	
+			}
+				
+		}else {
+			PrintWriter out = response.getWriter();
+			 out.flush();
+			 out.println("<script type=\"text/javascript\">");
+			 out.println("alert('password didn't matched ');");
+			 out.println("</script>");
+		      response.setContentType("application/json");
+		      PrintWriter out = response.getWriter();
+		      out.flush();
+		      out.printf("nani");
+		      out.close();
+		}
+		
 	}
 	
 	private boolean isCustomerLogged(HttpServletRequest request) {
@@ -132,6 +152,10 @@ public class PurchaseOrderPage extends HttpServlet {
 	
 	private boolean isAjaxRequest(HttpServletRequest request) {
 		return request.getParameter("ajax") !=null && request.getParameter("ajax").equals("true");
+	}
+	
+	private boolean isValidPurchaseOrder() {
+		return true;
 	}
 	
 	private String statusJson(String status) {

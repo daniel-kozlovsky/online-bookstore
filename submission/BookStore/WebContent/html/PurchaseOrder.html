@@ -19,7 +19,7 @@
 		
 		
 		
-		<form action="purcahseOrder" method="POST" class="purchaseOrder">
+		<form action="PurchaseOrder" method="POST" class="purchaseOrder" onsubmit="return validatePurchaseOrder();">
 			<fieldset id="newAddressBox">
 	<legend>New Address</legend>	
 
@@ -78,7 +78,7 @@
 			<label for="newCreditCard">Use this credit card for future checkouts</label>
 			<input type="checkbox" id="newCreditCard" name="newCreditCard"></input>
 			</fieldset>
-		<button name="submitPurchaseOrder" id="submitPurchaseOrder" value="true" form="purcahseOrder" onclick="purchaseOrderSubmission('/BookStore/PurchaseOrder');">Next</button>
+		<button action="submit" name="submitPurchaseOrder" id="submitPurchaseOrder" value="true">Next</button>
 		
 		</form>
 
