@@ -260,7 +260,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 	}
 	
-	class CustomerUpdater extends DataUpdate{
+	public class CustomerUpdater extends DataUpdate{
 		Map<String,String> updateRequest;
 		private Customer customer;
 		private CustomerSchema customerSchema = new CustomerSchema();
