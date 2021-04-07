@@ -18,6 +18,10 @@ public class CreditCard implements Bean{
 	public String getCreditCardNumber() {
 		return creditCardNumber;
 	}
+	
+	public String getConcealedCreditCardNumber() {
+		return creditCardNumber.substring(0,creditCardNumber.length()-3).replaceAll(".*", "*")+creditCardNumber.substring(creditCardNumber.length()-4,creditCardNumber.length());
+	}
 
 	public String getCreditCardExpiry() {
 		return creditCardExpiry;

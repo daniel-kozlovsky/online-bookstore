@@ -99,8 +99,14 @@ public class DataGenerator {
 		}
 	
 	}
-	
 	@Test
+	public void regexTest() {
+		String json="{ creditCardType: \"MasterCard\", creditCardNumber: \"5114170954034388\", creditCardExpiry: \"11/2024\", creditCardCVV2: \"412\" }";
+		System.out.println(json.replaceAll("creditCardNumber:\\s*(\"\\d{4})(\\d+)(\\d{4}\")", "$1*************$3"));
+	
+	}
+	
+//	@Test
 	public void addNameToReviews() {
 		List<String> ids=new ArrayList<String>();
 		List<String> reviews=new ArrayList<String>();
