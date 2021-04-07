@@ -90,7 +90,20 @@ public class BookTestCtrl extends HttpServlet {
 //      response.setContentType("text");
 //      response.setCharacterEncoding("UTF-8");
 //      out.write("TESTING  !!!");
-
+		new CustomerDAO().newUpdateRequest() 
+		.requestNewCustomerInsertion() 
+		.insertCustomerWithGivenName("firstNameTEST") 
+		.insertCustomerWithSurName("lasetName") 
+		.insertCustomerWithUserName("asdfasdf") 
+		.insertCustomerWithPassWord("asdfasdf") 
+		.insertCustomerWithEmail("asdfasdf@email") 
+		.insertCustomerWithStreetNumber("addy") 
+		.insertCustomerWithStreet("stwt") 
+		.insertCustomerWithPostalCode("pastacode") 
+		.insertCustomerWithCity("schity") 
+		.insertCustomerWithProvince("pro") 
+		.insertCustomerWithCountry("cont") 
+		.executeCustomerInsertion();
 
 //		DataObjectCompiler docCust= new CustomerDAO().newQueryRequest()
 //				.includeAllAttributesInResultFromSchema()

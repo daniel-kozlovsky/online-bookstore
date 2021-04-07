@@ -251,8 +251,8 @@ public class UpdateCustomer extends DataUpdate{
 			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString();
 			String userTablesUpdate = "INSERT INTO SITE_USER (ID,USER_TYPE) VALUES ('"+id+"','"+UserTypes.CUSTOMER+"')";
 			sendUpdateToDatabase(userTablesUpdate);
-			String update="INSERT INTO CUSTOMER (USER_TYPE,ID,GIVENNAME,SURNAME,USERNAME,PASSWORD ,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,CREATED_AT_EPOCH) VALUES "+
-					"('"+UserTypes.CUSTOMER+"','"+id+"',"+customer.getGivenName()+","+customer.getSurName()+","+customer.getUserName()+","+customer.getPassword()+","+customer.getEmail()+","+
+			String update="INSERT INTO CUSTOMER (ID,GIVENNAME,SURNAME,USERNAME,PASSWORD ,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,CREATED_AT_EPOCH) VALUES "+
+					"('"+id+"',"+customer.getGivenName()+","+customer.getSurName()+","+customer.getUserName()+","+customer.getPassword()+","+customer.getEmail()+","+
 					customer.getAddress().getNumber()+","+customer.getAddress().getStreet()+","+customer.getAddress().getPostalCode()+","+customer.getAddress().getCity()+","+customer.getAddress().getProvince()+","+customer.getAddress().getCountry()+","+epoch+")";
 			System.out.println("up cust req: "+update);
 			sendUpdateToDatabase(update);
