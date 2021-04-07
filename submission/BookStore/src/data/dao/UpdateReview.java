@@ -132,7 +132,7 @@ public class UpdateReview extends DataUpdate{
 				update+=entry.getKey()+"="+entry.getValue()+",";
 			}
 			update=update.substring(0,update.length()-1);
-			update+=" WHERE BOOK='"+review.getBook().getId().toString()+"' + AND SITE_USER='"+review.getSiteUser().getId().toString()+"' AND USER_TYPE='"+review.getUserType()+"'";
+			update+=" WHERE BOOK='"+review.getBook().getId().toString()+"' AND SITE_USER='"+review.getSiteUser().getId().toString()+"' AND USER_TYPE='"+review.getUserType()+"'";
 			sendUpdateToDatabase(update);
 		}
 		
