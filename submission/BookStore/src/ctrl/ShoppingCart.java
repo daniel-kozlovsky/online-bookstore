@@ -19,6 +19,7 @@ import data.beans.Cart;
 import data.beans.Customer;
 import data.beans.SiteUser;
 import data.beans.Visitor;
+import model.SessionAccess;
 import model.ShoppingCartModel;
 
 /**
@@ -76,10 +77,10 @@ public class ShoppingCart extends HttpServlet {
 		*****************************************************/
 		
 		
-		SiteUser user = (Customer) session.getAttribute("customer");
+		SiteUser user = SessionAccess.getCustomer(session);
 		if(user == null)
 		{
-			user = (Visitor) session.getAttribute("visitor");
+			user = SessionAccess.getVisitor(session);
 		}
 		request.setAttribute("books", user.getCart().getBooks());
 		double totalPrice = cartModel.getTotalPrice(user.getCart());
@@ -96,10 +97,10 @@ public class ShoppingCart extends HttpServlet {
 		response.setContentType("application/text");
 		PrintWriter out = response.getWriter();
 		HttpSession session = request.getSession();
-		SiteUser user = (Customer) session.getAttribute("customer");
+		SiteUser user = SessionAccess.getCustomer(session);
 		if(user == null)
 		{
-			user = (Visitor) session.getAttribute("visitor");
+			user = SessionAccess.getVisitor(session);
 		}
 		String isbn = request.getParameter("isbn");
 		int quantity;

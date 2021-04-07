@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import data.beans.Customer;
 import data.beans.Visitor;
 import model.UserAuthenticationModel;
+import model.SessionAccess;
 import model.ShoppingCartModel;
 
 /**
@@ -52,7 +53,7 @@ public class SignIn extends HttpServlet {
 		HttpSession session = request.getSession();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		Visitor visitor = (Visitor) session.getAttribute("visitor");
+		Visitor visitor = SessionAccess.getVisitor(session);
 		
 		response.setContentType("application/text");
 		PrintWriter out = response.getWriter();
