@@ -19,6 +19,7 @@
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
 </head>
 <body>
 	<!-- Navigation bar -->
@@ -30,6 +31,10 @@
 		  	<c:when test="${not empty sessionScope['customer']}">
 				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
 				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
+				<form action="" method="post">
+					<label type="hidden" id="cameFromPage" name="cameFromPage" value="MainPage" ></label>
+					<a class="padding hovering"  onclick="LogOut();">Sign Out</a>
+				</form>
 		  	</c:when>
 
 		  	<!-- visitor -->

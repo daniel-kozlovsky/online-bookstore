@@ -81,6 +81,7 @@ public class ShoppingCart extends HttpServlet {
 		{
 			user = (Visitor) session.getAttribute("visitor");
 		}
+		
 		request.setAttribute("books", user.getCart().getBooks());
 		double totalPrice = cartModel.getTotalPrice(user.getCart());
 		request.setAttribute("totalPrice", totalPrice);

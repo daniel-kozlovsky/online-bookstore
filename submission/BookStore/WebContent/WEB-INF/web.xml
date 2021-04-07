@@ -6,8 +6,8 @@
     <welcome-file>ReviewPage</welcome-file>
     <welcome-file>ProductPage</welcome-file>
     <welcome-file>Orders</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
+    <welcome-file>SignIn</welcome-file>
+    <welcome-file>Register</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
 </web-app>
