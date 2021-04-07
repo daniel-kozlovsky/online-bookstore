@@ -108,7 +108,8 @@ public class Cart extends IdObject {
 		private boolean _isWithinSiteUser;
 		public Builder(Cart cart) {
 //			this.user=cart.user;
-			this.books = cart.books;
+			this.books = cart.books==null?new LinkedHashMap<Book, Integer>():cart.books;
+			
 			this._isWithinSiteUser = cart._isWithinSiteUser;
 
 //			if(cart.customer!=null) {
@@ -224,6 +225,11 @@ public class Cart extends IdObject {
 		}
 
 	}
+	
+	public void clearCart() {
+		this.books=new LinkedHashMap<Book, Integer>();
+	}
+
 
 	@Override
 	public String toJson() {

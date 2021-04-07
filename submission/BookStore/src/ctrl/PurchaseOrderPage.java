@@ -12,8 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import data.beans.Cart;
 import data.beans.Customer;
+import data.beans.PurchaseOrder;
 import data.dao.CustomerDAO;
+import data.dao.PurchaseOrderDAO;
 
 /**
  * Servlet implementation class PurchaseOrder
@@ -23,12 +26,17 @@ public class PurchaseOrderPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String loginSignUpPage="SignIn.jspx";
 	private static final String cartPage="Cart.jspx";
-	private static final String emptyCartCheckoutPage="/html/EmptyPurchaseOrder.html";
-	private static final String confirmationCheckoutPage="/html/PurchaseOrderConfirmation.html";
+	private static final String checkoutConfirmationPage="/html/PurchaseOrderConfirmation.html";
+	private static final String checkoutMainPage="/html/PurchaseOrder.html";
+	private static final String checkoutCompletePage="/html/PurchaseOrderComplete.html";
+	private static final String mainPage="MainPage";
+	private static final String signInPage="SignIn";
 	private static final String customerInfoStage="custInfoStage";
 	private static final String reviewStage="reviewStage";
 	private static final String confirmationStage="confirmationStage";
 	private static final String checkoutStageKeyName="stage";
+	
+	private static final String customerAttributeName="customer";
 	
 	private static final String poSubmissionAjax="stage";
 	
@@ -56,11 +64,11 @@ public class PurchaseOrderPage extends HttpServlet {
 	 * G. Payment Page
 		The visitor can
 		• UC P1: either log into their account with a password, or create a new account.
-		• UC P2: for a new account they enter their account name, password, and default billing and
-		shipping information. The new account is submitted to the Order Processing service.
-		• UC P3: to submit their order, they verify their billing and shipping information, and enter in their
+		• TODO UC P2: for a new account they enter their account name, password, and default billing and
+		shipping information. The new account is submitted to the Order Processing service. 
+		•TODO  UC P3: to submit their order, they verify their billing and shipping information, and enter in their
 		credit card number.
-		• UC P4: “Confirm order” button
+		• TODO UC P4: “Confirm order” button
 		Note: You should hard code that every 3rd request is denied on your website. If the order is approved, you
 		should display “Order Successfully Completed.” If it is denied, you should display “Credit Card
 		Authorization Failed.”
@@ -91,38 +99,41 @@ public class PurchaseOrderPage extends HttpServlet {
 //	    		  //
 //	    	  }
 //	      }
-  	  if(request.getAttribute("error")!=null) {
-		  String custJson=getCustomerJson();
-	      response.setContentType("application/json");
-	      PrintWriter out = response.getWriter();
-	      out.flush();
-	      out.printf("{\"error\":\""+request.getAttribute("error")+"\","+custJson.substring(1,custJson.length()));
-	      out.close();
-	  }else  if(isAjaxRequest(request)) {
+		
+		
+		if(isAjaxRequest(request)) {
 //	    	  Customer customer=getCustomer();
-	    	  
-
-		    	  System.out.println("ajax request recevied");
+			
+				if(isCheckoutCartEmpty()) {
+		    	  System.out.println("ajax request recevied emptu cart");
 			      response.setContentType("application/json");
 			      PrintWriter out = response.getWriter();
 			      out.flush();
-			      out.printf(getCustomerJson()); 
-			      out.close();
-	    	  
-
-//		      if(isCheckoutCartEmpty()) {
-		    	  
-//		    	  out.printf(statusJson(emptyCartStatus));
-//		      }
-		     
-	      }else {
-	    	  request.getRequestDispatcher("/html/PurchaseOrder.html").forward(request, response);
-//		      if(isCheckoutCartEmpty()) {		    	  
-//		    	  request.getRequestDispatcher(emptyCartCheckoutPage).forward(request, response);	
-//		      }else {
-//		    	  request.getRequestDispatcher("/html/PurchaseOrder.html").forward(request, response);	   
-//		      }
-	    	  
+			      out.printf(errorJson("emptyCartError","your cart is empty please add items before checking out")); 
+			      out.close();			      
+			      }	else if(!isCustomerLoggedIn(request)) {//TODO: NEGATE THIS AFTER
+			    	  System.out.println("ajax request recevied emptu cart");
+				      response.setContentType("application/json");
+				      PrintWriter out = response.getWriter();
+				      out.flush();
+				      out.printf(errorJson("customerNotExist","Please login or create an account before checking out")); 
+				      out.close();
+				      
+				  }else {
+			    	  System.out.println("ajax request recevied");
+			    	  String customerJson=getCustomerJson(request);
+				      response.setContentType("application/json");
+				      PrintWriter out = response.getWriter();
+				      out.flush();
+				      out.printf(customerJson); 
+				      out.close();			    	  
+			      }	     
+	       }else if(isCheckoutCartEmpty()) {
+	    	   request.getRequestDispatcher(mainPage).forward(request, response);
+		   }else if(isCustomerLoggedIn(request)) {//TODO: NEGATE THIS AFTER
+	    	   request.getRequestDispatcher(signInPage).forward(request, response);
+		   }else {
+			   request.getRequestDispatcher(checkoutMainPage).forward(request, response);	  
 	      }
 	      
 	      
@@ -137,26 +148,60 @@ public class PurchaseOrderPage extends HttpServlet {
 //		doGet(request, response);
 		
 		
-		if(request.getParameter("submitPurchaseOrder")!=null && !request.getParameter("submitPurchaseOrder").equals("true")) {
+		if(request.getParameter("submitPurchaseOrder")!=null && request.getParameter("submitPurchaseOrder").equals("true")) {
 			if(isValidPurchaseOrder()) {
-				request.getRequestDispatcher(confirmationCheckoutPage).forward(request, response);	
+				request.getRequestDispatcher(checkoutConfirmationPage).forward(request, response);	
 			}
 				
-		}else {
-			request.setAttribute("error", "error from respons obj");
-//			doGet(request,response);
-//			request.getRequestDispatcher("/html/PurchaseOrder.html").forward(request, response);
-			PrintWriter out = response.getWriter();
-			out.flush();
-			   out.println("<meta http-equiv='refresh' content='3;URL=/BookStore/PurchaseOrder'>");//redirects after 3 seconds
-			   out.println("<p style='color:red;'>User or password incorrect!</p>");
-			   out.close();
+		}else if(request.getParameter("confirmPurchaseOrder") !=null && request.getParameter("confirmPurchaseOrder").equals("true")) {
+			Customer customer=getCustomerFromSession(request);
+			if(isCustomerRegistering(request)) {
+				//TODO INSERT CUSTOMER HERE
+//				customer = new CustomerDAO()
+//						.newUpdateRequest()
+//						.requestNewCustomerInsertion()
+//						.insertCustomerWithGivenName(cartPage)
+//						.insertCustomerWithSurName(cartPage)
+//						.insertCustomerWithUserName(cartPage)
+//						.insertCustomerWithPassWord(cartPage)
+//						.insertCustomerWithEmail(checkoutMainPage)
+//						.insertCustomerWithStreetNumber(cartPage)
+//						.insertCustomerWithStreet(cartPage)
+//						.insertCustomerWithPostalCode(cartPage)
+//						.insertCustomerWithCity(cartPage)
+//						.insertCustomerWithProvince(cartPage)
+//						.insertCustomerWithCountry(cartPage)
+//						.executeCustomerInsertion();
+			}
+			if(customer !=null) {
+				customer = new Customer.Builder(customer).withCart(getCart(request)).build();
+				request.getSession().setAttribute("customer", customer);
+				PurchaseOrder purchaseOrder =new PurchaseOrderDAO().newUpdateRequest().insertPurchaseOrder(getCustomerFromSession(request));
+				getCustomerFromSession(request).addPurchaseOrder(purchaseOrder);
+				getCustomerFromSession(request).getCart().clearCart();
+				request.getRequestDispatcher(checkoutCompletePage).forward(request, response);
+			}else {
+				request.getRequestDispatcher(checkoutMainPage).forward(request, response);	
+//				request.getRequestDispatcher(checkoutCompletePage).forward(request, response);					
+			}
+
 		}
 		
 	}
 	
-	private boolean isCustomerLogged(HttpServletRequest request) {
-		return true;
+	private boolean isCustomerLoggedIn(HttpServletRequest request) {
+		return request.getSession().getAttribute(customerAttributeName)!=null;
+	}
+	
+	private void reloadFormFields(HttpServletRequest request) {
+	
+	}
+	
+	private Cart getCart(HttpServletRequest request) {
+		return (Cart)request.getSession().getAttribute("cart");
+	}
+	private boolean isCustomerRegistering(HttpServletRequest request) {
+		return false;
 	}
 	
 	private boolean isAjaxRequest(HttpServletRequest request) {
@@ -164,11 +209,11 @@ public class PurchaseOrderPage extends HttpServlet {
 	}
 	
 	private boolean isValidPurchaseOrder() {
-		return false;
+		return true;
 	}
 	
-	private String statusJson(String status) {
-		return "{\"status\":\""+status+"\"}";
+	private String errorJson(String errorLabel,String errorMessage) {
+		return "{\""+errorLabel+"\":\""+errorMessage+"\"}";
 	}
 	
 	private boolean isCustomerInfoStage() {
@@ -182,22 +227,20 @@ public class PurchaseOrderPage extends HttpServlet {
 	}
 	
 	private boolean isCheckoutCartEmpty() {
-		return true;
+		return false;
 	}
 	
-	private String getCustomerJson() {
+	private Customer getCustomerFromSession(HttpServletRequest request) {
+		return (Customer) request.getSession().getAttribute("customer");
+	}
+	
+	private String getCustomerJson(HttpServletRequest request) {
 		CustomerDAO user =new CustomerDAO();
 		String username="WRitter163";
 		String passwd = "Walterpassword";
-//		Customer s = user.loginCustomer(username, passwd).toJson().replaceAll("creditCardNumber: \"\\G", "asdf");
-//		Pattern creditCardPattern = Pattern.compile("'([0-9]+)',[0-9]+,[0-9.]+,[0-9]+,[0-9]+\\)");//. represents single character  
-//		Matcher creditCardMatcher = creditCardPattern.matcher(s.toJson());  
-//		while(creditCardMatcher.find()) {
-//			creditCardMatcher.
-//		}
-//		String json="{ creditCardType: \"MasterCard\", creditCardNumber: \"5114170954034388\", creditCardExpiry: \"11/2024\", creditCardCVV2: \"412\" }";
-//		System.out.println(json("creditCardNumber:\\s*(\"\\d{4})(\\d+)(\\d{4}\")", "$1*************$3"));
-		String result=user.loginCustomer(username, passwd).toJson().replaceAll("(creditCardNumber\":\\s*\"\\d{4})(\\d+)(\\d{4}\")", "$1*************$3");
+		Customer customer = getCustomerFromSession(request);
+		customer = user.loginCustomer(username, passwd);
+		String result=customer.toJson().replaceAll("(creditCardNumber\":\\s*\"\\d{4})(\\d+)(\\d{4}\")", "$1*************$3");
 		System.out.println(result);
 		return result;
 	}

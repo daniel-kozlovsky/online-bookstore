@@ -6,7 +6,14 @@
 <link rel="stylesheet" type='text/css'  href="/BookStore/css/loader.css">
 <script type="text/javascript" src="/BookStore/js/purchaseOrderHandler.js"></script>
 </head>
-<body onload="pageLoad('/BookStore/PurchaseOrder');">
+<body onload="pageLoadMain('/BookStore/PurchaseOrder');">
+
+		
+		
+		
+		
+		<form action="PurchaseOrder" method="POST" id="purchaseOrder" onsubmit="return validatePurchaseOrder();">
+	<div id="purchaseOrderInputs">
 	<fieldset id="addressBox">
 	<legend>Saved Address</legend>	
 	<div id="address"></div>
@@ -15,11 +22,6 @@
 	<legend>Saved Credit Card</legend>	
 	<div id="creditCard"></div>
 	</fieldset>
-		
-		
-		
-		
-		<form action="PurchaseOrder" method="POST" class="purchaseOrder" onsubmit="return validatePurchaseOrder();">
 			<fieldset id="newAddressBox">
 	<legend>New Address</legend>	
 
@@ -78,9 +80,13 @@
 			<label for="newCreditCard">Use this credit card for future checkouts</label>
 			<input type="checkbox" id="newCreditCard" name="newCreditCard"></input>
 			</fieldset>
+			
 		<button action="submit" name="submitPurchaseOrder" id="submitPurchaseOrder" value="true">Next</button>
 		
+		</div>
 		</form>
+		<div id="visitorCheckout"></div>
+		<div id="newCustomerCheckoutButtons"></div>
 
 </body>
 </html>

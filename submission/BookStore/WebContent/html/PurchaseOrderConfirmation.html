@@ -3,17 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <title>Checkout Confirmation</title>
+<link rel="stylesheet" type='text/css'  href="/BookStore/css/loader.css">
+<script type="text/javascript" src="/BookStore/js/purchaseOrderHandler.js"></script>
 </head>
-<body>
-<div id="cartCheckout">
-</div>
-<div id="addressCheckout">
-</div>
+<body onload="pageLoadConfirmation('/BookStore/PurchaseOrder');">
 
-<div id="creditCardCheckout">
-</div>
-<div id="confirmation">
 
-</div>
+
+	<fieldset id="confirmAddressBox">
+	<legend>Shipping Address</legend>	
+	<div id="confirmAddress"></div>
+	</fieldset>
+	<fieldset id="confirmCreditCardBox">
+	<legend>Payment With Credit Card</legend>	
+	<div id="confirmCreditCard"></div>
+	</fieldset>
+	<fieldset id="confirmContentsBox">
+	<legend>Items</legend>	
+	<div id="confirmContents"></div>
+	</fieldset>
+	<form action="PurchaseOrder" method="POST" id="confirmPurchaseOrderForm" onsubmit="return validatePurchaseOrder();">
+	<button action="submit"  value="true" name="confirmPurchaseOrder" id="confirmPurchaseOrder" value="true" onclick="confirmPurchaseOrder();">Confirm</button>
+	<button name="editPurchaseOrder" id="editPurchaseOrder" value="true" onclick="history.back();">Back</button>
+
+	</form>
+	
+
+		
+
 </body>
 </html>

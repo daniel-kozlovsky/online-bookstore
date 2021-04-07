@@ -2,18 +2,25 @@ package data.dao;
 
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.Set;
+
 import data.beans.Book;
 import data.beans.CreditCard;
 import data.beans.Customer;
+import data.beans.Id;
+import data.fetcher.CustomerDataFetcher;
 import data.schema.BookSchema;
 import data.schema.CustomerSchema;
 import data.schema.UserTypes;
@@ -245,7 +252,7 @@ public class UpdateCustomer extends DataUpdate{
 		private ExecuteCustomerInsert (Customer customer) {
 			super(customer);
 		}
-		public 	void executeCustomerInsertion(){
+		public 	Customer executeCustomerInsertion(){
 
 		    String epoch =Long.toString(Instant.now().getEpochSecond());
 			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString();
@@ -256,6 +263,17 @@ public class UpdateCustomer extends DataUpdate{
 					customer.getAddress().getNumber()+","+customer.getAddress().getStreet()+","+customer.getAddress().getPostalCode()+","+customer.getAddress().getCity()+","+customer.getAddress().getProvince()+","+customer.getAddress().getCountry()+","+epoch+")";
 			System.out.println("up cust req: "+update);
 			sendUpdateToDatabase(update);
+//			String check="SELECT * FROM CUSTOMER WHERE ";
+//			
+//			try {
+//				if(!checkDatabaseResultSet(check).next()) {
+//					return null;
+//				}
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			return new Customer.Builder(customer).withId(new Id(id)).build();
 			
 		}
 	}
@@ -348,14 +366,29 @@ public class UpdateCustomer extends DataUpdate{
 //		}
 //		
 		
-		public void executeUpdate() {
+		public Customer executeUpdate() {
 			String update = "UPDATE CUSTOMER SET ";
+			String check="SELECT * FROM CUSTOMER WHERE ";
+			String and=" AND ";
 			for(Entry<String,String> entry:this.updateRequest.entrySet()) {
 				update+=entry.getKey()+"="+entry.getValue() + ",";
+				check+=entry.getKey()+"="+entry.getValue() + and;
 			}
+			check=check+" ID='"+customer.getId().toString()+"'";
 			update=update.substring(0,update.length()-1);
 			update+=" WHERE ID='"+customer.getId().toString()+"'";
 			sendUpdateToDatabase(update);
+			try {
+				if(!checkDatabaseResultSet(check).next()) {
+					return null;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
+			return new Customer.Builder(customer).build();
 		}
 	}
 	

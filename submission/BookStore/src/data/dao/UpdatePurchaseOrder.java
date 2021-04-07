@@ -7,6 +7,7 @@ import data.beans.Address;
 import data.beans.Book;
 import data.beans.CreditCard;
 import data.beans.Customer;
+import data.beans.Id;
 import data.beans.PurchaseOrder;
 import data.beans.SiteUser;
 import data.schema.PurchaseOrderSchema;
@@ -49,10 +50,10 @@ public class UpdatePurchaseOrder extends DataUpdate {
 		sendUpdateToDatabase(update);
 	}
 	
-	public void insertPurchaseOrder(SiteUser siteUser, String email, CreditCard creditCard,Address address) {
+	public PurchaseOrder insertPurchaseOrder(SiteUser siteUser, String email, CreditCard creditCard,Address address) {
 		//add cart items to PO
 		//clear cart items
-		if(siteUser.getCart()==null ||siteUser.getId().isEmpty() ||!siteUser.getCart().isEmpty()||creditCard==null ||creditCard.isEmpty()) return;
+		if(siteUser.getCart()==null ||siteUser.getId().isEmpty() ||!siteUser.getCart().isEmpty()||creditCard==null ||creditCard.isEmpty()) return new PurchaseOrder.Builder().withId(siteUser.getId()).build();
 		String epoch =Long.toString(Instant.now().getEpochSecond());
 //		ID, BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH
 		String update ="INSERT INTO PURCHASE_ORDER (ID,BOOK,USER_TYPE,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES ";
@@ -71,11 +72,12 @@ public class UpdatePurchaseOrder extends DataUpdate {
 			+creditCard.getCreditCardType()+"','"+creditCard.getCreditCardNumber()+"','"+creditCard.getCreditCardExpiry()+"','"+creditCard.getCreditCardCVV2()+"'),";
 		}
 		update=update.substring(0,update.length()-1);
-		new UpdateCart().executeClearCart(siteUser);				
+		new UpdateCart().executeClearCart(siteUser);
+		return new PurchaseOrder.Builder().withId(siteUser.getId()).withBooks(siteUser.getCart().getBooks()).build();
 	}
 	
-	public void insertPurchaseOrder(Customer customer) {
-		insertPurchaseOrder(customer,customer.getEmail(),customer.getCreditCard(),customer.getAddress());				
+	public PurchaseOrder insertPurchaseOrder(Customer customer) {
+		return insertPurchaseOrder(customer,customer.getEmail(),customer.getCreditCard(),customer.getAddress());				
 	}
 
 	
