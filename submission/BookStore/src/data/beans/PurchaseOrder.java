@@ -1,5 +1,6 @@
 package data.beans;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -317,8 +318,13 @@ public class PurchaseOrder extends IdObject {
 			
 		}
 		booksJson+="]";
+		double total=0;
+		for(Entry<Book,Integer> entry:getBooks().entrySet()) {
+			total=entry.getKey().getPrice()*entry.getValue()+total;
+		}
 		return "{"+Bean.jsonMapVarChar("id",this.id.toString())+","+
 				Bean.jsonMapVarChar("email",this.email)+","+
+				Bean.jsonMapNumber("total", String.format("%.2f", total))+","+
 				Bean.jsonMapNumber("createdAtEpoch",Long.toString(this.createdAtEpoch))+","+
 				Bean.jsonMapVarChar("status",this.status)+","+
 				Bean.jsonMapNumber("address",this.address.toJson())+","+
