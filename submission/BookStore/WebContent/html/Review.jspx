@@ -140,28 +140,12 @@
 	<!-- footer -->
 	<footer>
 		<div class="footer_container">
-			<div class="footer_row">
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 1</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 2</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 2</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
+			<div class="footer_row" style="text-align:center">
+				<p>©2021, Runtime Terror, Inc. or its affiliates</p>
 			</div>
 		</div>
 	</footer>
+	
 </body>
 </html>
 </jsp:root>

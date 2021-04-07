@@ -123,6 +123,15 @@
 			<button type="button" onclick=";">Payment</button>
 		</div>
 	</c:if>
+	
+	<!-- footer -->
+	<footer>
+		<div class="footer_container">
+			<div class="footer_row" style="text-align:center">
+				<p>©2021, Runtime Terror, Inc. or its affiliates</p>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>
 </jsp:root>
