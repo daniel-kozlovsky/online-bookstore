@@ -170,7 +170,6 @@ public class ProductPage extends HttpServlet {
 						List<Review> review = model.getReview(customer, book_id);
 						Review r = review.get(0);
 						
-						
 						int rating_number = r.getRating();
 						
 						if (rating_number == 1)
@@ -328,6 +327,7 @@ public class ProductPage extends HttpServlet {
 		request.setAttribute(RATING, this_rate);
 		request.setAttribute(ISBN, b.getISBN());
 		request.setAttribute(CATEGORY, b.getCategory());	
+		request.setAttribute("DESC", b.getDescription());
 	}
 	
 	private String getTop10Reviews(HttpServletRequest request, MainPageModel model, String id) throws Exception {
