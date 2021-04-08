@@ -113,7 +113,7 @@
 			<label>Expiry</label>
 			<input type="text" id="input-expiry"/>
 			
-			<button type="button" onClick="register();">Register</button>
+			<button id="button-register" type="button" onClick="register();">Register</button>
 		</form>
 	</div>
 	
