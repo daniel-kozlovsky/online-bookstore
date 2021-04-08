@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import data.beans.Book;
+import data.beans.Customer;
+import data.beans.SiteUser;
+import data.beans.Visitor;
 import data.dao.BookDAO;
 import model.MainPageModel;
 
@@ -60,7 +63,15 @@ public class MainPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
-	
+		
+
+	    Visitor visitor = (Visitor) request.getSession().getAttribute("visitor");
+		if(visitor == null)
+		{
+			visitor = (Visitor) model.getVisitor(request);
+			request.getSession().setAttribute("visitor", visitor);
+		}
+		
 		loadPage(request, model);
 		request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
 
