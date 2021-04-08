@@ -6,18 +6,22 @@
 	<artifactId>BookStore</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	<properties>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+	    <maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
 		<scriptSourceDirectory>codegen</scriptSourceDirectory>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<release>9</release>
-				</configuration>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
+<!-- 				<version>3.8.1</version> -->
+<!-- 				<configuration> -->
+<!-- 					<release>9</release> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.2.3</version>
@@ -46,7 +50,7 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- https://stackoverflow.com/questions/25356685/starting-of-the-apache-tomcat-server-before-integration-test -->
+<!-- 				https://stackoverflow.com/questions/25356685/starting-of-the-apache-tomcat-server-before-integration-test -->
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>

@@ -190,23 +190,23 @@ public class BookStoreDAOTests {
 	}
 	
 //	@Test
-	void cartDAOQueryProducesCorrectQuery() {
-		CartDAO cartDAO = new CartDAO();
-		String query =cartDAO.newQueryRequest()
-				.includeAllAttributesInResultFromSchema()
-				.queryAttribute()
-				.whereCartUserType()
-				.isVisitor()
-				.queryAttribute()
-				.whereCartBookAmount()
-				.withAscendingOrderOf()
-				.withPageNumber(2)
-				.withResultLimit(43)
-				.getQueryString();
-		String expectedResult="SELECT BOOK,USER_TYPE,ID FROM CART  WHERE USER_TYPE='VISITOR' ORDER BY AMOUNT ASC OFFSET 86 ROWS  FETCH NEXT 43 ROWS ONLY";
-		assertEquals(query, expectedResult,"BookDAO varchar contains did not generate the correct query string");
-
-	}
+//	void cartDAOQueryProducesCorrectQuery() {
+//		CartDAO cartDAO = new CartDAO();
+//		String query =cartDAO.newQueryRequest()
+//				.includeAllAttributesInResultFromSchema()
+//				.queryAttribute()
+//				.whereCartUserType()
+//				.isVisitor()
+//				.queryAttribute()
+//				.whereCartBookAmount()
+//				.withAscendingOrderOf()
+//				.withPageNumber(2)
+//				.withResultLimit(43)
+//				.getQueryString();
+//		String expectedResult="SELECT BOOK,USER_TYPE,ID FROM CART  WHERE USER_TYPE='VISITOR' ORDER BY AMOUNT ASC OFFSET 86 ROWS  FETCH NEXT 43 ROWS ONLY";
+//		assertEquals(query, expectedResult,"BookDAO varchar contains did not generate the correct query string");
+//
+//	}
 
 	
 //	@Test
@@ -384,25 +384,25 @@ public class BookStoreDAOTests {
 		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
 	}
 //	@Test
-	void cartDAOKeyQuery() {
-		CartDAO cartDAO = new CartDAO();
-		String query =cartDAO.newQueryRequest()
-				.queryAttribute()
-				.whereCart()
-				.isCart(new Cart.Builder().withId(new Id("fffakeCart")).build())
-				.queryAttribute()
-				.whereCartUserType()
-				.isCustomer()
-				.queryAttribute()
-				.whereCartBook()
-				.isBook(new Book.Builder().withId(new Id("FAKEBOOKIDREB")).build())
-				.queryAttribute()
-				.whereCartCustomer()
-				.isCustomer(new Customer.Builder().withId(new Id("fakecustrebv")).build())
-				.getQueryString();
-		String expectedResult="SELECT  * FROM CART  WHERE ID='fffakeCart' AND USER_TYPE='CUSTOMER' AND BOOK='FAKEBOOKIDREB' AND ID='fakecustrebv' FETCH FIRST 20 ROWS ONLY";
-		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
-	}
+//	void cartDAOKeyQuery() {
+//		CartDAO cartDAO = new CartDAO();
+//		String query =cartDAO.newQueryRequest()
+//				.queryAttribute()
+//				.whereCart()
+//				.isCart(new Cart.Builder().withId(new Id("fffakeCart")).build())
+//				.queryAttribute()
+//				.whereCartUserType()
+//				.isCustomer()
+//				.queryAttribute()
+//				.whereCartBook()
+//				.isBook(new Book.Builder().withId(new Id("FAKEBOOKIDREB")).build())
+//				.queryAttribute()
+//				.whereCartCustomer()
+//				.isCustomer(new Customer.Builder().withId(new Id("fakecustrebv")).build())
+//				.getQueryString();
+//		String expectedResult="SELECT  * FROM CART  WHERE ID='fffakeCart' AND USER_TYPE='CUSTOMER' AND BOOK='FAKEBOOKIDREB' AND ID='fakecustrebv' FETCH FIRST 20 ROWS ONLY";
+//		assertEquals(query, expectedResult,"BookDAO did not generate the correct query string");
+//	}
 	
 //	@Test
 	void purchaseOrderDAOKeyQuery() {
