@@ -34,6 +34,8 @@ public class CreditCard implements Bean{
 	public boolean isEmpty() {
 		return  creditCardType==null || creditCardType.isEmpty() ||creditCardExpiry==null || creditCardExpiry.isEmpty()||creditCardNumber==null || creditCardNumber.isEmpty()||creditCardCVV2==null || creditCardCVV2.isEmpty();
 	}
+	
+	
 	public static class Builder {
 		private String creditCardType;
 		private String creditCardNumber;

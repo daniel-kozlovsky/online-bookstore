@@ -34,7 +34,9 @@ const signInHtml=`<fieldset id=\x22customerCheckoutLogin\x22><legend>Login</lege
 <label>Password</label><input type=\x22text\x22 id=\x22inputPasswordCheckout\x22/>
 </fieldset>`;
 
-const registerHtml=`<fieldset id=\x22newCustomerAccount\x22><legend>New Registration</legend>
+const returnToMainHTML=`<div><button onclick=\x22window.location='/BookStore/MainPage';\x22>Go to Store front</button></div>`
+const backHTML=`<div><button onclick=\x22history.back()\x22;\x22>Go to Store front</button></div>`
+const registerHtml=`<fieldset id=\x22customerCheckoutRegister\x22><legend>New Registration</legend>
 <label>Given Name</label><input type=\x22text\x22 id=\x22inputGivenNameCheckout\x22/>
 <label>Sur Name</label><input type=\x22text\x22 id=\x22inputSurNameCheckout\x22/>
 <label>Email</label><input type=\x22text\x22 id=\x22inputEmailCheckout\x22/>
@@ -44,7 +46,7 @@ const registerHtml=`<fieldset id=\x22newCustomerAccount\x22><legend>New Registra
 const registerRequest=()=>{
 	if( document.getElementById("customerCheckoutLogin")){
 	document.getElementById("visitorCheckout").innerHTML=registerHtml;
-	}else if( document.getElementById("newCustomerAccount")){
+	}else if( document.getElementById("customerCheckoutRegister")){
 	alert("registering")
 	register();
 	}else{
@@ -52,7 +54,7 @@ const registerRequest=()=>{
 	}
 }
 const loginRequest=()=>{
-	if( document.getElementById("newCustomerAccount")){
+	if( document.getElementById("customerCheckoutRegister")){
 	document.getElementById("visitorCheckout").innerHTML=signInHtml;
 	}else if(document.getElementById("customerCheckoutLogin")){
 	alert("signing in")
@@ -101,23 +103,22 @@ const register=()=>{
     request.send(null);
 }
 
-const defaultAdressCheckHTML=		`<label for=\x22defaultAddress\x22>use default address on account?`+
-	`<input type=\x22checkbox\x22 id=\x22defaultAddress\x22 name=\x22defaultAddress\x22 onclick=\x22defaultAddressCheck()\x22></input>`+
+const defaultAdressCheckHTML=		`<label for=\x22defaultAddressCheck\x22>use default address for shipping?`+
+	`<input type=\x22checkbox\x22 id=\x22defaultAddressCheck\x22 name=\x22defaultAddressCheck\x22 onclick=\x22defaultAddressSelector();\x22></input>`+
 	`</label>`;
 	
-const defaultCreditCardCheckHTML=	`<label for=\x22defaultCreditCard\x22>use default credit card on account?`+
-	`<input type=\x22checkbox\x22 id=\x22defaultCreditCard\x22 name=\x22defaultCreditCard\x22 onclick=\x22defaultCreditCardCheck()\x22></input>`+
+const defaultCreditCardCheckHTML=	`<label for=\x22defaultCreditCardCheck\x22>use default credit card payment?`+
+	`<input type=\x22checkbox\x22 id=\x22defaultCreditCardCheck\x22 name=\x22defaultCreditCardCheck\x22 onclick=\x22defaultCreditCardSelector();\x22></input>`+
 	`</label>`;
 
 
 const signInRegisterButtonsHTML=`
-<button  id=\x22registerFromCheckout\x22onclick=\x22registerRequest();\x22>Register</button>
-<button  id=\x22signInFromCheckout\x22onclick=\x22loginRequest();\x22>Sign In</button>`
+<button  id=\x22registerFromCheckout\x22onclick=\x22registerIframeRequest();\x22>Register</button>
+<button  id=\x22signInFromCheckout\x22onclick=\x22loginIframeRequest();\x22>Sign In</button>`
 
 
-
-const defaultAddressCheck=()=>{
-	if(document.getElementById('defaultAddress') && document.getElementById('defaultAddress').checked){
+const defaultAddressSelector=()=>{
+	if(document.getElementById('defaultAddressCheck') && document.getElementById('defaultAddressCheck').checked){
             	   document.getElementById("newAddressBox").disabled=true;            	 
 	}else{
 		document.getElementById("newAddressBox").disabled=false;
@@ -125,8 +126,8 @@ const defaultAddressCheck=()=>{
 		document.getElementById("newAddressBox").classList.toggle('expand')
 	document.getElementById("newAddressBox").classList.toggle('collapse')
 }
-const defaultCreditCardCheck=()=>{
-	if(document.getElementById('defaultCreditCard') && document.getElementById('defaultCreditCard').checked){
+const defaultCreditCardSelector=()=>{
+	if(document.getElementById('defaultCreditCardCheck') && document.getElementById('defaultCreditCardCheck').checked){
 	 document.getElementById("newCreditCardBox").disabled=true;            	 
 	}else{
 	 document.getElementById("newCreditCardBox").disabled=false;
@@ -162,14 +163,114 @@ const purchaseOrderSubmissionGET =(address)=>{
 }
 
 const validatePurchaseOrder =()=>{
-	alert('validating')
 
 	return true;
 }
 
-const confirmPurchaseOrder =()=>{
-	alert('purchaseOrderConfirmed')
-	return true;
+const toggleConfirmationOverlay=()=>{
+	document.getElementById("confirmationResults").classList.toggle('frontOverlayElement')
+	document.getElementById("confirmationInfo").classList.toggle('backOverlayElement')
+	document.getElementById("confirmationResults").innerHTML=spinnerHTML;
+	document.getElementById("editPurchaseOrder").disabled=true;
+	document.getElementById("editCart").disabled=true;
+	document.getElementById("confirmPurchaseOrder").disabled=true;
+}
+
+const registerIFrameHTML=`<iframe   id=\x22registerIFrame\x22 src=\x22/BookStore/html/Register.jspx\x22 onload=\x22watchRegisterFrame();\x22></iframe>`
+const loginIFrameHTML=`<iframe  id=\x22loginIFrame\x22 src=\x22/BookStore/html/SignIn.jspx\x22 onload=\x22watchLoginFrame();\x22></iframe>`
+
+const toggleIFrameOverlay=(iframeHTML)=>{
+document.getElementById("iframeContainer").innerHTML=iframeHTML;
+	document.getElementById("iframeContainer").classList.toggle('frontOverlayElement')
+	document.getElementById("purchaseOrder").classList.toggle('backOverlayElement')
+
+}
+
+const watchRegisterFrame=()=>{
+	let iframe = document.getElementById('registerIFrame');
+	let registerDoc = iframe.contentDocument || iframe.contentWindow.document;
+	registerDoc.getElementById("button-login").addEventListener('click', event => {
+  checkLoginStatus()
+});
+
+}
+
+const loginSignUpControl=()=>{
+document.getElementById("purchaseOrder").classList.toggle('backOverlayElement')
+//document.getElementById("iframeContainer").classList.toggle('frontOverlayElement')
+document.getElementById("iframeContainer").innerHTML= `<div id=loginControlBox>${signInRegisterButtonsHTML}</div>`
+document.getElementById("loginControlBox").classList.toggle('frontOverlayElement')
+
+}
+const registerIframeRequest=()=>{
+document.getElementById("iframeContainer").classList.toggle('registerSignUpFrame')
+document.getElementById("iframeContainer").innerHTML=registerIFrameHTML;
+}
+const loginIframeRequest=()=>{
+document.getElementById("iframeContainer").classList.toggle('registerSignUpFrame')
+document.getElementById("iframeContainer").innerHTML=loginIFrameHTML;
+}
+const loadRegisterFrame=()=>{
+
+}
+const loadLoginFrame=()=>{
+
+}
+const watchLoginFrame=()=>{
+	let iframe = document.getElementById('loginIFrame');
+	let registerDoc = iframe.contentDocument || iframe.contentWindow.document;
+	registerDoc.getElementById("button-login").addEventListener('click', event => {
+  checkLoginStatus()
+});
+
+}
+
+const checkLoginStatus=()=>{
+ let request = new XMLHttpRequest();
+    request.open("GET", '/BookStore/PurchaseOrder'+'?ajax=true&checkoutInfo=true', true);
+    request.onreadystatechange = ()=>{
+            if ((request.readyState == 4) && (request.status == 200)){   
+       
+                 let data=JSON.parse(request.responseText);
+                  console.log(data.customerNotExistError)
+            	  if(!data.customerNotExistError){
+            	  let child=document.getElementById('registerIFrame');
+ 					child.parentNode.removeChild(child);
+ 					alert("worked:")
+ 					location.reload();
+ 					
+            	  }  
+            	               
+    		}
+    }
+    request.send(null);
+}
+
+const checkoutAttemptsHTML=(checkoutResponse)=>{
+	return `<div>You have attempted to checkout ${checkoutResponse.numberAttempts} times, your payment method will be blocked for 1 hour after ${checkoutResponse.maxNumberAttempts} attempts</div>`
+}
+
+const confirmPurchaseOrderSubmission =(address)=>{
+	toggleConfirmationOverlay()
+    let request = new XMLHttpRequest()
+    request.open("GET", address+'?ajax=true&checkoutComplete=true', true);
+    request.onreadystatechange = ()=>{
+            if ((request.readyState == 4) && (request.status == 200)){            
+                 let data=JSON.parse(request.responseText);
+                 if(data.paymentError){
+                 	//document.getElementById("confirmationResults").innerHTML=data.paymentError+checkoutAttemptsHTML+backHTML;
+                 	//history.back();
+                 }else if(data.checkoutSuccess){
+                 document.getElementById("confirmationResults").innerHTML=data.checkoutSuccess+returnToMainHTML;
+
+                 //window.location='/BookStore/MainPage';
+                 }
+
+            	               
+    		}
+    }
+    request.send(null);
+    
 }
 const editPurchaseOrder =()=>{
 	alert('going back to edit purchase order')
@@ -182,13 +283,15 @@ const pageLoadMain =(address)=>{
 	document.getElementById("submitPurchaseOrder").style.display='block';
 	document.getElementById("address").innerHTML=spinnerHTML;	
 	document.getElementById("creditCard").innerHTML=spinnerHTML;	
+
+
     let request = new XMLHttpRequest()
-    request.open("GET", address+'?ajax=true', true);
+    request.open("GET", address+'?ajax=true&checkoutInfo=true', true);
     request.onreadystatechange = ()=>{
             if ((request.readyState == 4) && (request.status == 200)){            
                  let data=JSON.parse(request.responseText);
 
-
+				loginSignUpControl()
                   if(data.emptyCartError){    
                   document.getElementById("newAddressBox").disabled=true;
             	  document.getElementById("newCreditCardBox").disabled=true;  
@@ -196,18 +299,23 @@ const pageLoadMain =(address)=>{
                   alert(data.emptyCartError)	
                   history.back();
             	  } else {
-            	 if(data.creditCard){
-                 document.getElementById("creditCard").innerHTML=creditCardHTML(data.creditCard)+defaultCreditCardCheckHTML;
+            	 if(data.customer && data.customer.creditCard && !data.missingCreditCard){
+                 document.getElementById("creditCard").innerHTML=creditCardHTML(data.customer.creditCard)+defaultCreditCardCheckHTML;
+                  document.getElementById("defaultCreditCardCheck").checked=true
+                 
+                 defaultCreditCardSelector();
                  }else{
                  document.getElementById("creditCard").innerHTML=failHTML;	
                  }
 
-                 if(data.address){
-                 document.getElementById("address").innerHTML=addressHTML(data.address)+defaultAdressCheckHTML;
+                 if(data.customer && data.customer.address && !data.missingAddressComponents){
+                 document.getElementById("address").innerHTML=addressHTML(data.customer.address)+defaultAdressCheckHTML;
+                document.getElementById("defaultAddressCheck").checked=true
+                defaultAddressSelector();
                  }else{
                  document.getElementById("address").innerHTML=failHTML;	
                  }
-            	  if(data.customerNotExist){
+            	  if(data.customerNotExistError){
             	  document.getElementById("submitPurchaseOrder").style.display='none';
 				  document.getElementById("addressBox").style.display='none';
 				  document.getElementById("creditCardBox").style.display='none';
@@ -228,7 +336,7 @@ const pageLoadConfirmation =(address)=>{
 	document.getElementById("confirmCreditCard").innerHTML=spinnerHTML;	
 	document.getElementById("confirmContents").innerHTML=spinnerHTML;
     let request = new XMLHttpRequest()
-    request.open("GET", address+'?ajax=true', true);
+    request.open("GET", address+'?ajax=true&checkoutConfirmation=true', true);
     request.onreadystatechange = ()=>{
             if ((request.readyState == 4) && (request.status == 200)){            
                  let data=JSON.parse(request.responseText);
@@ -240,7 +348,7 @@ const pageLoadConfirmation =(address)=>{
             	  document.getElementById("editPurchaseOrder").disabled=true;           
                   alert(data.emptyCartError)	
                   history.back();
-            	  }else if(data.customerNotExist){
+            	  }else if(data.customerNotExistError){
             	  document.getElementById("confirmAddressBox").disabled=true;
             	  document.getElementById("confirmCreditCardBox").disabled=true;  
             	  document.getElementById("confirmContentsBox").disabled=true; 
@@ -250,20 +358,20 @@ const pageLoadConfirmation =(address)=>{
             	  document.getElementById("confirmPurchaseOrderForm").style.display="none"
             	  history.back();
             	  }  else {
-            	 if(data.creditCard){
-                 document.getElementById("confirmCreditCard").innerHTML=creditCardHTML(data.creditCard);
+            	 if(data.customer.creditCard){
+                 document.getElementById("confirmCreditCard").innerHTML=creditCardHTML(data.customer.creditCard);
                  }else{
                  document.getElementById("confirmCreditCard").innerHTML=failHTML;	
                  }
 
-                 if(data.address){
-                 document.getElementById("confirmAddress").innerHTML=addressHTML(data.address);
+                 if(data.customer.address){
+                 document.getElementById("confirmAddress").innerHTML=addressHTML(data.customer.address);
                  }else{
                  document.getElementById("confirmAddress").innerHTML=failHTML;	
                  }
                  
-                 if(data.cart){
-                 document.getElementById("confirmContents").innerHTML=cartHTML(data.cart);
+                 if(data.customer.cart){
+                 document.getElementById("confirmContents").innerHTML=cartHTML(data.customer.cart);
                  }else{
                  document.getElementById("confirmContents").innerHTML=failHTML;	
                  }

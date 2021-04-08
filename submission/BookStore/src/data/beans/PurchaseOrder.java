@@ -285,7 +285,6 @@ public class PurchaseOrder extends IdObject {
 			purchaseOrder.email=this.email;
 			purchaseOrder.address=new Address.Builder().withCountry(country).withNumber(streetNumber).withCity(city).withPostalCode(postalCode).withProvince(province).withStreet(street).build();
 			purchaseOrder.creditCard= new CreditCard.Builder().withCreditCardType(creditCardType).withCreditCardNumber(creditCardNumber).withCreditCardExpiry(creditCardExpiry).withCreditCardCVV2(creditCardCVV2).build();
-			System.out.println(purchaseOrder.address.toJson());
 			purchaseOrder.id=this.id;
 			purchaseOrder._isWithinCustomer=this._isWithinCustomer;
 			return purchaseOrder;

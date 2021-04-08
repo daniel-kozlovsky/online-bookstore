@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8"/>
 <title>Checkout</title>
 <link rel="stylesheet" type='text/css'  href="/BookStore/css/animations.css">
 <script type="text/javascript" src="/BookStore/js/purchaseOrderHandler.js"></script>
 </head>
-<body  onload="pageLoadMain('/BookStore/PurchaseOrder');">
-
-		
-		
-		
-		
+<body  class="overlay" onload="pageLoadMain('/BookStore/PurchaseOrder');">		
 	<form  action="PurchaseOrder" method="POST" id="purchaseOrder" onsubmit="return validatePurchaseOrder();">
 	<div>
 	<fieldset id="addressBox">
-	<legend>Saved Address</legend>	
+	<legend>Default Address</legend>	
 	<div id="address"></div>
 	</fieldset>
 	<fieldset id="creditCardBox" >
-	<legend>Saved Credit Card</legend>	
+	<legend>Default Credit Card</legend>	
 	<div id="creditCard"></div>
+	
+	
+	
 	</fieldset>
 	<div class="collapsible" >
 			<fieldset id="newAddressBox"  class="expand" >
 
-	<legend>New Address</legend>	
+	<legend>Ship To Address</legend>	
 
 
 			<label for="streetNumber"><br>Street Number</br>
-			<input id="streetNumber" name="StreetNumber"></input>
+			<input id="streetNumber" name="streetNumber"></input>
 		
 			<label for="street"><br>Street</br></label>
 			<input id="street" name="street"></input> 
@@ -56,7 +54,7 @@
 			</select>
 			
 			<label for="postalCode"><br>Postal Code</br></label>
-			<input type="postalCode" id="postalCode" name="postalCode"></input> 
+			<input id="postalCode" name="postalCode"></input> 
 			
 			<label for="country"><br>Country</br></label>
 			<select name="country" id="country">
@@ -69,17 +67,19 @@
 			</div>	
 			<div class="collapsible" >
 							<fieldset id="newCreditCardBox" class="expand">
-		<legend>New Credit Card</legend>	
+		<legend>Pay With Credit Card</legend>	
 			<label for="creditCardType"><br>Credit Card</br></label>
 			<select name="creditCardType" id="creditCardType">
 			  <option value="Visa">Visa</option>
 			  <option value="Mastercard">Mastercard</option>
 			 </select>
-			<label for="exipryDate"><br>Expiry Date</br></label>
-			<input type="date" id="exipryDate" name="exipryDate"
+			 <label for="creditCardNumber"><br>creditCardNumber</br></label>
+			<input id="creditCardNumber" name="creditCardNumber"></input> 
+			<label for="creditCardExpiry"><br>Expiry Date</br></label>
+			<input type="date" id="creditCardExpiry" name="creditCardExpiry"
 		       min="2021-01-01">
-		       <label for="cvv2"><br>cvv2</br></label>
-		       <input  id="cvv2" name="cvv2"></input> 
+		       <label for="creditCardCVV2"><br>cvv2</br></label>
+		       <input  id="creditCardCVV2" name="creditCardCVV2"></input> 
 
 			<label for="newCreditCard">Use this credit card for future checkouts</label>
 			<input type="checkbox" id="newCreditCard" name="newCreditCard"></input>
@@ -91,6 +91,7 @@
 		</form>
 		<div id="visitorCheckout"></div>
 		<div id="newCustomerCheckoutButtons"></div>
+		<div id="iframeContainer"></div>
 
 </body>
 </html>

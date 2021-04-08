@@ -17,7 +17,7 @@ public class UpdateVisitor extends DataUpdate{
 		String epoch =Long.toString(Instant.now().getEpochSecond());
 		String userTablesUpdate = "INSERT INTO SITE_USER (ID,USER_TYPE) VALUES ('"+id+"','"+UserTypes.VISITOR+"')";
 		sendUpdateToDatabase(userTablesUpdate);
-		String update ="INSERT INTO VISITOR (ID,USER_TYPE,CREATED_AT_EPOCH) VALUES ('"+
+		String update ="INSERT INTO VISITOR (ID,CREATED_AT_EPOCH) VALUES ('"+
 				"('"+id+"','"+UserTypes.VISITOR+"',"+epoch+")";
 		sendUpdateToDatabase(update);
 		return new Visitor.Builder().withId(new Id(id)).withCart(new Cart.Builder().withId(new Id(id)).build()).withCreatedAtEpoch(epoch).build();

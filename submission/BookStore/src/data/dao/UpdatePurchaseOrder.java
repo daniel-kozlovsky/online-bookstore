@@ -1,6 +1,11 @@
 package data.dao;
 
+import java.sql.SQLException;
 import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import data.beans.Address;
@@ -10,6 +15,9 @@ import data.beans.Customer;
 import data.beans.Id;
 import data.beans.PurchaseOrder;
 import data.beans.SiteUser;
+import data.dao.exceptions.UpdateDBFailureException;
+import data.fetcher.CustomerDataFetcher;
+import data.schema.CustomerSchema;
 import data.schema.PurchaseOrderSchema;
 
 public class UpdatePurchaseOrder extends DataUpdate {
@@ -23,44 +31,44 @@ public class UpdatePurchaseOrder extends DataUpdate {
 //	public static final String DELIVERED_STATUS="DELIVERED";
 //	public static final String ORDERED_STATUS="ORDERED";
 	
-	public void executeUpdatePurchaseOrderStatusToShipped(SiteUser siteUser, PurchaseOrder purchaseOrder) {
-		executeUpdatePurchaseOrderStatusTo(siteUser,purchaseOrder,PurchaseOrderSchema.SHIPPED_STATUS);
+	public void executeUpdatePurchaseOrderStatusToShipped(Customer customer, PurchaseOrder purchaseOrder) {
+		executeUpdatePurchaseOrderStatusTo(customer,purchaseOrder,PurchaseOrderSchema.SHIPPED_STATUS);
 	}
-	public void executeUpdatePurchaseOrderStatusToProcessed(SiteUser siteUser, PurchaseOrder purchaseOrder) {
-		executeUpdatePurchaseOrderStatusTo(siteUser,purchaseOrder,PurchaseOrderSchema.PROCESSED_STATUS);
+	public void executeUpdatePurchaseOrderStatusToProcessed(Customer customer, PurchaseOrder purchaseOrder) {
+		executeUpdatePurchaseOrderStatusTo(customer,purchaseOrder,PurchaseOrderSchema.PROCESSED_STATUS);
 	}
-	public void executeUpdatePurchaseOrderStatusToDenied(SiteUser siteUser, PurchaseOrder purchaseOrder) {
-		executeUpdatePurchaseOrderStatusTo(siteUser,purchaseOrder,PurchaseOrderSchema.DENIED_STATUS);
+	public void executeUpdatePurchaseOrderStatusToDenied(Customer customer, PurchaseOrder purchaseOrder) {
+		executeUpdatePurchaseOrderStatusTo(customer,purchaseOrder,PurchaseOrderSchema.DENIED_STATUS);
 	}
-	public void executeUpdatePurchaseOrderStatusToDelivered(SiteUser siteUser, PurchaseOrder purchaseOrder) {
-		executeUpdatePurchaseOrderStatusTo(siteUser,purchaseOrder,PurchaseOrderSchema.DELIVERED_STATUS);
+	public void executeUpdatePurchaseOrderStatusToDelivered(Customer customer, PurchaseOrder purchaseOrder) {
+		executeUpdatePurchaseOrderStatusTo(customer,purchaseOrder,PurchaseOrderSchema.DELIVERED_STATUS);
 	}
-	public void executeUpdatePurchaseOrderStatusToOrdered(SiteUser siteUser, PurchaseOrder purchaseOrder) {
-		executeUpdatePurchaseOrderStatusTo(siteUser,purchaseOrder,PurchaseOrderSchema.ORDERED_STATUS);
+	public void executeUpdatePurchaseOrderStatusToOrdered(Customer customer, PurchaseOrder purchaseOrder) {
+		executeUpdatePurchaseOrderStatusTo(customer,purchaseOrder,PurchaseOrderSchema.ORDERED_STATUS);
 	}
 	
-	private void executeUpdatePurchaseOrderStatusTo(SiteUser siteUser, PurchaseOrder purchaseOrder,String newStatus) {
-		if(siteUser==null || purchaseOrder==null || newStatus==null || purchaseOrder.isEmpty()|| 
+	private void executeUpdatePurchaseOrderStatusTo(Customer customer, PurchaseOrder purchaseOrder,String newStatus) {
+		if(customer==null || purchaseOrder==null || newStatus==null || purchaseOrder.isEmpty()|| 
 				!newStatus.equals(PurchaseOrderSchema.ORDERED_STATUS)|| !newStatus.equals(PurchaseOrderSchema.PROCESSED_STATUS)|| 
 				!newStatus.equals(PurchaseOrderSchema.SHIPPED_STATUS)|| !newStatus.equals(PurchaseOrderSchema.DELIVERED_STATUS) ||
 				!newStatus.equals(PurchaseOrderSchema.DENIED_STATUS)) return;
 		String update = "UPDATE PURCHASE_ORDER SET ";
 		update+=" STATUS='"+newStatus+"' ";
-		update+="WHERE ID='"+siteUser.getId().toString()+"' AND CREATED_AT_EPOCH="+Long.toString(purchaseOrder.getCreatedAtEpoch());
+		update+="WHERE ID='"+customer.getId().toString()+"' AND CREATED_AT_EPOCH="+Long.toString(purchaseOrder.getCreatedAtEpoch());
 		sendUpdateToDatabase(update);
 	}
 	
-	public PurchaseOrder insertPurchaseOrder(SiteUser siteUser, String email, CreditCard creditCard,Address address) {
+	public PurchaseOrder insertPurchaseOrder(Customer customer, String email, CreditCard creditCard,Address address) throws UpdateDBFailureException{
 		//add cart items to PO
 		//clear cart items
-		if(siteUser.getCart()==null ||siteUser.getId().isEmpty() ||!siteUser.getCart().isEmpty()||creditCard==null ||creditCard.isEmpty()) return new PurchaseOrder.Builder().withId(siteUser.getId()).build();
+		if(customer.getCart()==null ||customer.getId().isEmpty() ||customer.getCart().isEmpty()||creditCard==null ||creditCard.isEmpty()) return new PurchaseOrder.Builder().withId(customer.getId()).build();
 		String epoch =Long.toString(Instant.now().getEpochSecond());
+		Map<Book,Integer> cartBooks = customer.getCart().getBooks();
 //		ID, BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH
-		String update ="INSERT INTO PURCHASE_ORDER (ID,BOOK,USER_TYPE,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES ";
-		for(Entry<Book,Integer> entry:siteUser.getCart().getBooks().entrySet()) {
+		String update ="INSERT INTO PURCHASE_ORDER (ID,BOOK,ISBN,EMAIL,STREET_NUMBER,STREET,POSTAL_CODE,CITY,PROVINCE,COUNTRY,STATUS,AMOUNT,CREATED_AT_EPOCH,CREDIT_CARD,CREDIT_CARD_NUMBER,CREDIT_CARD_EXPIRY,CREDIT_CARD_CVV2)	VALUES ";
+		for(Entry<Book,Integer> entry:customer.getCart().getBooks().entrySet()) {
 			if(!entry.getKey().hasId()) continue;
-			update+="('"+siteUser.getId().toString()+"','"+entry.getKey().getId().toString()+"','"+
-					siteUser.getUserType()+"','"+
+			update+="('"+customer.getId().toString()+"','"+entry.getKey().getId().toString()+"','"+entry.getKey().getISBN()+"','"+
 					email+"','"+
 					address.getNumber()+"','"+
 					address.getStreet()+"','"+
@@ -72,11 +80,21 @@ public class UpdatePurchaseOrder extends DataUpdate {
 			+creditCard.getCreditCardType()+"','"+creditCard.getCreditCardNumber()+"','"+creditCard.getCreditCardExpiry()+"','"+creditCard.getCreditCardCVV2()+"'),";
 		}
 		update=update.substring(0,update.length()-1);
-		new UpdateCart().executeClearCart(siteUser);
-		return new PurchaseOrder.Builder().withId(siteUser.getId()).withBooks(siteUser.getCart().getBooks()).build();
+		System.out.println("PO UPDATE: "+update);
+		sendUpdateToDatabase(update);
+		int entryCount=customer.getCart().getBooks().keySet().size();
+		System.out.println(update);
+		String check = "SELECT COUNT(*) AS PO_COUNT FROM PURCHASE_ORDER WHERE ID='"+customer.getId().toString()+"'";
+		if(checkDatabaseResultSet("PO_COUNT",check)<=entryCount) {
+			throw new UpdateDBFailureException("customer","could not execute update request",update);
+		} 
+		
+		new UpdateCart().executeClearCart(customer);
+		customer.getCart().clearCart();
+		return new PurchaseOrder.Builder().withId(customer.getId()).withBooks(cartBooks).build();
 	}
 	
-	public PurchaseOrder insertPurchaseOrder(Customer customer) {
+	public PurchaseOrder insertPurchaseOrder(Customer customer) throws UpdateDBFailureException {
 		return insertPurchaseOrder(customer,customer.getEmail(),customer.getCreditCard(),customer.getAddress());				
 	}
 

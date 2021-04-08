@@ -39,6 +39,10 @@ public class Address implements Bean{
 		return (number==null || number.isEmpty()) && (street==null || street.isEmpty()) && (postalCode==null || postalCode.isEmpty()) && (province==null || province.isEmpty()) && (country==null || country.isEmpty());
 	}
 	
+	public boolean hasMissingComponents() {
+		return number==null || number.isEmpty() || street==null || street.isEmpty() || postalCode==null || postalCode.isEmpty()|| province==null || province.isEmpty()||country==null || country.isEmpty();
+	}
+	
 	public static class Builder{
 		private String number;
 		private String street;

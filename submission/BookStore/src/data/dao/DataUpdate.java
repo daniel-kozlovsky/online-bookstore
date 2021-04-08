@@ -44,15 +44,22 @@ public abstract class DataUpdate {
 		}
 	}
 	
-	protected ResultSet checkDatabaseResultSet(String queryString) {
+	protected int checkDatabaseResultSet(String attributeName,String queryString) {
 		
 		Connection connection= null;
 		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		int count=0;
 		try {
 			DataSource dataSource=(DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
 			connection= dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(queryString);
-			return preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				count=resultSet.getInt(attributeName);
+			}
+			
+			
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -73,9 +80,18 @@ public abstract class DataUpdate {
 					e.printStackTrace();
 				}
 			}
+			if(resultSet!=null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
 
 		}
-		return null;
+		return count;
 	}
 
 	

@@ -6,8 +6,9 @@
 <link rel="stylesheet" type='text/css'  href="/BookStore/css/animations.css">
 <script type="text/javascript" src="/BookStore/js/purchaseOrderHandler.js"></script>
 </head>
-<body onload="pageLoadConfirmation('/BookStore/PurchaseOrder');">
+<body class="overlay" onload="pageLoadConfirmation('/BookStore/PurchaseOrder');">
 
+<div id="confirmationInfo" >
 
 
 	<fieldset id="confirmAddressBox">
@@ -22,14 +23,15 @@
 	<legend>Items</legend>	
 	<div id="confirmContents"></div>
 	</fieldset>
-	<form action="PurchaseOrder" method="POST" id="confirmPurchaseOrderForm" onsubmit="return validatePurchaseOrder();">
-	<button action="submit"  value="true" name="confirmPurchaseOrder" id="confirmPurchaseOrder" value="true" onclick="confirmPurchaseOrder();">Confirm</button>
 	<button name="editPurchaseOrder" id="editPurchaseOrder" value="true" onclick="history.back();">Back</button>
+    <button name="editCart" id="editCart" value="true" onclick="window.location='/BookStore/ShoppingCart';">Edit Cart</button>
+   	<button name="confirmPurchaseOrder" id="confirmPurchaseOrder" onclick="confirmPurchaseOrderSubmission('/BookStore/PurchaseOrder');">Confirm</button>
 
-	</form>
 	
-
+</div>	
+<div id="confirmationResults" ></div>
 		
+    
 
 </body>
 </html>

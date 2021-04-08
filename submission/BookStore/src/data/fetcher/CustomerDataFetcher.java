@@ -134,7 +134,7 @@ public class CustomerDataFetcher extends DataFetcher<Customer>{
 			e.printStackTrace();
 		}
 		
-		System.err.println("Warning empty book, since resultSet could not produce book object");
+		System.err.println("Warning empty customer, since resultSet could not produce customer object");
 		return customer;
 		
 	}
