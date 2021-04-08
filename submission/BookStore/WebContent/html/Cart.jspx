@@ -125,7 +125,7 @@
 	</c:if>
 	
 	<!-- footer -->
-	<footer>
+	<footer  style="margin-top:40px;">
 		<div class="footer_container">
 			<div class="footer_row" style="text-align:center">
 				<p>©2021, Runtime Terror, Inc. or its affiliates</p>

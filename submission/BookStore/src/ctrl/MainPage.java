@@ -184,8 +184,18 @@ public class MainPage extends HttpServlet {
 	 */
 	private String addSuggestionSection(List<Book> l, String category) {
 		
+		String text = category;
+		
+		if (category.contains("_")) {
+			String[] s = category.split("_");
+			text = "";
+			
+			for (int i = 0; i < s.length; i ++)
+				text += s[i] + " ";
+		}
+		
 		String result_html = "<div class=\"container\" >\n"
-						   + "	<span class=\"title\"> Top 20 recommended books in "+category+"</span>\n"
+						   + "	<span class=\"title\"> Top 20 recommended books in "+text+"</span>\n"
 						   + "	<div class=\"row\">\n";
 		
 		for (int index = 0; index < l.size(); index++) {
