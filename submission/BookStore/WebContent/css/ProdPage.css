@@ -71,6 +71,10 @@ body {
 	background-color:#769fef;
 }
 
+.addReview:hover {
+	background-color:#769fef;
+}
+
 .readMore {
 	border: none;
 	color: #748df4;

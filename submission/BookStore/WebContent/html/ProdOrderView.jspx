@@ -9,43 +9,23 @@
 		omit-xml-declaration="true" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Online Book Store</title>
-	
-	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/mainPage.css" type="text/css" title="cse4413" media="screen, print" />
+	<title>Order Page</title>
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/bookPageHandler.js">;</script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
-    
-    <style type="text/css">	
- 	${requestScope['CSS_MAIN']}
- 	</style>
-
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/Order.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
 </head>
 <body>
-<!-- ===============================================
-
-  This file handles the main page view and content
-  of the online bookstore website for users and 
-  visitors.
-
-=============================================== -->
-	<!-- Javascript code -->
-	<script  type="text/javascript">
-	<![CDATA[
-	${requestScope['JS_CODE_MAIN']}
-	]]>
-	</script>
-	
 	<!-- Navigation bar -->
 	<div class="nav_bar">
-		<a href="#main"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
-		<a class="padding active" href="#home">Home</a>
+		<a href="${pageContext.request.contextPath}/MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding hovering" href="${pageContext.request.contextPath}/MainPage">Home</a>
 		<c:choose>
 			<!-- customer -->
-		  	<c:when test="${sessionScope['customer'] != null}">
+		  	<c:when test="${not empty sessionScope['customer']}">
 				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
 				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
 				<form action="" method="post">
@@ -71,18 +51,21 @@
 		<div class="search_bar">
 	  		<form action="${pageContext.request.contextPath}/Search" method="Post">
 	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
-	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">
+	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">	    		
 	    		</button> 
+
 	    	</form>
 	  	</div>
 	</div>
 	
-	<!-- headline -->
-	<header>Online Book Store</header>
+	<!-- individual order summary -->
+	<div class="section">
+		<header>Order ID : ${requestScope['ORDER_ID']}</header>
+		
+		${requestScope['BOOKS_IN_ORDER']}
+		
+	</div>
 	
-	<!-- Suggestion Section -->	
-	${requestScope['HTML_SUGGST_MAIN']}
-
 	<!-- footer -->
 	<footer>
 		<div class="footer_container">
@@ -91,7 +74,6 @@
 			</div>
 		</div>
 	</footer>
-	
 </body>
 </html>
 </jsp:root>

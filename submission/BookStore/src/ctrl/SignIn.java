@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,10 +40,19 @@ public class SignIn extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		System.out.println("\n\n\t\tLogin out\n\n");
 		UAuthModel.logUserOut(request.getSession());
-		response.sendRedirect(MAIN_PAGE_TARGET);
-		//reload page?
+		
+		try {
+			HttpSession session = request.getSession();
+			MainPageModel model;
+			model = MainPageModel.getInstance();
+			session.setAttribute("visitor", model.getVisitor(request));
+		} catch (ClassNotFoundException e) {
+			
+		}
+		
+		response.sendRedirect(MAIN_PAGE_TARGET); // redirects to main page
 	}
 
 	/**
@@ -50,49 +60,55 @@ public class SignIn extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		HttpSession session = request.getSession();
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		Visitor visitor = SessionAccess.getVisitor(session);
-		
-		response.setContentType("application/text");
-		PrintWriter out = response.getWriter();
-		//validate variables
-		List<String> errors = UAuthModel.validateSignIn(username, password);
-		String responseText = "";
-		if(!errors.isEmpty())
-		{
-			response.setStatus(403);
-			responseText = errors.toString();
-		}
-		else
-		{
-			//log user in
-			Customer customer = UAuthModel.logUserIn(username, password);
-			if(customer.isLoggedOn())
-			{
-				session.setAttribute("customer", customer);
-				//transfer cart
-				if(visitor != null)
-				{
-					shoppingModel.addAllFromCart(visitor, customer);
-				}
-				//go to main page
-				
-				//response.sendRedirect(MAIN_PAGE_TARGET);
-				//return;
-				//request.getRequestDispatcher(MAIN_PAGE_TARGET).forward(request, response);
-			}
-			//non existent user
-			else
+
+		if (request.getParameter("cameFromPage") != null) {
+			System.out.println("\t\tcameFromPage="+request.getParameter("cameFromPage"));
+			this.doDelete(request, response);
+		} else {
+			HttpSession session = request.getSession();
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			Visitor visitor = (Visitor) session.getAttribute("visitor");
+			
+			response.setContentType("application/text");
+			PrintWriter out = response.getWriter();
+			//validate variables
+			List<String> errors = UAuthModel.validateSignIn(username, password);
+			String responseText = "";
+			if(!errors.isEmpty())
 			{
 				response.setStatus(403);
-				responseText = "Invalid Credentials!";
-				
+				responseText = errors.toString();
 			}
+			else
+			{
+				//log user in
+				Customer customer = UAuthModel.logUserIn(username, password);
+				if(customer.isLoggedOn())
+				{
+					session.setAttribute("customer", customer);
+					//transfer cart
+					if(visitor != null)
+					{
+						shoppingModel.addAllFromCart(visitor, customer);
+					}
+					//go to main page
+					
+					//response.sendRedirect(MAIN_PAGE_TARGET);
+					//return;
+					//request.getRequestDispatcher(MAIN_PAGE_TARGET).forward(request, response);
+				}
+				//non existent user
+				else
+				{
+					response.setStatus(403);
+					responseText = "Invalid Credentials!";
+					
+				}
+			}
+			out.printf(responseText);
+			out.flush();
 		}
-		out.printf(responseText);
-		out.flush();
 	}
 
 }
