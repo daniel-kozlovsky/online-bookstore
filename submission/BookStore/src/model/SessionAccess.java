@@ -38,4 +38,14 @@ public class SessionAccess {
 		return (session.getAttribute(CUSTOMER) != null);
 	}
 	
+	public static void setVisitor(HttpSession session, Visitor visitor)
+	{
+		session.setAttribute(VISITOR, visitor);
+	}
+	
+	public static void setCustomer(HttpSession session, Customer customer)
+	{
+		session.setAttribute(CUSTOMER, customer);
+	}
+	
 }
