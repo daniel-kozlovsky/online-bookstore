@@ -18,6 +18,10 @@ public class CreditCard implements Bean{
 	public String getCreditCardNumber() {
 		return creditCardNumber;
 	}
+	
+	public String getConcealedCreditCardNumber() {
+		return creditCardNumber.substring(0,creditCardNumber.length()-3).replaceAll(".*", "*")+creditCardNumber.substring(creditCardNumber.length()-4,creditCardNumber.length());
+	}
 
 	public String getCreditCardExpiry() {
 		return creditCardExpiry;
@@ -30,6 +34,8 @@ public class CreditCard implements Bean{
 	public boolean isEmpty() {
 		return  creditCardType==null || creditCardType.isEmpty() ||creditCardExpiry==null || creditCardExpiry.isEmpty()||creditCardNumber==null || creditCardNumber.isEmpty()||creditCardCVV2==null || creditCardCVV2.isEmpty();
 	}
+	
+	
 	public static class Builder {
 		private String creditCardType;
 		private String creditCardNumber;

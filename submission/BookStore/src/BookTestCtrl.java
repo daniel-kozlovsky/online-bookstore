@@ -28,10 +28,13 @@ import data.beans.Book;
 import data.beans.Customer;
 import data.beans.Id;
 import data.beans.PurchaseOrder;
+import data.beans.Review;
+import data.beans.SiteUser;
 import data.beans.Visitor;
 import data.dao.BookDAO;
 import data.dao.CustomerDAO;
 import data.dao.PurchaseOrderDAO;
+import data.dao.ReviewDAO;
 import data.dao.UpdateBook;
 import data.dao.UpdateCustomer;
 import data.dao.UpdateReview;
@@ -64,19 +67,56 @@ public class BookTestCtrl extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("do get");
-		CustomerDAO user =new CustomerDAO();
-		String username="WRitter163";
-		String passwd = "Walterpassword";
-
-		Customer s = user.loginCustomer(username, passwd);
-		System.out.println(s.toJson());
+		ReviewDAO revdao=new ReviewDAO();
+		
+		SiteUser siteUser=(SiteUser)new Customer.Builder().withId(new Id("fakeeCustID")).build();
+		Book book=new Book.Builder().withId(new Id("fakeeBookID")).build();
+		Review review=new Review.Builder().withBook(book).withCustomer((Customer)siteUser).build();
+		revdao.newUpdateRequest()
+		.requestUpdateReview(siteUser,review)
+		.updateReviewBody("newBODy")
+		.updateReviewRating(3)
+		.updateReviewTitle("new Title")
+		.executeUpdate();
+//		System.out.println("do get");
+//		new ReviewDAO().newQueryRequest()
+//				.includeAllAttributesInResultFromSchema()
+//				.queryAttribute()
+//				.whereReviewBook()
+//				.isBook(new Book.Builder().withId(new Id("025a99fd-ee0d-31f0-bff7-fd50e1289bfb")).build())
+//				.queryAttribute()
+//				.whereReviewCustomer()
+//				.isCustomer(new Customer.Builder().withId(new Id("28a99318-aa6b-323c-bdac-925ff92ecaca")).build())
+//				.withResultLimit(20)
+//				.executeQuery()
+//				.executeCompilation()
+//				.compileCustomers()
+//				.stream().map(abook->abook.toJson()).forEach(System.out::println);
+//		CustomerDAO user =new CustomerDAO();
+//		String username="WRitter163";
+//		String passwd = "Walterpassword";
+//
+//		Customer s = user.loginCustomer(username, passwd);
+//		System.out.println(s.toJson());
 //		
 //		PrintWriter out = response.getWriter();
 //      response.setContentType("text");
 //      response.setCharacterEncoding("UTF-8");
 //      out.write("TESTING  !!!");
-
+//		new CustomerDAO().newUpdateRequest() 
+//		.requestNewCustomerInsertion() 
+//		.insertCustomerWithGivenName("firstNameTEST") 
+//		.insertCustomerWithSurName("lasetName") 
+//		.insertCustomerWithUserName("asdfasdf") 
+//		.insertCustomerWithPassWord("asdfasdf") 
+//		.insertCustomerWithEmail("asdfasdf@email") 
+//		.insertCustomerWithStreetNumber("addy") 
+//		.insertCustomerWithStreet("stwt") 
+//		.insertCustomerWithPostalCode("pastacode") 
+//		.insertCustomerWithCity("schity") 
+//		.insertCustomerWithProvince("pro") 
+//		.insertCustomerWithCountry("cont") 
+//		.executeCustomerInsertion();
 
 //		DataObjectCompiler docCust= new CustomerDAO().newQueryRequest()
 //				.includeAllAttributesInResultFromSchema()
@@ -164,7 +204,7 @@ public class BookTestCtrl extends HttpServlet {
 //		attributesIncludedInResults.get("REVIEW").add("BODY");
 		
 //		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
-		//http://localhost:8080/BookStore/BookTestCtrl
+		//http://localhost:8080/BookTestCtrl
 //		PrintWriter out = response.getWriter();
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");

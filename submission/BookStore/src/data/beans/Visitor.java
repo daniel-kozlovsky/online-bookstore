@@ -44,7 +44,7 @@ public class Visitor extends SiteUser {
 
 		public Builder(){
 			super();
-			this.cart=null;
+			this.cart=new Cart.Builder().withId(this.id).build();
 			this.id=new Id("");
 			createdAtEpoch=0;
 			lastAccessedAtEpoch=0;

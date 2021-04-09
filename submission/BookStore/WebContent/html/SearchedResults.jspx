@@ -2,7 +2,7 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" >
 	<jsp:directive.page contentType="text/html; charset=UTF-8" 
-		pageEncoding="UTF-8" session="false"/>
+		pageEncoding="UTF-8" session="true"/>
 	<jsp:output doctype-root-element="html"
 		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
@@ -20,19 +20,23 @@
 		title="cse4413" media="screen, print" />
     
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/SearchHandler.js">;</script>
-
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
 
 </head>
 <body>
 	<!-- Navigation bar -->
 	<div class="nav_bar">
-		<a href="MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
-		<a class="padding" href="MainPage">Home</a>
+		<a href="${pageContext.request.contextPath}/MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding hovering" href="${pageContext.request.contextPath}/MainPage">Home</a>
 		<c:choose>
 			<!-- customer -->
-		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/OrdersReturns.jspx">Orders &amp; Returns</a>
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
+		  	<c:when test="${not empty sessionScope['customer']}">
+				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
+				<form action="" method="post">
+					<label type="hidden" id="cameFromPage" name="cameFromPage" value="ProductPage" ></label>
+					<a class="padding hovering"  onclick="LogOut();">Sign Out</a>
+				</form>
 		  	</c:when>
 
 		  	<!-- visitor -->
@@ -44,7 +48,7 @@
 	  	</c:choose>
 		
 		<!-- shopping cart -->
-	  	<a href="${pageContext.request.contextPath}/html/Cart.jspx" style="float:right;" >
+	  	<a href="${pageContext.request.contextPath}/ShoppingCart" style="float:right;" >
 	  		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/shoppingCart.png" alt="checkout" />
   		</a>
 	  	
@@ -52,16 +56,13 @@
 		<div class="search_bar">
 	  		<form action="${pageContext.request.contextPath}/Search" method="Post">
 	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
-	    		
-	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">
-	    		
+	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">	    		
 	    		</button> 
-	    		<!-- <a href="${pageContext.request.contextPath}/html/SearchedResults.jspx" style="float:right;" >
-		    		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/magnifyingGlass.jpg" alt="search" />
-	    		</a> -->
+
 	    	</form>
 	  	</div>
 	</div>
+	
 	
 	
 	<!-- Result section -->
@@ -83,29 +84,13 @@
 	
 	<!-- footer -->
 	<footer>
-		<div class="footer_container">
-			<div class="footer_row">
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 1</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 2</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 2</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
+		<div class="footer_container" style="">
+			<div class="footer_row" style="text-align:center">
+				<p>©2021, Runtime Terror, Inc. or its affiliates</p>
 			</div>
 		</div>
 	</footer>
+	
 </body>
 </html>
 </jsp:root>

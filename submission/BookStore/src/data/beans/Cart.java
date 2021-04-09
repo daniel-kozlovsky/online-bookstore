@@ -1,5 +1,6 @@
 package data.beans;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -107,7 +108,8 @@ public class Cart extends IdObject {
 		private boolean _isWithinSiteUser;
 		public Builder(Cart cart) {
 //			this.user=cart.user;
-			this.books = cart.books;
+			this.books = cart.books==null?new LinkedHashMap<Book, Integer>():cart.books;
+			
 			this._isWithinSiteUser = cart._isWithinSiteUser;
 
 //			if(cart.customer!=null) {
@@ -223,6 +225,11 @@ public class Cart extends IdObject {
 		}
 
 	}
+	
+	public void clearCart() {
+		this.books=new LinkedHashMap<Book, Integer>();
+	}
+
 
 	@Override
 	public String toJson() {
@@ -248,7 +255,13 @@ public class Cart extends IdObject {
 		booksJson += "]";
 		String userJson = this.userType.equals(UserTypes.VISITOR) ? visitorJson : customerJson;
 //		String userJsonLabel=this.customer==null?"visitor":"customer";
+		double total=0;
+		for(Entry<Book,Integer> entry:getBooks().entrySet()) {
+			total=entry.getKey().getPrice()*entry.getValue()+total;
+		}
 		return "{" + Bean.jsonMapVarChar("user", this.id.toString()) + ","
-				+ Bean.jsonMapVarChar("userType", this.userType) + "," + booksJson + "}";
+				+ Bean.jsonMapVarChar("userType", this.userType) + "," 
+				+ Bean.jsonMapNumber("total", String.format("%.2f", total))+","
+				+ booksJson + "}";
 	}
 }

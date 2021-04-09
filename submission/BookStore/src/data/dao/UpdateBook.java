@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import data.beans.Book;
 import data.beans.Customer;
+import data.beans.Id;
+import data.dao.exceptions.UpdateDBFailureException;
 import data.schema.BookSchema;
 
 public class UpdateBook extends DataUpdate{
@@ -147,12 +149,18 @@ public class UpdateBook extends DataUpdate{
 			// TODO Auto-generated constructor stub
 		}
 
-		public void executeBookInsertion(){
+		public Book executeBookInsertion() {
 			String idInput=book.getISBN()+book.getPublishYear();
 			String id =UUID.nameUUIDFromBytes(idInput.getBytes()).toString();
 			String update ="INSERT INTO BOOK (ID,TITLE ,SERIES ,DESCRIPTION ,CATEGORY,AUTHOR,COVER,ISBN ,PUBLISH_YEAR,PRICE)	VALUES 	"+
 					"("+id+","+book.getTitle()+","+book.getSeries()+","+book.getDescription()+","+book.getCategory()+","+book.getAuthor()+","+book.getCover().getName()+","+book.getISBN()+","+Integer.toString(book.getPublishYear())+","+Double.toString(book.getPrice())+")";
 			sendUpdateToDatabase(update);
+			
+			String check="SELECT COUNT(*) AS BOOK_COUNT FROM BOOK WHERE ID='"+id+"'";
+//			if(checkDatabaseResultSet("BOOK_COUNT",check)!=1) {
+//				throw new UpdateDBFailureException("Book","could not execute insertion request",update);
+//			} 
+			return new Book.Builder(book).withId(new Id(id)).build();
 		}
 	}
 	
@@ -173,60 +181,79 @@ public class UpdateBook extends DataUpdate{
 		}
 		public BookUpdater updateBookTitle(String title){
 			this.updateRequest.put(bookSchema.TITLE, surroundWithQuotes(title));
+			book= new Book.Builder(book).withTitle(title).build();
 			return this;
 			
 		}
 		
 		public BookUpdater updateBookSeries(String series){
 			this.updateRequest.put(bookSchema.SERIES, surroundWithQuotes(series));
+			book= new Book.Builder(book).withSeries(series).build();
 			return this;
 		}
 		
 		public BookUpdater updateBookCategory(String category){
 			this.updateRequest.put(bookSchema.CATEGORY, surroundWithQuotes(category));
+			book= new Book.Builder(book).withCategory(category).build();
 			return this;
 		}
 		
 		
 		public BookUpdater updateBookDescription(String description){
 			this.updateRequest.put(bookSchema.DESCRIPTION, surroundWithQuotes(description));
+			book= new Book.Builder(book).withDescription(description).build();
 			return this;
 		}
 		
 		public BookUpdater updateBookAuthor(String author){
 			this.updateRequest.put(bookSchema.AUTHOR, surroundWithQuotes(author));
+			book= new Book.Builder(book).withAuthor(author).build();
 			return this;
 		}
 		
 		public BookUpdater updateBookCover(File cover){
 			this.updateRequest.put(bookSchema.COVER, surroundWithQuotes(cover.getName()));
+			book= new Book.Builder(book).withCover(cover).build();
 			return this;
 		}
 		
 		public BookUpdater updateBookISBN(String ISBN){
 			this.updateRequest.put(bookSchema.ISBN, surroundWithQuotes(ISBN));
+			book= new Book.Builder(book).withISBN(ISBN).build();
 			return this;
 		}
 		
 		
 		public BookUpdater updateBookPrice(double price){
 			this.updateRequest.put(bookSchema.PRICE, Double.toString(price));
+			book= new Book.Builder(book).withPrice(price).build();
 			return this;
 		}
 		
 		public BookUpdater updateBookPublishYear(int publishYear){
 			this.updateRequest.put(bookSchema.PUBLISH_YEAR, Integer.toString(publishYear));
+			book= new Book.Builder(book).withPublishYear(publishYear).build();
 			return this;
 		}
 		
-		public void executeUpdate() {
+		public Book executeUpdate()  {
 			String update = "UPDATE BOOK SET ";
+			String check=" SELECT COUNT(*) AS BOOK_COUNT FROM BOOK WHERE ";
+			String and=" AND ";
 			for(Entry<String,String> entry:this.updateRequest.entrySet()) {
 				update+=entry.getKey()+"="+entry.getValue()+",";
+				if(!entry.getValue().equals("NULL")) {
+					check+=entry.getKey()+"="+entry.getValue() + and;	
+				}
 			}
 			update=update.substring(0,update.length()-1);
 			update+=" WHERE ID='"+book.getId().toString()+"'";
 			sendUpdateToDatabase(update);
+			check=check+" ID='"+book.getId().toString()+"'";
+//			if(checkDatabaseResultSet("BOOK_COUNT",check)!=1) {
+//				throw new UpdateDBFailureException("Book","could not execute insertion request",update);
+//			} 
+			return book;
 		}
 	}
 

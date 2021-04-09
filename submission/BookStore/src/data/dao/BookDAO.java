@@ -100,13 +100,15 @@ public class BookDAO implements DAO{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			if(connection!= null) {
+
+			if(resultSet!=null) {
 				try {
-					connection.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 			}
 			if(preparedStatement!=null) {
 				try {
@@ -116,6 +118,15 @@ public class BookDAO implements DAO{
 					e.printStackTrace();
 				}
 			}
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 
 		}
 		return results;
@@ -271,7 +282,8 @@ public class BookDAO implements DAO{
 			if(this.attributesToIncludInResults.get(bookSchema.tableName())==null||!this.attributesToIncludInResults.containsKey(bookSchema.tableName())) this.attributesToIncludInResults.put(bookSchema.tableName(),new LinkedHashSet<String>());
 			if(!this.attributesToIncludInResults.get(bookSchema.tableName()).isEmpty() || !this.attributesToIncludInResults.get(bookSchema.tableName()).contains(bookSchema.ID)) {
 				this.attributesToIncludInResults.get(bookSchema.tableName()).add(bookSchema.ID);	
-				this.attributesToIncludInResults.get(bookSchema.tableName()).add(bookSchema.ISBN);	
+				this.attributesToIncludInResults.get(bookSchema.tableName()).add(bookSchema.ISBN);
+				this.attributesToIncludInResults.get(bookSchema.tableName()).add(bookSchema.PRICE);
 			}
 			
 

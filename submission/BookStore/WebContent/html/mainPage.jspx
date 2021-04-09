@@ -17,6 +17,7 @@
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/bookPageHandler.js">;</script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
     
     <style type="text/css">	
  	${requestScope['CSS_MAIN']}
@@ -44,9 +45,13 @@
 		<a class="padding active" href="#home">Home</a>
 		<c:choose>
 			<!-- customer -->
-		  	<c:when test="${applicationScope['user'] eq 'customer'}">
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/OrdersReturns.jspx">Orders &amp; Returns</a>
-				<a class="padding hovering" href="${pageContext.request.contextPath}/html/UserPage.jspx">My Account</a>
+		  	<c:when test="${sessionScope['customer'] != null}">
+				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
+				<form action="" method="post">
+					<label type="hidden" id="cameFromPage" name="cameFromPage" value="MainPage" ></label>
+					<a class="padding hovering"  onclick="LogOut();">Sign Out</a>
+				</form>
 		  	</c:when>
 
 		  	<!-- visitor -->
@@ -58,7 +63,7 @@
 	  	</c:choose>
 		
 		<!-- shopping cart -->
-	  	<a href="${pageContext.request.contextPath}/html/Cart.jspx" style="float:right;" >
+	  	<a href="${pageContext.request.contextPath}/ShoppingCart" style="float:right;" >
 	  		<img class="nav_bar_img" style="float:right;" src="${pageContext.request.contextPath}/res/shoppingCart.png" alt="checkout" />
   		</a>
 	  	
@@ -81,29 +86,11 @@
 	<!-- footer -->
 	<footer>
 		<div class="footer_container">
-			<div class="footer_row">
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 1</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 2</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
-				<div class="footer_column">
-					<div class="footer_content">
-						<h2>some title 2</h2>
-						<p>Bla bla bla</p>
-					</div>
-				</div>
+			<div class="footer_row" style="text-align:center">
+				<p>©2021, Runtime Terror, Inc. or its affiliates</p>
 			</div>
 		</div>
 	</footer>
-	
 	
 </body>
 </html>

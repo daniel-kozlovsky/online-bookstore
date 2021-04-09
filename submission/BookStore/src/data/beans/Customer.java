@@ -98,7 +98,14 @@ public class Customer extends SiteUser{
 	}
 	
 
-	
+	public void addPurchaseOrder(PurchaseOrder purchaseOrder) {
+		PurchaseOrder[] purchaseOrders=new PurchaseOrder[this.purchaseOrders.length+1];
+		for(int i=0;i<this.purchaseOrders.length;i++) {
+			purchaseOrders[i]=this.purchaseOrders[i];
+		}
+		purchaseOrders[this.purchaseOrders.length]=purchaseOrder;
+		this.purchaseOrders=purchaseOrders;
+	}
 
 	
 	public long getCreatedAtEpoch() {
