@@ -1,5 +1,5 @@
 # we keep over writing it, so just gonna past context for cloud db for now, to lazy to fix the gitignore atm
-
+```
 <?xml version="1.0" encoding="UTF-8"?>
 <Context privileged="true" reloadable="true">
 	<WatchedResource>WEB-INF/web.xml</WatchedResource>
@@ -14,7 +14,7 @@
 		url="jdbc:db2://dashdb-txn-sbox-yp-dal09-14.services.dal.bluemix.net:50000/BLUDB"/>
 	<ResourceLink global="jdbc/EECS" name="jdbc/EECS" type="javax.sql.DataSource"/>
 </Context>
-
+```
 
 # UPDATE
 
