@@ -75,7 +75,7 @@
 		</plugins>
 	</build>
 	<dependencies>
-			<dependency>
+		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-server</artifactId>
 			<version>2.27</version>
@@ -113,6 +113,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>jcc</artifactId>
+			<version>11.5.5.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-servlet-api</artifactId>
 			<version>8.5.61</version>
@@ -123,14 +128,14 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-		  <groupId>javax.servlet.jsp</groupId>
-		  <artifactId>jsp-api</artifactId>
-		  <version>2.0</version>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>javax.json</groupId>
-		    <artifactId>javax.json-api</artifactId>
-		    <version>1.1.4</version>
+			<groupId>javax.json</groupId>
+			<artifactId>javax.json-api</artifactId>
+			<version>1.1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
