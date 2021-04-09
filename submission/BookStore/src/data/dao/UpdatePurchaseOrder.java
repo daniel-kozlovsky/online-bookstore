@@ -58,7 +58,7 @@ public class UpdatePurchaseOrder extends DataUpdate {
 		sendUpdateToDatabase(update);
 	}
 	
-	public PurchaseOrder insertPurchaseOrder(Customer customer, String email, CreditCard creditCard,Address address) throws UpdateDBFailureException{
+	public PurchaseOrder insertPurchaseOrder(Customer customer, String email, CreditCard creditCard,Address address) {
 		//add cart items to PO
 		//clear cart items
 		if(customer.getCart()==null ||customer.getId().isEmpty() ||customer.getCart().isEmpty()||creditCard==null ||creditCard.isEmpty()) return new PurchaseOrder.Builder().withId(customer.getId()).build();
@@ -85,16 +85,16 @@ public class UpdatePurchaseOrder extends DataUpdate {
 		int entryCount=customer.getCart().getBooks().keySet().size();
 		System.out.println(update);
 		String check = "SELECT COUNT(*) AS PO_COUNT FROM PURCHASE_ORDER WHERE ID='"+customer.getId().toString()+"'";
-		if(checkDatabaseResultSet("PO_COUNT",check)<=entryCount) {
-			throw new UpdateDBFailureException("customer","could not execute update request",update);
-		} 
+//		if(checkDatabaseResultSet("PO_COUNT",check)<=entryCount) {
+//			throw new UpdateDBFailureException("customer","could not execute update request",update);
+//		} 
 		
 		new UpdateCart().executeClearCart(customer);
 		customer.getCart().clearCart();
 		return new PurchaseOrder.Builder().withId(customer.getId()).withBooks(cartBooks).build();
 	}
 	
-	public PurchaseOrder insertPurchaseOrder(Customer customer) throws UpdateDBFailureException {
+	public PurchaseOrder insertPurchaseOrder(Customer customer)  {
 		return insertPurchaseOrder(customer,customer.getEmail(),customer.getCreditCard(),customer.getAddress());				
 	}
 

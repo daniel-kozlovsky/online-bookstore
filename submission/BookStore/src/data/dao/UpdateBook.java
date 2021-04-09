@@ -149,7 +149,7 @@ public class UpdateBook extends DataUpdate{
 			// TODO Auto-generated constructor stub
 		}
 
-		public Book executeBookInsertion() throws UpdateDBFailureException{
+		public Book executeBookInsertion() {
 			String idInput=book.getISBN()+book.getPublishYear();
 			String id =UUID.nameUUIDFromBytes(idInput.getBytes()).toString();
 			String update ="INSERT INTO BOOK (ID,TITLE ,SERIES ,DESCRIPTION ,CATEGORY,AUTHOR,COVER,ISBN ,PUBLISH_YEAR,PRICE)	VALUES 	"+
@@ -157,9 +157,9 @@ public class UpdateBook extends DataUpdate{
 			sendUpdateToDatabase(update);
 			
 			String check="SELECT COUNT(*) AS BOOK_COUNT FROM BOOK WHERE ID='"+id+"'";
-			if(checkDatabaseResultSet("BOOK_COUNT",check)!=1) {
-				throw new UpdateDBFailureException("Book","could not execute insertion request",update);
-			} 
+//			if(checkDatabaseResultSet("BOOK_COUNT",check)!=1) {
+//				throw new UpdateDBFailureException("Book","could not execute insertion request",update);
+//			} 
 			return new Book.Builder(book).withId(new Id(id)).build();
 		}
 	}
@@ -236,7 +236,7 @@ public class UpdateBook extends DataUpdate{
 			return this;
 		}
 		
-		public Book executeUpdate() throws UpdateDBFailureException {
+		public Book executeUpdate()  {
 			String update = "UPDATE BOOK SET ";
 			String check=" SELECT COUNT(*) AS BOOK_COUNT FROM BOOK WHERE ";
 			String and=" AND ";
@@ -250,9 +250,9 @@ public class UpdateBook extends DataUpdate{
 			update+=" WHERE ID='"+book.getId().toString()+"'";
 			sendUpdateToDatabase(update);
 			check=check+" ID='"+book.getId().toString()+"'";
-			if(checkDatabaseResultSet("BOOK_COUNT",check)!=1) {
-				throw new UpdateDBFailureException("Book","could not execute insertion request",update);
-			} 
+//			if(checkDatabaseResultSet("BOOK_COUNT",check)!=1) {
+//				throw new UpdateDBFailureException("Book","could not execute insertion request",update);
+//			} 
 			return book;
 		}
 	}

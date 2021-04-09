@@ -253,7 +253,7 @@ public class UpdateCustomer extends DataUpdate{
 		private ExecuteCustomerInsert (Customer customer) {
 			super(customer);
 		}
-		public 	Customer executeCustomerInsertion() throws UpdateDBFailureException{
+		public 	Customer executeCustomerInsertion() {
 
 		    String epoch =Long.toString(Instant.now().getEpochSecond());
 			String id =UUID.nameUUIDFromBytes(customer.getUserName().getBytes()).toString();
@@ -266,9 +266,9 @@ public class UpdateCustomer extends DataUpdate{
 			sendUpdateToDatabase(update);
 			String check="SELECT COUNT() CUST_COUNT FROM CUSTOMER WHERE ID='"+id+"' AND EMAIL='"+customer.getEmail()+"' AND USERNAME='"+customer.getUserName()+"' AND PASSWORD='"+customer.getPassword()+"'";
 
-			if(checkDatabaseResultSet("CUST_COUNT",check)!=1) {
-				throw new UpdateDBFailureException("customer","could not execute insertion request",update);
-			}
+//			if(checkDatabaseResultSet("CUST_COUNT",check)!=1) {
+//				throw new UpdateDBFailureException("customer","could not execute insertion request",update);
+//			}
 
 //			String check="SELECT * FROM CUSTOMER WHERE ";
 //			
@@ -390,7 +390,7 @@ public class UpdateCustomer extends DataUpdate{
 		}
 		
 		
-		public Customer executeUpdate() throws UpdateDBFailureException{
+		public Customer executeUpdate() {
 			String update = "UPDATE CUSTOMER SET ";
 			String check="SELECT COUNT(*) AS CUST_COUNT FROM CUSTOMER WHERE ";
 			String and=" AND ";
@@ -406,9 +406,9 @@ public class UpdateCustomer extends DataUpdate{
 			update+=" WHERE ID='"+customer.getId().toString()+"'";
 			System.out.println(check);
 			sendUpdateToDatabase(update);	
-			if(checkDatabaseResultSet("CUST_COUNT",check)!=1) {
-				throw new UpdateDBFailureException("customer","could not execute update request",update);
-			} 
+//			if(checkDatabaseResultSet("CUST_COUNT",check)!=1) {
+//				throw new UpdateDBFailureException("customer","could not execute update request",update);
+//			} 
 
 			return customer;
 		}

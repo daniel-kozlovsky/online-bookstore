@@ -162,7 +162,135 @@ const purchaseOrderSubmissionGET =(address)=>{
     request.send(null);
 }
 
-const validatePurchaseOrder =()=>{
+
+const markErrorField=(idName,message)=>{
+	document.getElementById(idName).style.borderColor='red';
+	
+	document.getElementById(idName+`Error`).innerHTML=message;
+}
+
+const isFieldEmpty=(idName)=>{
+if (!document.getElementById(idName)){
+	return false
+	}else{
+	return document.getElementById(idName).value==null ||document.getElementById(idName).value.trim=="" || document.getElementById(idName).value.trim.length=="0";
+	
+	}
+}
+
+const validateCreditCardFields=()=>{
+let result = true;
+	if(isFieldEmpty("creditCardType")){
+	markErrorField("creditCardType","field cannot be empty");
+	result= false;
+	}
+		if(isFieldEmpty("creditCardNumber")){
+	markErrorField("creditCardNumber","field cannot be empty");
+	result= false;
+	}
+		if(isFieldEmpty("creditCardExpiry")){
+	markErrorField("creditCardExpiry","field cannot be empty");
+	result= false;
+	}
+	if(isFieldEmpty("creditCardCVV2")){
+	markErrorField("creditCardCVV2","field cannot be empty");
+	result= false;
+	} 
+
+
+		if(document.getElementById("creditCardType")!=='Visa' || document.getElementById("creditCardType") !=='Mastercard'){
+		markErrorField("creditCardType","only Mastercard or Visa accepted at this time");
+			result= false;
+		}
+		if(/^([0-9]{16})$/.test(document.getElementById("creditCardNumber"))){
+			markErrorField("creditCardNumber","please input 16 digit numbers only");
+			result= false;
+		}
+		if(/^([0-9]{4}-[0-9]{2}-[0-9]{2})$/.test(document.getElementById("creditCardExpiry"))){
+			markErrorField("creditCardExpiry","please input date in format YYYY-MM-DD");
+			result= false;
+		}
+		if(/^([0-9]{3})$/.test(document.getElementById("creditCardCVV2"))){
+			markErrorField("creditCardCVV2","please input 3 digit numbers only");
+			result= false;
+		}
+	
+}
+
+
+const validateAddressFields=()=>{
+	let result = true;
+	if(isFieldEmpty("streetNumber")){
+	markErrorField("streetNumber","field cannot be empty");
+	result=false;
+	} 
+		if(isFieldEmpty("street")){
+	markErrorField("street","field cannot be empty");
+	result=false;
+	} 
+		if(isFieldEmpty("city")){
+	markErrorField("city","field cannot be empty");
+	result=false;
+	} 
+		if(isFieldEmpty("province")){
+	markErrorField("province","field cannot be empty");
+	result=false;
+	} 
+		if(isFieldEmpty("postalCode")){
+	markErrorField("postalCode","field cannot be empty");
+	result=false;
+	} 
+		if(isFieldEmpty("country")){
+	markErrorField("country","field cannot be empty");
+	result=false;
+	} 
+
+	if(
+	document.getElementById("province") !== 'Ontario' ||
+	document.getElementById("province") !== 'British Columbia' ||
+	document.getElementById("province") !== 'Quebec'||
+	document.getElementById("province") !== 'Alberta'||
+	document.getElementById("province") !== 'Manitoba'||
+	document.getElementById("province") !== 'New Brunswick'||
+	document.getElementById("province") !== 'Newfoundland'||
+	document.getElementById("province") !== 'Northwest Territories'||
+	document.getElementById("province") !== 'Nova Scotia'||
+	document.getElementById("province") !== 'Nunavut'||
+	document.getElementById("province") !== 'Prince Edward Island'||
+	document.getElementById("province") !== 'Saskatchewan'||
+	document.getElementById("province") !== 'Yukon'
+	){
+	markErrorField("province","please only select a province in the drop down menu");
+	result=false;
+	}
+	if(document.getElementById("country")!=='Canada'){
+		markErrorField("country","only shippin to Canada at this time");
+		result=false;
+	}
+	if(/^([A-Za-z]{1}[0-9]{1}[A-Za-z]{1}\s+[0-9]{1}[A-Za-z]{1}[0-9]{1})$/.test(document.getElementById("postalCode"))){
+		markErrorField("postalCode","postal code was input correctly, please only use number and letters in the format similar to X1X 1X1");
+		result=false;
+	}
+	return result;
+	
+	
+	
+	
+
+}
+const validatePurchaseOrder=()=>{
+	let result = true;
+	if(document.getElementById('defaultAddress').checked && document.getElementById('newCreditCard').checked){
+		return true;
+	}
+	
+	if(document.getElementById('newCreditCard').checked){
+		validateAddressFields();
+	}
+	
+	if(document.getElementById('defaultAddress').checked){
+		return true;
+	}
 
 	return true;
 }
@@ -175,6 +303,7 @@ const toggleConfirmationOverlay=()=>{
 	document.getElementById("editCart").disabled=true;
 	document.getElementById("confirmPurchaseOrder").disabled=true;
 }
+const closeIframeHTML=`<button name=\x22forceCloseIframe\x22 id=\x22forceCloseIframe\x22  onclick=\x22alert(\x22You are still not signed In, going to login page now\x22); window.location='/BookStore/Register';\x22>Force Close</button>`;
 
 const registerIFrameHTML=`<iframe   id=\x22registerIFrame\x22 src=\x22/BookStore/html/Register.jspx\x22 onload=\x22watchRegisterFrame();\x22></iframe>`
 const loginIFrameHTML=`<iframe  id=\x22loginIFrame\x22 src=\x22/BookStore/html/SignIn.jspx\x22 onload=\x22watchLoginFrame();\x22></iframe>`
@@ -198,7 +327,7 @@ const watchRegisterFrame=()=>{
 const loginSignUpControl=()=>{
 document.getElementById("purchaseOrder").classList.toggle('backOverlayElement')
 //document.getElementById("iframeContainer").classList.toggle('frontOverlayElement')
-document.getElementById("iframeContainer").innerHTML= `<div id=loginControlBox>${signInRegisterButtonsHTML}</div>`
+document.getElementById("iframeContainer").innerHTML= `<div id=loginControlBox>${signInRegisterButtonsHTML}<div>`+closeIframeHTML+`</div></div>`;
 document.getElementById("loginControlBox").classList.toggle('frontOverlayElement')
 
 }
@@ -220,12 +349,13 @@ const watchLoginFrame=()=>{
 	let iframe = document.getElementById('loginIFrame');
 	let registerDoc = iframe.contentDocument || iframe.contentWindow.document;
 	registerDoc.getElementById("button-login").addEventListener('click', event => {
-  checkLoginStatus()
+	//alert("button presss")
+  checkLoginStatus('loginIFrame')
 });
 
 }
 
-const checkLoginStatus=()=>{
+const checkLoginStatus=(frameId)=>{
  let request = new XMLHttpRequest();
     request.open("GET", '/BookStore/PurchaseOrder'+'?ajax=true&checkoutInfo=true', true);
     request.onreadystatechange = ()=>{
@@ -234,9 +364,9 @@ const checkLoginStatus=()=>{
                  let data=JSON.parse(request.responseText);
                   console.log(data.customerNotExistError)
             	  if(!data.customerNotExistError){
-            	  let child=document.getElementById('registerIFrame');
+            	  alert("Login Successful")
+            	  let child=document.getElementById(frameId);
  					child.parentNode.removeChild(child);
- 					alert("worked:")
  					location.reload();
  					
             	  }  
@@ -277,60 +407,61 @@ const editPurchaseOrder =()=>{
 	history.back();
 	return true;
 }
-const pageLoadMain =(address)=>{
-	document.getElementById("addressBox").style.display='block';
-	document.getElementById("creditCardBox").style.display='block';
-	document.getElementById("submitPurchaseOrder").style.display='block';
-	document.getElementById("address").innerHTML=spinnerHTML;	
-	document.getElementById("creditCard").innerHTML=spinnerHTML;	
+
+const pageLoadMain = (address) => {
+  document.getElementById("addressBox").style.display = 'block';
+  document.getElementById("creditCardBox").style.display = 'block';
+  document.getElementById("submitPurchaseOrder").style.display = 'block';
+  document.getElementById("address").innerHTML = spinnerHTML;
+  document.getElementById("creditCard").innerHTML = spinnerHTML;
 
 
-    let request = new XMLHttpRequest()
-    request.open("GET", address+'?ajax=true&checkoutInfo=true', true);
-    request.onreadystatechange = ()=>{
-            if ((request.readyState == 4) && (request.status == 200)){            
-                 let data=JSON.parse(request.responseText);
+  let request = new XMLHttpRequest()
+  request.open("GET", address + '?ajax=true&checkoutInfo=true', true);
+  request.onreadystatechange = () => {
+    if ((request.readyState == 4) && (request.status == 200)) {
+      let data = JSON.parse(request.responseText);
+      if (data.customerNotExistError) {
+        document.getElementById("submitPurchaseOrder").style.display = 'none';
+        document.getElementById("addressBox").style.display = 'none';
+        document.getElementById("creditCardBox").style.display = 'none';
+        document.getElementById("newAddressBox").disabled = true;
+        document.getElementById("newCreditCardBox").disabled = true;
+        document.getElementById("submitPurchaseOrder").disabled = true;
+        alert("looks like you havent logged in, if you are registered please log in now, or sign up below")
+       // document.getElementById("newCustomerCheckoutButtons").innerHTML = signInRegisterButtonsHTML;
+       loginSignUpControl();
+      } else if (data.emptyCartError) {
+        document.getElementById("newAddressBox").disabled = true;
+        document.getElementById("newCreditCardBox").disabled = true;
+        document.getElementById("submitPurchaseOrder").disabled = true;
+        alert(data.emptyCartError)
+        history.back();
+      } else {
+        if (data.customer && data.customer.creditCard && !data.missingCreditCard) {
+          document.getElementById("creditCard").innerHTML = creditCardHTML(data.customer.creditCard) + defaultCreditCardCheckHTML;
+          document.getElementById("defaultCreditCardCheck").checked = true
 
-				loginSignUpControl()
-                  if(data.emptyCartError){    
-                  document.getElementById("newAddressBox").disabled=true;
-            	  document.getElementById("newCreditCardBox").disabled=true;  
-            	  document.getElementById("submitPurchaseOrder").disabled=true;            
-                  alert(data.emptyCartError)	
-                  history.back();
-            	  } else {
-            	 if(data.customer && data.customer.creditCard && !data.missingCreditCard){
-                 document.getElementById("creditCard").innerHTML=creditCardHTML(data.customer.creditCard)+defaultCreditCardCheckHTML;
-                  document.getElementById("defaultCreditCardCheck").checked=true
-                 
-                 defaultCreditCardSelector();
-                 }else{
-                 document.getElementById("creditCard").innerHTML=failHTML;	
-                 }
+          defaultCreditCardSelector();
+        } else {
+          document.getElementById("creditCard").innerHTML = failHTML;
+        }
 
-                 if(data.customer && data.customer.address && !data.missingAddressComponents){
-                 document.getElementById("address").innerHTML=addressHTML(data.customer.address)+defaultAdressCheckHTML;
-                document.getElementById("defaultAddressCheck").checked=true
-                defaultAddressSelector();
-                 }else{
-                 document.getElementById("address").innerHTML=failHTML;	
-                 }
-            	  if(data.customerNotExistError){
-            	  document.getElementById("submitPurchaseOrder").style.display='none';
-				  document.getElementById("addressBox").style.display='none';
-				  document.getElementById("creditCardBox").style.display='none';
-            	  alert("looks like you havent logged in, if you are registered please log in now, or sign up below")
-            	  document.getElementById("newCustomerCheckoutButtons").innerHTML=signInRegisterButtonsHTML;
-            	  }
-            	  
-            	  
+        if (data.customer && data.customer.address && !data.missingAddressComponents) {
+          document.getElementById("address").innerHTML = addressHTML(data.customer.address) + defaultAdressCheckHTML;
+          document.getElementById("defaultAddressCheck").checked = true
+          defaultAddressSelector();
+        } else {
+          document.getElementById("address").innerHTML = failHTML;
+        }
 
-            	  }    
-            	               
-    		}
+      }
+
     }
-    request.send(null);
+  }
+  request.send(null);
 }
+
 const pageLoadConfirmation =(address)=>{
 	document.getElementById("confirmAddress").innerHTML=spinnerHTML;	
 	document.getElementById("confirmCreditCard").innerHTML=spinnerHTML;	
