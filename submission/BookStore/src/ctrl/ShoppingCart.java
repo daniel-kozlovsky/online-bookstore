@@ -105,11 +105,12 @@ public class ShoppingCart extends HttpServlet {
 		}
 		String isbn = request.getParameter("isbn");
 		int quantity;
-		
+		String responseText = "";
 		//remove book
 		if(request.getPathInfo() != null && request.getPathInfo().indexOf("remove") >= 0)
 		{
 			cartModel.removeBook(user, isbn);
+			responseText = Double.toString(cartModel.getTotalPrice(user.getCart()));
 		}
 		//update price
 		else
@@ -123,7 +124,7 @@ public class ShoppingCart extends HttpServlet {
 				quantity = 0;
 			}
 			
-			String responseText = "";
+			
 			if(quantity > 0 && !isbn.isEmpty())
 			{
 				cartModel.updateBookQuantity(user, isbn, quantity);
@@ -131,11 +132,10 @@ public class ShoppingCart extends HttpServlet {
 			}
 			
 			
-			out.printf(responseText);
-			out.flush();
+			
 		}
-		
-		
+		out.printf(responseText);
+		out.flush();
 	}
 	
 	

@@ -32,7 +32,14 @@ function updateTotalPrice(request)
 		let target = document.getElementById("span-price");
 		if(request.responseText.length > 0)
 		{
-			target.innerHTML = request.responseText;
+			if(parseFloat(request.responseText) <= 0)
+			{
+				location.reload();
+			}
+			else{
+				target.innerHTML = request.responseText;
+			}
+			
 		}
 		
 	}
@@ -59,5 +66,6 @@ function updateBooks(request, isbn)
 	if(request.readyState == 4 && request.status == 200)
 	{
 		document.getElementById("div-" + isbn).remove();
+		updateTotalPrice(request);
 	}
 }
