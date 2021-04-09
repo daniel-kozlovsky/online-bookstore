@@ -285,7 +285,6 @@ public class DataObjectCompiler {
 
 			}
 			
-			System.out.println("asdf");
 			
 			results.add(new Visitor.Builder(entry.getValue())
 					.withCart(visitorCart)
@@ -312,7 +311,6 @@ public class DataObjectCompiler {
 //		}
 		Map<Id,Book> compiledBookResults = new LinkedHashMap<Id, Book>(this.bookResults);
 		for(Entry<Id,Book> entry:bookResults.entrySet()) {
-			System.out.println("builll boks id :" +entry.getKey().toString());
 			List<Review> reviews=new LinkedList<Review>();
 			if(bookReviewResults.containsKey(entry.getKey())) {
 				reviews=bookReviewResults.get(entry.getKey());

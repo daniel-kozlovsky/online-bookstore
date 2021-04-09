@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import data.beans.Book;
 import data.beans.Customer;
+import data.beans.PurchaseOrder;
 import data.beans.Review;
 import data.beans.SiteUser;
 import data.beans.Visitor;
@@ -95,11 +96,13 @@ public class UpdateReview extends DataUpdate{
 			// TODO Auto-generated constructor stub
 		}
 
-		public void executeReviewInsertion(){
-			String epoch =Long.toString(Instant.now().getEpochSecond());
+		public Review executeReviewInsertion(){
+			long createdAtEpoch=Instant.now().getEpochSecond();
+			String epoch =Long.toString(createdAtEpoch);
 			String update ="INSERT INTO REVIEW (USER_TYPE,NAME,SITE_USER,BOOK,RATING,TITLE,BODY,CREATED_AT_EPOCH ) VALUES "+
 					"('"+review.getUserType()+"','"+review.getName()+"','"+review.getSiteUser().getId().toString()+"','"+review.getBook().getId().toString()+"',"+Integer.toString(review.getRating())+","+review.getTitle()+","+review.getBody()+","+epoch+")";
 			sendUpdateToDatabase(update);
+			return new Review.Builder(review).withCreatedAtEpoch(createdAtEpoch).build();
 		}
 	}
 	
@@ -126,7 +129,7 @@ public class UpdateReview extends DataUpdate{
 			return this;
 		}
 		
-		public void executeUpdate() {
+		public Review executeUpdate() {
 			String update = "UPDATE REVIEW SET ";
 			for(Entry<String,String> entry:this.updateRequest.entrySet()) {
 				update+=entry.getKey()+"="+entry.getValue()+",";
@@ -134,6 +137,7 @@ public class UpdateReview extends DataUpdate{
 			update=update.substring(0,update.length()-1);
 			update+=" WHERE BOOK='"+review.getBook().getId().toString()+"' AND SITE_USER='"+review.getSiteUser().getId().toString()+"' AND USER_TYPE='"+review.getUserType()+"'";
 			sendUpdateToDatabase(update);
+			return new Review.Builder(review).build();
 		}
 		
 	}

@@ -29,7 +29,7 @@ public class UpdateCart extends DataUpdate{
 		
 	}
 	public void executeClearCart(SiteUser siteUser){
-		if(!siteUser.getCart().isEmpty()) return;
+		if(siteUser.getCart().isEmpty()) return;
 		String update="DELETE FROM CART WHERE ID='"+siteUser.getId().toString()+"'";
 		sendUpdateToDatabase(update);
 		
@@ -64,6 +64,7 @@ public class UpdateCart extends DataUpdate{
 			String update = "UPDATE CART SET AMOUNT=" + Integer.toString(amount) + " WHERE ID='"+siteUser.getId().toString()+"' AND BOOK='"+book.getId().toString()+"'";		
 			sendUpdateToDatabase(update);
 		}
+		
 
 	}
 	
