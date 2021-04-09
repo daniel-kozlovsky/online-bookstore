@@ -253,6 +253,7 @@ public class ProductPage extends HttpServlet {
 							visitor = (Visitor) h.getAttribute("visitor");
 						
 						System.out.println("About to add Visitor review!");
+						
 						model.addAnonymousReview(visitor, this_title, this_body, rank, book_id);
 					}
 					
