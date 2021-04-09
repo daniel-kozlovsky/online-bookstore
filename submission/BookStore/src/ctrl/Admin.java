@@ -74,21 +74,21 @@ public class Admin extends HttpServlet {
 					ajaxReport(request, response, model);
 				} else {
 					loadReport(request, model);
-					request.getRequestDispatcher("html/admin/admin.jspx").forward(request, response);
+					request.getRequestDispatcher("/html/admin/admin.jspx").forward(request, response);
 				}
 			} else if (request.getParameter("type").equals("analytics")) {
 				loadAnalytics(request, model);
-				request.getRequestDispatcher("html/admin/admin.jspx").forward(request, response);
+				request.getRequestDispatcher("/html/admin/admin.jspx").forward(request, response);
 			} else if (request.getParameter("type").equals("stats")) {
 				loadStats(request, model);
-				request.getRequestDispatcher("html/admin/admin.jspx").forward(request, response);
+				request.getRequestDispatcher("/html/admin/admin.jspx").forward(request, response);
 			} else {
 				loadHome(request, model);
-				request.getRequestDispatcher("html/admin/admin.jspx").forward(request, response);
+				request.getRequestDispatcher("/html/admin/admin.jspx").forward(request, response);
 			}
 		} else {
 			loadHome(request, model);
-			request.getRequestDispatcher("html/admin/admin.jspx").forward(request, response);
+			request.getRequestDispatcher("/html/admin/admin.jspx").forward(request, response);
 		}
 		
 	}
@@ -155,7 +155,7 @@ public class Admin extends HttpServlet {
 		
 		main_page_html += "   </select>\n"
 				+ "			</form>"
-				+ "	      <button id=\"report\" name=\"reportAjax\" onclick=\"doSimpleAjax('/BookStore/Admin?type=report&reportAjax=true'); return false;\">Generate Report</button>"
+				+ "	      <button id=\"report\" name=\"reportAjax\" onclick=\"doSimpleAjax('/Admin?type=report&reportAjax=true'); return false;\">Generate Report</button>"
 				+ "<div id=\"result\"></div>";
 
 		request.setAttribute("HTML_SUGGST_ADMIN", main_page_html);

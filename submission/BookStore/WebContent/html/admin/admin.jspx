@@ -63,7 +63,7 @@
 	
 	<div id="main">
 		<!-- headline -->
-		<header><span id="sandwich" style="font-size:1.5rem;cursor:pointer" onclick="openNav()">&#9776;</span> <a href="/BookStore/Admin">Analytics</a></header>
+		<header><span id="sandwich" style="font-size:1.5rem;cursor:pointer" onclick="openNav()">&#9776;</span> <a href="/Admin">Analytics</a></header>
 		
 		<!-- Suggestion Section -->	
 		<div id="content">
