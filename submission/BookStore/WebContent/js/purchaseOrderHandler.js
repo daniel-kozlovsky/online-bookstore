@@ -12,7 +12,7 @@ const imagesResUrl = '/BookStore/res/book_images/covers/'
 * All static HTML elements that are populated on to the document
 */
 const spinnerHTML = '<div class=\x22lds-ring\x22><div></div><div></div><div></div><div></div></div>';
-const failHTML = '<div style=\x22color:red\x22>server failed to load</div>';
+const failHTML = '<div style=\x22color:black\x22>This information has not yet been registered with the account</div>';
 const signInHtml = `<fieldset id=\x22customerCheckoutLogin\x22><legend>Login</legend>
  <label>Username</label><input type=\x22text\x22 id=\x22inputUserNameCheckout\x22/>
  <label>Password</label><input type=\x22text\x22 id=\x22inputPasswordCheckout\x22/>
@@ -98,17 +98,23 @@ const markErrorField = (idName, message) => {
     document.getElementById(idName + `Error`).innerHTML = message;
 }
 
+const unmarkErrorField = (idName) => {
+    document.getElementById(idName).style.borderColor = 'black';
+
+    document.getElementById(idName + `Error`).innerHTML = '';
+}
 
 /**
 * validation functions for form fields
 */
 const isFieldEmpty = (idName) => {
-    if (!document.getElementById(idName)) {
-        return false
-    } else {
-        return document.getElementById(idName).value == null || document.getElementById(idName).value.trim == "" || document.getElementById(idName).value.trim.length == "0";
+    // if (!document.getElementById(idName)) {
+    //     return false
+    // } else {
+    //     return document.getElementById(idName).value == null || document.getElementById(idName).value.trim == "" || document.getElementById(idName).value.trim.length == "0";
 
-    }
+    // }
+    return !document.getElementById(idName).value;
 }
 const toggleConfirmationOverlay = () => {
     document.getElementById("confirmationResults").classList.toggle('frontOverlayElement')
@@ -151,8 +157,8 @@ const confirmPurchaseOrderSubmission = (address) => {
         }
     }
     request.send(null);
-
 }
+
 const editPurchaseOrder = () => {
     alert('going back to edit purchase order')
     history.back();
@@ -160,40 +166,51 @@ const editPurchaseOrder = () => {
 }
 
 const validateCreditCardFields = () => {
-    let result = true;
-    if (isFieldEmpty("creditCardType")) {
-        markErrorField("creditCardType", "field cannot be empty");
-        result = false;
-    }
-    if (isFieldEmpty("creditCardNumber")) {
-        markErrorField("creditCardNumber", "field cannot be empty");
-        result = false;
-    }
-    if (isFieldEmpty("creditCardExpiry")) {
-        markErrorField("creditCardExpiry", "field cannot be empty");
-        result = false;
-    }
-    if (isFieldEmpty("creditCardCVV2")) {
-        markErrorField("creditCardCVV2", "field cannot be empty");
-        result = false;
-    }
+     let result = true;
+    // if (isFieldEmpty("creditCardType")) {
+    //     markErrorField("creditCardType", "field cannot be empty");
+    //     result = false;
+    // }
+    // if (isFieldEmpty("creditCardNumber")) {
+    //     markErrorField("creditCardNumber", "field cannot be empty");
+    //     result = false;
+    // }
+    // if (isFieldEmpty("creditCardExpiry")) {
+    //     markErrorField("creditCardExpiry", "field cannot be empty");
+    //     result = false;
+    // }
+    // if (isFieldEmpty("creditCardCVV2")) {
+    //     markErrorField("creditCardCVV2", "field cannot be empty");
+    //     result = false;
+    // }
 
 
-    if (document.getElementById("creditCardType") !== 'Visa' || document.getElementById("creditCardType") !== 'Mastercard') {
+	let selectedCardTypeIndex = document.getElementById("creditCardType").selectedIndex
+	console.log("notxt"+document.getElementById("creditCardType").options[selectedCardTypeIndex])
+	console.log(document.getElementById("creditCardType").options[selectedCardTypeIndex].text)
+    if (document.getElementById("creditCardType").options[selectedCardTypeIndex].text !== 'Visa' && document.getElementById("creditCardType").options[selectedCardTypeIndex].text  !== 'Mastercard') {
         markErrorField("creditCardType", "only Mastercard or Visa accepted at this time");
         result = false;
+    }else{
+    	unmarkErrorField('creditCardType');
     }
-    if (/^([0-9]{16})$/.test(document.getElementById("creditCardNumber"))) {
+    if (!/^([0-9]{16})$/.test(document.getElementById("creditCardNumber").value )) {
         markErrorField("creditCardNumber", "please input 16 digit numbers only");
         result = false;
+    }else{
+    	unmarkErrorField('creditCardNumber');
     }
-    if (/^([0-9]{4}-[0-9]{2}-[0-9]{2})$/.test(document.getElementById("creditCardExpiry"))) {
+    if (!/^([0-9]{4}-[0-9]{2}-[0-9]{2})$/.test(document.getElementById("creditCardExpiry").value )) {
         markErrorField("creditCardExpiry", "please input date in format YYYY-MM-DD");
         result = false;
+    }else{
+    	unmarkErrorField('creditCardExpiry');
     }
-    if (/^([0-9]{3})$/.test(document.getElementById("creditCardCVV2"))) {
+    if (!/^([0-9]{3})$/.test(document.getElementById("creditCardCVV2").value )) {
         markErrorField("creditCardCVV2", "please input 3 digit numbers only");
         result = false;
+    }else{
+    	unmarkErrorField('creditCardCVV2');
     }
     return result;
 }
@@ -201,73 +218,87 @@ const validateCreditCardFields = () => {
 
 const validateAddressFields = () => {
     let result = true;
-    if (isFieldEmpty("streetNumber")) {
-        markErrorField("streetNumber", "field cannot be empty");
-        result = false;
+     if (isFieldEmpty("streetNumber")) {
+         markErrorField("streetNumber", "field cannot be empty");
+         result = false;
+     }else{
+    	unmarkErrorField('streetNumber');
     }
-    if (isFieldEmpty("street")) {
-        markErrorField("street", "field cannot be empty");
-        result = false;
+     if (isFieldEmpty("street")) {
+         markErrorField("street", "field cannot be empty");
+         result = false;
+     }else{
+    	unmarkErrorField('street');
     }
-    if (isFieldEmpty("city")) {
-        markErrorField("city", "field cannot be empty");
-        result = false;
+     if (isFieldEmpty("city")) {
+         markErrorField("city", "field cannot be empty");
+         result = false;
+     }else{
+    	unmarkErrorField('city');
     }
-    if (isFieldEmpty("province")) {
-        markErrorField("province", "field cannot be empty");
-        result = false;
-    }
-    if (isFieldEmpty("postalCode")) {
-        markErrorField("postalCode", "field cannot be empty");
-        result = false;
-    }
-    if (isFieldEmpty("country")) {
-        markErrorField("country", "field cannot be empty");
-        result = false;
-    }
-
+    // if (isFieldEmpty("province")) {
+    //     markErrorField("province", "field cannot be empty");
+    //     result = false;
+    // }
+    // if (isFieldEmpty("postalCode")) {
+    //     markErrorField("postalCode", "field cannot be empty");
+    //     result = false;
+    // }
+    // if (isFieldEmpty("country")) {
+    //     markErrorField("country", "field cannot be empty");
+    //     result = false;
+    // }
+	let selectedCountryIndex = document.getElementById("country").selectedIndex
+	let selectedProvinceIndex = document.getElementById("province").selectedIndex
     if (
-        document.getElementById("province") !== 'Ontario' ||
-        document.getElementById("province") !== 'British Columbia' ||
-        document.getElementById("province") !== 'Quebec' ||
-        document.getElementById("province") !== 'Alberta' ||
-        document.getElementById("province") !== 'Manitoba' ||
-        document.getElementById("province") !== 'New Brunswick' ||
-        document.getElementById("province") !== 'Newfoundland' ||
-        document.getElementById("province") !== 'Northwest Territories' ||
-        document.getElementById("province") !== 'Nova Scotia' ||
-        document.getElementById("province") !== 'Nunavut' ||
-        document.getElementById("province") !== 'Prince Edward Island' ||
-        document.getElementById("province") !== 'Saskatchewan' ||
-        document.getElementById("province") !== 'Yukon'
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Ontario' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'British Columbia' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Quebec' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Alberta' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Manitoba' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'New Brunswick' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Newfoundland' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Northwest Territories' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Nova Scotia' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Nunavut' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Prince Edward Island' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Saskatchewan' &&
+        document.getElementById("province").options[selectedProvinceIndex].text !== 'Yukon'
     ) {
         markErrorField("province", "please only select a province in the drop down menu");
         result = false;
+    }else{
+    	unmarkErrorField('province');
     }
-    if (document.getElementById("country") !== 'Canada') {
-        markErrorField("country", "only shippin to Canada at this time");
+    if (document.getElementById("country").options[selectedCountryIndex].text !== 'Canada') {
+        markErrorField("country", "only shipping to Canada at this time");
         result = false;
+    }else{
+    	unmarkErrorField('country');
     }
-    if (/^([A-Za-z]{1}[0-9]{1}[A-Za-z]{1}\s+[0-9]{1}[A-Za-z]{1}[0-9]{1})$/.test(document.getElementById("postalCode"))) {
+    if (!/^([A-Za-z]{1}[0-9]{1}[A-Za-z]{1}\s+[0-9]{1}[A-Za-z]{1}[0-9]{1})$/.test(document.getElementById("postalCode").value )) {
         markErrorField("postalCode", "postal code was input correctly, please only use number and letters in the format similar to X1X 1X1");
         result = false;
+    }else{
+    	unmarkErrorField('postalCode');
     }
     return result;
 }
 const validatePurchaseOrder = () => {
-    if (document.getElementById('defaultAddressCheck').checked && document.getElementById('defaultCreditCardCheck').checked) {
-        return true;
+	let creditCardValidCheck = true;
+	let addressValidCheck = true;
+ //   if (document.getElementById('defaultAddressCheck').checked && document.getElementById('defaultCreditCardCheck').checked) {
+  //      return true;
+ //   }
+
+    if (document.getElementById('defaultAddressCheck')==null || !document.getElementById('defaultAddressCheck').checked) {
+        addressValidCheck = validateAddressFields();
+    }
+    if (document.getElementById('defaultCreditCardCheck')==null || !document.getElementById('defaultCreditCardCheck').checked ) {
+        creditCardValidCheck= validateCreditCardFields();
     }
 
-    if (document.getElementById('defaultCreditCardCheck').checked) {
-        return validateAddressFields();
-    }
-
-    if (document.getElementById('defaultAddressCheck').checked) {
-        return validateCreditCardFields();
-    }
-
-    return false;
+    return creditCardValidCheck && addressValidCheck;
 }
 
 

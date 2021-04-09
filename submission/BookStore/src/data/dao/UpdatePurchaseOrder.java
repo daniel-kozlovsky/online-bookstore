@@ -61,7 +61,7 @@ public class UpdatePurchaseOrder extends DataUpdate {
 	public PurchaseOrder insertPurchaseOrder(Customer customer, String email, CreditCard creditCard,Address address) {
 		//add cart items to PO
 		//clear cart items
-		if(customer.getCart()==null ||customer.getId().isEmpty() ||customer.getCart().isEmpty()||creditCard==null ||creditCard.isEmpty()) return new PurchaseOrder.Builder().withId(customer.getId()).build();
+		if(customer.getCart()==null ||customer.getId().isEmpty() ||customer.getCart().isEmpty()||creditCard==null ||creditCard.isEmpty() || address==null || address.isEmpty()) return new PurchaseOrder.Builder().withId(customer.getId()).build();
 		String epoch =Long.toString(Instant.now().getEpochSecond());
 		Map<Book,Integer> cartBooks = customer.getCart().getBooks();
 //		ID, BOOK,STATUS,AMOUNT,CREATED_AT_EPOCH
@@ -91,7 +91,7 @@ public class UpdatePurchaseOrder extends DataUpdate {
 		
 		new UpdateCart().executeClearCart(customer);
 		customer.getCart().clearCart();
-		return new PurchaseOrder.Builder().withId(customer.getId()).withBooks(cartBooks).build();
+		return new PurchaseOrder.Builder().withId(customer.getId()).withBooks(cartBooks).withCreatedAtEpoch(Long.parseLong(epoch)).build();
 	}
 	
 	public PurchaseOrder insertPurchaseOrder(Customer customer)  {

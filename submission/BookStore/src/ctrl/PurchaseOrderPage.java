@@ -150,8 +150,9 @@ public class PurchaseOrderPage extends HttpServlet {
 				.withCreditCard(paymentMethodPurchaseOrder)
 				.build();			
 		PurchaseOrder purchaseOrder =new PurchaseOrderDAO().newUpdateRequest().insertPurchaseOrder(customerPurchaseOrder);
-		if(isNewShippingAddressDefault(request)) {
-			customer = new Customer.Builder(customer).withCreditCard(paymentMethodPurchaseOrder).build();
+		
+		if(isNewShippingAddressDefault(request) && !getShippingAddressFromSession(request).isEmpty()) {
+			customer = new Customer.Builder(customer).withAddress(getShippingAddressFromSession(request)).build();
 				new CustomerDAO().newUpdateRequest().requestUpdateExistingCustomer(s.getCustomer(request.getSession()))
 				.updateCustomerCity(shippingAddressPurchaseOrder.getCity())
 				.updateCustomerStreet(shippingAddressPurchaseOrder.getStreet())
@@ -162,8 +163,8 @@ public class PurchaseOrderPage extends HttpServlet {
 				.executeUpdate();
 				s.setCustomer(request.getSession(),customer);			
 		}
-		if(isNewPaymentMethodDefault(request)) {
-			customer = new Customer.Builder(customer).withAddress(shippingAddressPurchaseOrder).build();
+		if(isNewPaymentMethodDefault(request) && !getPaymentMethodFromSession(request).isEmpty()) {
+			customer = new Customer.Builder(customer).withCreditCard(getPaymentMethodFromSession(request)).build();
 				new CustomerDAO().newUpdateRequest().requestUpdateExistingCustomer(s.getCustomer(request.getSession()))
 				.updateCustomerCreditCardType(paymentMethodPurchaseOrder.getCreditCardType())
 				.updateCustomerCreditCardNumber(paymentMethodPurchaseOrder.getCreditCardNumber())
@@ -172,6 +173,7 @@ public class PurchaseOrderPage extends HttpServlet {
 				.executeUpdate();
 				s.setCustomer(request.getSession(),customer);	
 		}
+
 		if(purchaseOrder==null ||purchaseOrder.isEmpty()) {
 			
 			int payFailCount = (int) request.getSession().getAttribute(paymentFailureCount);
@@ -183,6 +185,8 @@ public class PurchaseOrderPage extends HttpServlet {
 		      out.printf(errorJson("checkoutFailure","Your order was not processed due to issues with payment, please try again or use a different payment method. You have "+Integer.toString(numTriesLeft)+" tries left")); 
 		      out.close();
 		}
+		s.getCustomer(request.getSession()).getCart().clearCart();
+		s.getCustomer(request.getSession()).addPurchaseOrder(purchaseOrder);
 	      response.setContentType("application/json");
 	      PrintWriter out = response.getWriter();
 	      out.flush();
@@ -303,7 +307,7 @@ public class PurchaseOrderPage extends HttpServlet {
 		if(address.isEmpty()) {
 			address =s.getCustomer(request.getSession()).getAddress();
 		}
-		request.getSession().setAttribute(purchaseOrderShippingAddress,getFormShippingAddress(request));
+		request.getSession().setAttribute(purchaseOrderShippingAddress,address);
 	}
 	
 	private Address getShippingAddressFromSession(HttpServletRequest request) {
@@ -314,7 +318,7 @@ public class PurchaseOrderPage extends HttpServlet {
 		if(creditCard.isEmpty()) {
 			creditCard =s.getCustomer(request.getSession()).getCreditCard();
 		}
-		request.getSession().setAttribute(purchaseOrderPaymentMethod,getFormPaymentMethod(request));
+		request.getSession().setAttribute(purchaseOrderPaymentMethod,creditCard);
 	}
 	
 	private CreditCard getPaymentMethodFromSession(HttpServletRequest request) {
@@ -336,7 +340,7 @@ public class PurchaseOrderPage extends HttpServlet {
 		}else {
 			address=s.getCustomer(request.getSession()).getAddress();
 		}
-		return getModel().validateAddress(address);
+		return address;
 	}
 	
 
@@ -358,7 +362,7 @@ public class PurchaseOrderPage extends HttpServlet {
 					.withCreditCardCVV2(getParam(creditCardCVV2, request))
 					.build();	
 		}
-		return getModel().validateCreditCard(creditCard);
+		return creditCard;
 	}
 	
 	private String getCustomerJson(Customer customer,HttpServletRequest request) {
