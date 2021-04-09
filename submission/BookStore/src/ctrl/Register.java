@@ -93,9 +93,10 @@ public class Register extends HttpServlet {
 		//validate variables
 		List<String> errors = UAuthModel.validateRegister(customer);
 		String responseText = "";
-		if(!errors.isEmpty())
+		if(!errors.isEmpty() || UAuthModel.isUserRegistered(username))
 		{
 			response.setStatus(403);
+			errors.add(0, "Username already exists!");
 			responseText = errors.toString();
 		}
 		else
