@@ -46,7 +46,7 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- https://stackoverflow.com/questions/25356685/starting-of-the-apache-tomcat-server-before-integration-test -->
+				<!--idea taken from: https://stackoverflow.com/questions/25356685/starting-of-the-apache-tomcat-server-before-integration-test -->
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>

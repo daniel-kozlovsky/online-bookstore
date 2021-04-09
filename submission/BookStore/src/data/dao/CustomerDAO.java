@@ -69,13 +69,15 @@ public class CustomerDAO implements DAO{
 			e.printStackTrace();
 			return new Customer.Builder().withUserName(userName).build();	
 		}finally {
-			if(connection!= null) {
+
+			if(resultSet!=null) {
 				try {
-					connection.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 			}
 			if(preparedStatement!=null) {
 				try {
@@ -85,6 +87,15 @@ public class CustomerDAO implements DAO{
 					e.printStackTrace();
 				}
 			}
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 
 		}
 
