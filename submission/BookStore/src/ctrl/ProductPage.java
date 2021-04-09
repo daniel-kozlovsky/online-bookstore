@@ -252,8 +252,6 @@ public class ProductPage extends HttpServlet {
 						else
 							visitor = (Visitor) h.getAttribute("visitor");
 						
-						System.out.println("About to add Visitor review!");
-						
 						model.addAnonymousReview(visitor, this_title, this_body, rank, book_id);
 					}
 					
@@ -281,7 +279,6 @@ public class ProductPage extends HttpServlet {
 		//----------------------------------------------------------------
 		//----- page was refreshed - need to set attributes again  -------
 		} else if (h.getAttribute(bookID) != null) {
-			System.out.println("==========> HERE 4 <==========");
 			try {
 				String id =  (String) h.getAttribute(bookID);
 				request.setAttribute(bookID, id);
@@ -298,7 +295,6 @@ public class ProductPage extends HttpServlet {
 		//----------------------------------------------------------------
 		//------------------------- An ERROR  ----------------------------
 		} else  {
-			System.out.println("==========> HERE 5 <==========");
 			System.out.println("ID = "+request.getParameter(bookID));
 			System.out.println("An error occured. Could have come here only if pressed 'load more reviews'");
 			

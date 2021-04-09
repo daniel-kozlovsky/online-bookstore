@@ -214,7 +214,6 @@ public class MainPageModel {
 		} catch (Exception e) {
 			throw new Exception("There was an error adding the review: " + e.getMessage() + " " + e.getCause());
 		}
-		
 	}
 	
 	/**

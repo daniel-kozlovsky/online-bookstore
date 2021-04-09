@@ -77,16 +77,12 @@ public class UserPage extends HttpServlet {
 		
 		Customer customer = (Customer) h.getAttribute("customer");
 		
-		System.out.println("\n\n\t customer " + customer+"\n\n");
-		
 		String this_username = customer.getUserName();
 		String passwd = customer.getPassword();
 		String this_name = customer.getGivenName();
 		String this_last_name =  customer.getSurName();
 		String this_email = customer.getEmail();
 		Address address =  customer.getAddress();
-		
-		System.out.println("\t"+this_username + "\n\t"+passwd+"\n\t"+this_name+"\n\t"+this_last_name+"\n\t"+this_email);
 		
 		if (request.getParameter(update_information) != null) {
 			
