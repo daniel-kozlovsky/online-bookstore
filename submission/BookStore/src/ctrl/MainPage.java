@@ -1,6 +1,5 @@
 package ctrl;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import data.beans.Book;
+import data.beans.Customer;
+import data.beans.SiteUser;
+import data.beans.Visitor;
 import data.dao.BookDAO;
 import model.MainPageModel;
 
@@ -28,20 +30,8 @@ import model.MainPageModel;
 @WebServlet({"/MainPage","/MainPage/*"})
 public class MainPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String CUSTOMER = "customer";
-	private static final String VISITOR = "visitor";
     
     private static final String MODEL = "model";
-    
-    private static final String AUTHOR = "AUTHOR";
-    private static final String TITLE = "TITLE";
-    private static final String YEAR = "YEAR";
-    private static final String ISBN = "ISBN";
-    private static final String CATEGORY = "CATEGORY";
-    private static final String RATING = "RATING";
-    private static final String PRICE = "PRICE";
-    private static final String ID = "ID";
-    private static final String COVER = "COVER";
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -74,10 +64,15 @@ public class MainPage extends HttpServlet {
 		ServletContext context = getServletContext();
 		MainPageModel model = (MainPageModel) context.getAttribute(MODEL);
 		
-		getServletContext().setAttribute("user", VISITOR);
-	
+
+	    Visitor visitor = (Visitor) request.getSession().getAttribute("visitor");
+		if(visitor == null)
+		{
+			visitor = (Visitor) model.getVisitor(request);
+			request.getSession().setAttribute("visitor", visitor);
+		}
+		
 		loadPage(request, model);
-		System.out.println("THis is the NON AJAX Section!");
 		request.getRequestDispatcher("html/mainPage.jspx").forward(request, response);
 
 
@@ -189,8 +184,18 @@ public class MainPage extends HttpServlet {
 	 */
 	private String addSuggestionSection(List<Book> l, String category) {
 		
+		String text = category;
+		
+		if (category.contains("_")) {
+			String[] s = category.split("_");
+			text = "";
+			
+			for (int i = 0; i < s.length; i ++)
+				text += s[i] + " ";
+		}
+		
 		String result_html = "<div class=\"container\" >\n"
-						   + "	<span class=\"title\"> Top 20 recommended books in "+category+"</span>\n"
+						   + "	<span class=\"title\"> Top 20 recommended books in "+text+"</span>\n"
 						   + "	<div class=\"row\">\n";
 		
 		for (int index = 0; index < l.size(); index++) {

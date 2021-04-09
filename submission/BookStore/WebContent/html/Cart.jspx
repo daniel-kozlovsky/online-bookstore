@@ -19,8 +19,48 @@
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
 </head>
 <body>
+	<!-- Navigation bar -->
+	<div class="nav_bar">
+		<a href="${pageContext.request.contextPath}/MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding hovering" href="${pageContext.request.contextPath}/MainPage">Home</a>
+		<c:choose>
+			<!-- customer -->
+		  	<c:when test="${not empty sessionScope['customer']}">
+				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
+				<form action="" method="post">
+					<label type="hidden" id="cameFromPage" name="cameFromPage" value="MainPage" ></label>
+					<a class="padding hovering"  onclick="LogOut();">Sign Out</a>
+				</form>
+		  	</c:when>
+
+		  	<!-- visitor -->
+		  	<c:otherwise> 
+				<a class="padding hovering" href="${pageContext.request.contextPath}/html/SignIn.jspx">Sign In</a>
+				<a class="padding hovering" href="${pageContext.request.contextPath}/html/Register.jspx">Register</a>
+	  		</c:otherwise>
+		  	
+	  	</c:choose>
+		
+		<!-- shopping cart -->
+	  	<a href="${pageContext.request.contextPath}/ShoppingCart" style="float:right;" >
+	  		<img class="nav_bar_img active" style="float:right;" src="${pageContext.request.contextPath}/res/shoppingCart.png" alt="checkout" />
+  		</a>
+	  	
+	  	<!-- search bar -->
+		<div class="search_bar">
+	  		<form action="${pageContext.request.contextPath}/Search" method="Post">
+	    		<input id="searchBar" type="text" placeholder="Search.." name="searchBar" />
+	    		<button class="nav_bar_img" action='submit' name='search' id="search" value="true" style="float:right;background-image:url('${pageContext.request.contextPath}/res/magnifyingGlass.jpg');">	    		
+	    		</button> 
+
+	    	</form>
+	  	</div>
+	</div>
+	
 	<h1>Shopping Cart</h1>
 	
 	<div id="cart-container">
@@ -83,6 +123,15 @@
 			<button type="button" onclick=";">Payment</button>
 		</div>
 	</c:if>
+	
+	<!-- footer -->
+	<footer  style="margin-top:40px;">
+		<div class="footer_container">
+			<div class="footer_row" style="text-align:center">
+				<p>©2021, Runtime Terror, Inc. or its affiliates</p>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>
 </jsp:root>

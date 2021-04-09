@@ -80,7 +80,9 @@ public class ShoppingCart extends HttpServlet {
 		if(user == null)
 		{
 			user = (Visitor) session.getAttribute("visitor");
+			System.out.println("user");
 		}
+		
 		request.setAttribute("books", user.getCart().getBooks());
 		double totalPrice = cartModel.getTotalPrice(user.getCart());
 		request.setAttribute("totalPrice", totalPrice);

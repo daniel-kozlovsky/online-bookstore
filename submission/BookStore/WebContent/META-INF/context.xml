@@ -4,7 +4,8 @@
 	<Manager pathname="" />
 	<!--TODO resource URL should be dynamic for deployment -->
 	<Resource name="jdbc/EECS" factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
-			  type="javax.sql.DataSource" driverClassName="org.apache.derby.jdbc.EmbeddedDriver" 
-			  url="jdbc:derby:C:\Users\nguye\Desktop\W20_ENGINEERING\e_commerce\project\Ecommerce-EECS4413\database\BOOKSTORE_DB"/>
-	<ResourceLink global="jdbc/EECS" name="jdbc/EECS" type="javax.sql.DataSource" /> 
+		type="javax.sql.DataSource"
+		driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		url="jdbc:derby:/Users/ninayanin/EECS4413_DB"/>
+	<ResourceLink global="jdbc/EECS" name="jdbc/EECS" type="javax.sql.DataSource"/>
 </Context>

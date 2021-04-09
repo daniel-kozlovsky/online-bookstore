@@ -9,44 +9,25 @@
 		omit-xml-declaration="true" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Online Book Store</title>
-	
-	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/mainPage.css" type="text/css" title="cse4413" media="screen, print" />
+<title>Online Book Store</title>
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"
 		title="cse4413" media="screen, print" />
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/bookPageHandler.js">;</script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
-    
-    <style type="text/css">	
- 	${requestScope['CSS_MAIN']}
- 	</style>
-
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/Order.css" type="text/css"
+		title="cse4413" media="screen, print" />
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/OrderHandler.js">;</script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/LogOut.js">;</script>
 </head>
 <body>
-<!-- ===============================================
-
-  This file handles the main page view and content
-  of the online bookstore website for users and 
-  visitors.
-
-=============================================== -->
-	<!-- Javascript code -->
-	<script  type="text/javascript">
-	<![CDATA[
-	${requestScope['JS_CODE_MAIN']}
-	]]>
-	</script>
-	
 	<!-- Navigation bar -->
 	<div class="nav_bar">
-		<a href="#main"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
-		<a class="padding active" href="#home">Home</a>
+		<a href="${pageContext.request.contextPath}/MainPage"><img class="nav_bar_img" src="${pageContext.request.contextPath}/res/bookLogo.jpg" alt="LOGO" /></a>
+		<a class="padding hovering" href="${pageContext.request.contextPath}/MainPage">Home</a>
 		<c:choose>
 			<!-- customer -->
 		  	<c:when test="${sessionScope['customer'] != null}">
-				<a class="padding hovering" href="${pageContext.request.contextPath}/Orders">Orders</a>
+				<a class="padding active" href="${pageContext.request.contextPath}/Orders">Orders</a>
 				<a class="padding hovering" href="${pageContext.request.contextPath}/UserPage">My Account</a>
 				<form action="" method="post">
 					<label type="hidden" id="cameFromPage" name="cameFromPage" value="MainPage" ></label>
@@ -77,12 +58,28 @@
 	  	</div>
 	</div>
 	
-	<!-- headline -->
-	<header>Online Book Store</header>
+	<!-- A table displaying user's purchases -->
+	<div class="table_section">
 	
-	<!-- Suggestion Section -->	
-	${requestScope['HTML_SUGGST_MAIN']}
-
+		<header>Purchase History</header>
+	   <form action="${pageContext.request.contextPath}/Orders" method="Post">
+			<table>
+				<tr>
+					<th style="font-weight: bold;">Status</th>
+					<th style="font-weight: bold;">Total</th>
+					<th style="font-weight: bold;">Number of books</th>
+					<th style="font-weight: bold;">View Order</th>
+				</tr>
+				${requestScope['USER_ORDERS']}
+				
+			</table>
+		</form>
+		<button  id="prevP" class="showMore"  onClick="showNextPageOrders(-1)">Previous Page</button>
+		<span id="pageNum">1</span>  / <span id="totalNumPages">1</span>
+		<button id="nextP" class="showMore" onClick="showNextPageOrders(1)">Next Page</button>
+		
+	</div>
+	
 	<!-- footer -->
 	<footer>
 		<div class="footer_container">
@@ -91,7 +88,6 @@
 			</div>
 		</div>
 	</footer>
-	
 </body>
 </html>
 </jsp:root>
