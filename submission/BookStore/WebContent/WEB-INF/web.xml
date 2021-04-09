@@ -8,6 +8,7 @@
     <welcome-file>Orders</welcome-file>
     <welcome-file>SignIn</welcome-file>
     <welcome-file>Register</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>PurchaseOrder</welcome-file>
+    <welcome-file>PurchaseOrderConfirmation.html</welcome-file>
   </welcome-file-list>
 </web-app>

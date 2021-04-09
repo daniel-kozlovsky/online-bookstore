@@ -97,15 +97,15 @@ public class PurchaseOrderPage extends HttpServlet {
 	/*
 	 * G. Payment Page
 		The visitor can
-		• UC P1: either log into their account with a password, or create a new account.
-		• TODO UC P2: for a new account they enter their account name, password, and default billing and
+		ï¿½ UC P1: either log into their account with a password, or create a new account.
+		ï¿½ TODO UC P2: for a new account they enter their account name, password, and default billing and
 		shipping information. The new account is submitted to the Order Processing service. 
-		•TODO  UC P3: to submit their order, they verify their billing and shipping information, and enter in their
+		ï¿½TODO  UC P3: to submit their order, they verify their billing and shipping information, and enter in their
 		credit card number.
-		• TODO UC P4: “Confirm order” button
+		ï¿½ TODO UC P4: ï¿½Confirm orderï¿½ button
 		Note: You should hard code that every 3rd request is denied on your website. If the order is approved, you
-		should display “Order Successfully Completed.” If it is denied, you should display “Credit Card
-		Authorization Failed.”
+		should display ï¿½Order Successfully Completed.ï¿½ If it is denied, you should display ï¿½Credit Card
+		Authorization Failed.ï¿½
 	 * 
 	 */
 
@@ -257,9 +257,6 @@ public class PurchaseOrderPage extends HttpServlet {
 	/*
 	 * End of Do Post Helper methods for controlling state
 	 */
-	
-	
-	
 	
 	/*
 	 * Helper methods

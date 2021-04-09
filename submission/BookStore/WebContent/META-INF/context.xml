@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <Context privileged="true" reloadable="true">
 	<WatchedResource>WEB-INF/web.xml</WatchedResource>
 	<Manager pathname="" />
 	<!--TODO resource URL should be dynamic for deployment -->
+	<Resource name="jdbc/EECS" 
+		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+		type="javax.sql.DataSource"
+		driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		url="jdbc:derby:/Users/ninayanin/EECS4413_DB"/>
+
+	<ResourceLink global="jdbc/EECS" name="jdbc/EECS" type="javax.sql.DataSource"/>
+</Context>
+
+<!--  
+<Context privileged="true" reloadable="true">
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+	<Manager pathname="" />
+	
 	<Resource name="jdbc/EECS" 
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
 		type="javax.sql.DataSource"
@@ -12,3 +27,4 @@
 		url="jdbc:db2://dashdb-txn-sbox-yp-dal09-14.services.dal.bluemix.net:50000/BLUDB"/>
 	<ResourceLink global="jdbc/EECS" name="jdbc/EECS" type="javax.sql.DataSource"/>
 </Context>
+-->
