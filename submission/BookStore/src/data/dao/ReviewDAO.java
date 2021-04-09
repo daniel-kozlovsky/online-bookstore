@@ -79,17 +79,26 @@ public class ReviewDAO implements DAO{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			if(connection!= null) {
+			if(resultSet!=null) {
 				try {
-					connection.close();
+					resultSet.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			if(preparedStatement!=null) {
+				try {
+					preparedStatement.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			if(preparedStatement!=null) {
+			if(connection!= null) {
 				try {
-					preparedStatement.close();
+					connection.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

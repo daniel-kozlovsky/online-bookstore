@@ -64,22 +64,6 @@ public abstract class DataUpdate {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			if(connection!= null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if(preparedStatement!=null) {
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 			if(resultSet!=null) {
 				try {
 					resultSet.close();
@@ -89,6 +73,23 @@ public abstract class DataUpdate {
 				}
 				
 			}
+			if(preparedStatement!=null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(connection!= null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 
 		}
 		return count;
