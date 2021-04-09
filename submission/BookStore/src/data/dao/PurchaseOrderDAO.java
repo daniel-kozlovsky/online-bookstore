@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -71,6 +73,170 @@ public class PurchaseOrderDAO implements DAO{
 			result=result+entry.getValue();
 		}
 		return result+10;
+	}
+	
+
+	/**
+	 * @return the date of the oldest order in epoch time
+	 */
+	public Long getOldestOrder() {
+		String queryString="SELECT MIN(CREATED_AT_EPOCH) FROM PURCHASE_ORDER WHERE STATUS!='DENIED'";
+		Long results = (long) -1;
+		
+		try {
+			DataSource ds = (DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			Connection con = ds.getConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(queryString);
+			while(rs.next()) {
+				results = rs.getLong(1);
+			}
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
+	
+	public Long getLatestOrder() {
+		String queryString="SELECT MAX(CREATED_AT_EPOCH) FROM PURCHASE_ORDER WHERE STATUS!='DENIED'";
+		Long results = (long) -1;
+		
+		try {
+			DataSource ds = (DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			Connection con = ds.getConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(queryString);
+			while(rs.next()) {
+				results = rs.getLong(1);
+			}
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
+	
+	public Map<String, Integer> getOrdersInDateRange(Long start, Long end) {	
+		
+		String queryString="SELECT SUM(AMOUNT) AS AMOUNT, BOOK FROM PURCHASE_ORDER WHERE STATUS != 'DENIED' AND CREATED_AT_EPOCH BETWEEN " + start + " AND " + end + " GROUP BY BOOK ORDER BY AMOUNT DESC";
+		Map<String, Integer> results = new LinkedHashMap<String, Integer>();
+		
+		Connection con = null;
+		
+		try {
+			DataSource ds = (DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			con = ds.getConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(queryString);
+			while(rs.next()) {
+				results.put(rs.getString(2), rs.getInt(1));
+			}
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		
+		return results;
+		
+	}
+	
+	public Map<String, Integer> getTopBooks(Long start) {
+		String queryString="SELECT SUM(AMOUNT) AS AMOUNT, BOOK FROM PURCHASE_ORDER WHERE STATUS != 'DENIED' AND CREATED_AT_EPOCH > " + start + " GROUP BY BOOK ORDER BY AMOUNT DESC";
+		Map<String, Integer> results = new LinkedHashMap<String, Integer>();
+		int count = 0;
+		
+		Connection con = null;
+		
+		try {
+			DataSource ds = (DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			con = ds.getConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(queryString);
+			while(rs.next() && count < 10) {
+				results.put(rs.getString(2), rs.getInt(1));
+				count++;
+			}
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		
+		return results;
+	}
+	
+	public Map<String, Map<String, Integer>> getCustomerBookOrderCount() {
+		
+		Map<String, Map<String, Integer>> orders = new LinkedHashMap<String, Map<String, Integer>>();
+		Map<String, Integer> books = new LinkedHashMap<String, Integer>();
+		
+		String queryString="SELECT ID, BOOK, SUM(AMOUNT) FROM PURCHASE_ORDER GROUP BY BOOK, ID";
+		
+		String cust = "";
+		String book = "";
+		Integer num = 0;
+		
+		Connection con = null;
+		
+		try {
+			DataSource ds = (DataSource) (new InitialContext()).lookup("java:/comp/env/jdbc/EECS");
+			con = ds.getConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(queryString);
+			while(rs.next()) {
+				
+				cust = rs.getString(1);
+				book = rs.getString(2);
+				num  = rs.getInt(3);
+				
+				if (orders.containsKey(cust)){
+					orders.get(cust).put(book, num);
+				} else {
+					books.put(book, num);
+					orders.put(cust, new LinkedHashMap<String, Integer>(books));
+					books.clear();
+				}
+
+			}
+		} catch (SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		
+		return orders;
+		
 	}
 	
 	public Map<Long,Integer> getPurchaseOrderCountByCreatedAtEpoch(String id){
