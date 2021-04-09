@@ -157,6 +157,7 @@ public class UserAuthenticationModel {
 			.whereCustomerUserName()
 			.varCharEquals(username)
 			.executeQuery()
+			.executeCompilation()
 			.compileCustomers();
 		
 		if(!customers.isEmpty())

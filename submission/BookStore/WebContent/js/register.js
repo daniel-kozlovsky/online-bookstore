@@ -2,7 +2,7 @@
  * 
  */
 const registerAddr = "/Register";
-const signInAddr = "/SignIn";
+const signInUIAddr = "/html/SignIn.jspx";
 
 function register()
 {
@@ -70,6 +70,6 @@ function handler(request)
 	}
 	else if( request.status == 200)
 	{
-		window.location.href = signInAddr;
+		window.location.href = signInUIAddr;
 	}
 }
