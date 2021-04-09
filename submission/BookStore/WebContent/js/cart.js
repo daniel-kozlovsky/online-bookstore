@@ -1,7 +1,7 @@
 /**
  * 
  */
-const shoppingCartAddr = "/BookStore/ShoppingCart";
+const shoppingCartAddr = "/ShoppingCart";
 
 function updateQuantity(isbn, quantity)
 {

@@ -1,4 +1,4 @@
-const logOutAddr = "/BookStore/SignIn"
+const logOutAddr = "/SignIn"
 
 function LogOut()
 {
@@ -33,7 +33,7 @@ function handler(request)
 		}
 		else if(request.status == 200)
 		{
-			window.location.href = "/BookStore/MainPage";
+			window.location.href = "/MainPage";
 		}
 		
 	}

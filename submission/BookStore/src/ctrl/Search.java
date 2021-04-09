@@ -154,10 +154,10 @@ public class Search extends HttpServlet {
 						html +=
 								"			<div class=\"column_1_4\">\n"
 								
-								+ "				<form action=\"/BookStore/ProductPage\" method=\"Post\">\n"
+								+ "				<form action=\"/ProductPage\" method=\"Post\">\n"
 							    + "					<input type=\"hidden\" name=\"bookID\" value=\""+b.get(index).getId()+"\" />"
 								+ "					<button id=\"press\" class=\"book book_hover\" \n"
-								+ "						style=\"background-image:url('/BookStore/res/book_images/covers/"+b.get(index).getCover()+"');\">\n"
+								+ "						style=\"background-image:url('/res/book_images/covers/"+b.get(index).getCover()+"');\">\n"
 								+ "					</form>\n"
 								+ "					<div class=\"overlay\">\n"
 								+ "						<div class=\"text\">\n"

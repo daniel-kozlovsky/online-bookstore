@@ -1,11 +1,11 @@
 /**
  * all urls used for redirection
  */
-const mainPageUrl = '/BookStore/MainPage'
-const registerUrl = '/BookStore/html/Register.jspx'
-const signInUrl = '/BookStore/html/SignIn.jspx'
-const purchaseOrderUrl = '/BookStore/PurchaseOrder'
-const imagesResUrl = '/BookStore/res/book_images/covers/'
+const mainPageUrl = '/MainPage'
+const registerUrl = '/html/Register.jspx'
+const signInUrl = '/html/SignIn.jspx'
+const purchaseOrderUrl = '/PurchaseOrder'
+const imagesResUrl = '/res/book_images/covers/'
 
 
 /**

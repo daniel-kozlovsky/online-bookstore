@@ -303,10 +303,10 @@ public class Orders extends HttpServlet {
 				review += "<p style=\"margin-left:0px;\"><button id=\""+addReview+"\" name=\""+addReview+"\" class=\"button "+addReview+"\"  type=\""+addReview+"\">write a review</button></p>\n";
 			
 			html += 
-					"		<FORM action=\"/BookStore/Orders\" method=\"Post\">\n"
+					"		<FORM action=\"/Orders\" method=\"Post\">\n"
 					+ "			<div class=\"row\">\n"
 					+ "				<div class=\"column_1_3\">\n"
-					+ "					<img class=\"prod_img\" style=\"float:center;height:100%;\" src=\"/BookStore/res/book_images/covers/"+b.getCover()+"\" alt=\"search\" /> \n"
+					+ "					<img class=\"prod_img\" style=\"float:center;height:100%;\" src=\"/res/book_images/covers/"+b.getCover()+"\" alt=\"search\" /> \n"
 					+ "				</div>\n"
 					+ "				<div class=\"column_1_3\">\n"
 					+ "					<div class=\"row\">\n"

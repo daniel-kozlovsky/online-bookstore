@@ -27,7 +27,7 @@ public class SignIn extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	UserAuthenticationModel UAuthModel;
 	ShoppingCartModel shoppingModel;
-	final String MAIN_PAGE_TARGET = "/BookStore";
+	final String MAIN_PAGE_TARGET = "/MainPage";
 	
     /**
      * @see HttpServlet#HttpServlet()

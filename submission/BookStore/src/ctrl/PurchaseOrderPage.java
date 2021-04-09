@@ -443,7 +443,7 @@ public class PurchaseOrderPage extends HttpServlet {
 	      response.setContentType("text/html");
 	      PrintWriter out = response.getWriter();
 	      out.flush();
-	      out.printf(serverResponseAlert("/BookStore/MainPage","Store front","emptyCartError: your cart is empty please add items before checking out")); 
+	      out.printf(serverResponseAlert("/MainPage","Store front","emptyCartError: your cart is empty please add items before checking out")); 
 	      out.close();	
 	}
 
@@ -451,14 +451,14 @@ public class PurchaseOrderPage extends HttpServlet {
 	      response.setContentType("text/html");
 	      PrintWriter out = response.getWriter();
 	      out.flush();
-	      out.printf(serverResponseAlert("/BookStore/PurchaseOrder","Check out","Incomplete Form: the information you provided for payment is either incorrect or incomplete please try again")); 
+	      out.printf(serverResponseAlert("/PurchaseOrder","Check out","Incomplete Form: the information you provided for payment is either incorrect or incomplete please try again")); 
 	      out.close();	
 	}
 	private void noLoggedCustomerServerResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	      response.setContentType("text/html");
 	      PrintWriter out = response.getWriter();
 	      out.flush();
-	      out.printf(serverResponseAlert("/BookStore/SignIn","Sign in page","customerNotExistError: Please login or create an account before checking out")); 
+	      out.printf(serverResponseAlert("/SignIn","Sign in page","customerNotExistError: Please login or create an account before checking out")); 
 	      out.close();
 	}
 	

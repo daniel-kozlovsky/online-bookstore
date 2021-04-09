@@ -74,45 +74,46 @@ public class UserAuthenticationModel {
 			errors.add("Surname cannot be empty");
 		}
 		
-//		if(customer.getAddress().getNumber().length() <= 0)
-//		{
-//			errors.add("Street number cannot be empty");
-//		}
-//		if(customer.getAddress().length() <= 0)
-//		{
-//			errors.add("Password cannot be empty");
-//		}
-//		if(customer.getAddress().length() <= 0)
-//		{
-//			errors.add("Email cannot be empty");
-//		}
-//		if(customer.getAddress().length() <= 0)
-//		{
-//			errors.add("Given name cannot be empty");
-//		}
-//		if(customer.getAddress().length() <= 0)
-//		{
-//			errors.add("Surname cannot be empty");
-//		}if(customer.getUserName().length() <= 0)
-//		{
-//			errors.add("Username cannot be empty");
-//		}
-//		if(customer.getPassword().length() <= 0)
-//		{
-//			errors.add("Password cannot be empty");
-//		}
-//		if(customer.getEmail().length() <= 0)
-//		{
-//			errors.add("Email cannot be empty");
-//		}
-//		if(customer.getGivenName().length() <= 0)
-//		{
-//			errors.add("Given name cannot be empty");
-//		}
-//		if(customer.getSurName().length() <= 0)
-//		{
-//			errors.add("Surname cannot be empty");
-//		}
+		if(customer.getAddress().getNumber().length() <= 0)
+		{
+			errors.add("Street number cannot be empty");
+		}
+		if(customer.getAddress().getStreet().length() <= 0)
+		{
+			errors.add("Street cannot be empty");
+		}
+		if(customer.getAddress().getCity().length() <= 0)
+		{
+			errors.add("City cannot be empty");
+		}
+		if(customer.getAddress().getProvince().length() <= 0)
+		{
+			errors.add("Province name cannot be empty");
+		}
+		if(customer.getAddress().getCountry().length() <= 0)
+		{
+			errors.add("Country cannot be empty");
+		}
+		if(customer.getAddress().getPostalCode().length() <= 0)
+		{
+			errors.add("Postal Code cannot be empty");
+		}
+		if(customer.getCreditCard().getCreditCardNumber().length() <= 0)
+		{
+			errors.add("Credit card number cannot be empty");
+		}
+		if(customer.getCreditCard().getCreditCardType().length() <= 0)
+		{
+			errors.add("Credit card type cannot be empty");
+		}
+		if(customer.getCreditCard().getCreditCardCVV2().length() <= 0)
+		{
+			errors.add("CVV name cannot be empty");
+		}
+		if(customer.getCreditCard().getCreditCardExpiry().length() <= 0)
+		{
+			errors.add("Expiry cannot be empty");
+		}
 		
 		return errors;
 	}
