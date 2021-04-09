@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <Context privileged="true" reloadable="true">
 	<WatchedResource>WEB-INF/web.xml</WatchedResource>
 	<Manager pathname="" />
@@ -16,7 +15,6 @@
 <!-- <Context privileged="true" reloadable="true">
 	<WatchedResource>WEB-INF/web.xml</WatchedResource>
 	<Manager pathname="" />
-	
 	<Resource name="jdbc/EECS" 
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
 		type="javax.sql.DataSource"
