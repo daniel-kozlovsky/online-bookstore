@@ -1,7 +1,10 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -136,7 +139,7 @@ public class MainPageModel {
 	public List<Book>  prepSearchResult (String input) {
 		
 		int maxNum = book.getNumberBooks();
-		
+			
 		List<Book> b= book.newQueryRequest()
 						.includeAllAttributesInResultFromSchema()
 						.queryAttribute()
@@ -179,8 +182,10 @@ public class MainPageModel {
 		b.addAll(b2);
 		b.addAll(b3);
 		b.addAll(b4);
+		Set<Book> targetSet = new HashSet<>(b);
 		
-		return b;
+		List<Book> b0 = new ArrayList<Book>(targetSet);
+		return b0;
 	}
 	
 	/**
