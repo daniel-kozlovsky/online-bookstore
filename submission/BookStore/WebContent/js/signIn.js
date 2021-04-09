@@ -2,7 +2,9 @@
  * signIn.js
  * Handles posting for user sign-in
  */
-const signInAddr = "/BookStore/SignIn"
+const signInAddr = "/SignIn";
+const mainPageAddr = "/MainPage";
+
 
 function signIn()
 {
@@ -41,7 +43,7 @@ function handler(request)
 		}
 		else if(request.status == 200)
 		{
-			window.location.href = "/BookStore";
+			window.location.href = mainPageAddr;
 		}
 		
 	}

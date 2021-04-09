@@ -204,7 +204,7 @@ public class BookTestCtrl extends HttpServlet {
 //		attributesIncludedInResults.get("REVIEW").add("BODY");
 		
 //		Book book = new Book.Builder().withId(new Id("b7441b2a-0739-3641-a78f-1d973daee854")).build();
-		//http://localhost:8080/BookStore/BookTestCtrl
+		//http://localhost:8080/BookTestCtrl
 //		PrintWriter out = response.getWriter();
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");

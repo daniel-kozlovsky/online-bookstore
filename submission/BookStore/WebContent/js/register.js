@@ -1,7 +1,8 @@
 /**
  * 
  */
-const registerAddr = "/BookStore/Register"
+const registerAddr = "/Register";
+const signInUIAddr = "/html/SignIn.jspx";
 
 function register()
 {
@@ -69,6 +70,6 @@ function handler(request)
 	}
 	else if( request.status == 200)
 	{
-		window.location.href = "/BookStore/SignIn";
+		window.location.href = signInUIAddr;
 	}
 }

@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Checkout Confirmation</title>
-<link rel="stylesheet" type='text/css'  href="/BookStore/css/animations.css">
-<script type="text/javascript" src="/BookStore/js/purchaseOrderHandler.js"></script>
+<link rel="stylesheet" type='text/css'  href="/css/animations.css">
+<script type="text/javascript" src="/js/purchaseOrderHandler.js"></script>
 </head>
-<body class="overlay" onload="pageLoadConfirmation('/BookStore/PurchaseOrder');">
+<body class="overlay" onload="pageLoadConfirmation('/PurchaseOrder');">
 <h1>Check out: Confirmation</h1>
 
 <div id="confirmationInfo" >
@@ -26,8 +26,8 @@
 	<div id="confirmContents"></div>
 	</fieldset>
 	<button name="editPurchaseOrder" id="editPurchaseOrder" value="true" onclick="history.back();">Back</button>
-    <button name="editCart" id="editCart" value="true" onclick="window.location='/BookStore/ShoppingCart';">Edit Cart</button>
-   	<button name="confirmPurchaseOrder" id="confirmPurchaseOrder" onclick="confirmPurchaseOrderSubmission('/BookStore/PurchaseOrder');">Confirm</button>
+    <button name="editCart" id="editCart" value="true" onclick="window.location='/ShoppingCart';">Edit Cart</button>
+   	<button name="confirmPurchaseOrder" id="confirmPurchaseOrder" onclick="confirmPurchaseOrderSubmission('/PurchaseOrder');">Confirm</button>
 
 	
 </div>	
