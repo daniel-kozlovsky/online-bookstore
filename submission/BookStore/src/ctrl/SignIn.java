@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import data.beans.Customer;
 import data.beans.Visitor;
 import model.UserAuthenticationModel;
+import model.MainPageModel;
 import model.SessionAccess;
 import model.ShoppingCartModel;
 

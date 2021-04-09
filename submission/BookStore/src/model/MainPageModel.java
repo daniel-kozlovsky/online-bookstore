@@ -1,15 +1,15 @@
 package model;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import data.beans.Address;
 import data.beans.Book;
 import data.beans.Customer;
-import data.beans.PurchaseOrder;
 import data.beans.Review;
 import data.beans.SiteUser;
 import data.beans.Visitor;
@@ -139,31 +139,12 @@ public class MainPageModel {
 	public List<Book>  prepSearchResult (String input) {
 		
 		int maxNum = book.getNumberBooks();
-		
+			
 		List<Book> b= book.newQueryRequest()
 						.includeAllAttributesInResultFromSchema()
-						
 						.queryAttribute()
 						.whereBookCategory()
-//						.queryAsDisjunction()
 						.varCharContainsIgnoreCase(input)
-//						.varCharContains(input)
-//						
-//						.queryAttribute()
-//						.whereBookAuthor()
-//						.queryAsDisjunction()
-//						.varCharContains(input)
-//						
-//						.queryAttribute()
-//						.whereBookAuthor()
-//						.queryAsDisjunction()
-//						.varCharContains(input)
-//						
-//						.queryAttribute()
-//						.whereBookDescription()
-//						.queryAsDisjunction()
-//						.varCharContains(input)
-						
 						.withResultLimit(book.getNumberBooks())
 						.executeQuery().
 						executeCompilation().
@@ -201,8 +182,10 @@ public class MainPageModel {
 		b.addAll(b2);
 		b.addAll(b3);
 		b.addAll(b4);
+		Set<Book> targetSet = new HashSet<>(b);
 		
-		return b;
+		List<Book> b0 = new ArrayList<Book>(targetSet);
+		return b0;
 	}
 	
 	/**
@@ -223,18 +206,7 @@ public class MainPageModel {
 		} catch (Exception e) {
 			throw new Exception("ERROR: book was not found in the database! "+ e.getMessage());
 		}
-		
-//		List<Visitor> v = visitor.newQueryRequest()
-//				.includeAllAttributesInResultFromSchema()
-//				.queryAttribute()
-//				.whereVisitor()
-//				.isVisitor((Visitor) vis)
-//				.executeQuery()
-//				.executeCompilation()
-//				.compileVisitors();
-////		
-//		System.out.println("\n\nc.length = "+v.size()+"\n");
-		
+
 		// need to insert information
 		try {
 			review.newUpdateRequest()
@@ -247,7 +219,6 @@ public class MainPageModel {
 		} catch (Exception e) {
 			throw new Exception("There was an error adding the review: " + e.getMessage() + " " + e.getCause());
 		}
-		
 	}
 	
 	/**
@@ -435,6 +406,17 @@ public class MainPageModel {
 								String city, String province, 
 								String country, String postal_code) throws Exception {
 		
+		if (username.isEmpty())
+			throw new Exception("username cannot be empty");
+		
+		if (passwd.isEmpty())
+			throw new Exception("password cannot be empty");
+		
+		if (email.isEmpty())
+			throw new Exception("email cannot be empty");
+		
+		if (name.isEmpty())
+			throw new Exception("given name cannot be empty");
 		
 		List<Customer> c = user.newQueryRequest()
 				.includeAllAttributesInResultFromSchema()
