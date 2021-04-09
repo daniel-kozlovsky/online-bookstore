@@ -71,7 +71,7 @@
 		<c:forEach var="book" items="${requestScope.books}">
 			<hr/>
 			<div class="book" id="div-${book.key.ISBN}">
-				<img src="/BookStore/res/book_images/covers/${book.key.cover}"></img>
+				<img src="/res/book_images/covers/${book.key.cover}"></img>
 				<div class="info-panel">
 					<table class="info-table">
 		            <caption>${book.key.title}</caption>

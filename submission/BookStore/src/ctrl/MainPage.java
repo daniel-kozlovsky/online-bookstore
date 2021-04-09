@@ -203,19 +203,19 @@ public class MainPage extends HttpServlet {
 			
 			if (index < 7) {
 				result_html += "	<div class=\"column slides_"+category+"\" style=\"display:inline;\" >\n"
-						    + "			<form action=\"/BookStore/ProductPage\" method=\"Post\">\n"
+						    + "			<form action=\"/ProductPage\" method=\"Post\">\n"
 						    + "				<input type=\"hidden\" name=\"bookID\" value=\""+l.get(index).getId()+"\" />"
 							+ "				<button id=\"press\" class=\"book\""
-							+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\">\n"
+							+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\">\n"
 							+ "				</button>\n"
 							+ "			</form>"
 							+ "		</div>\n";
 			} else {
 				result_html += "	<div class=\"column slides_"+category+"\" >\n"
-						+ "			<form action=\"/BookStore/ProductPage\" method=\"Post\">\n"
+						+ "			<form action=\"/ProductPage\" method=\"Post\">\n"
 					    + "				<input type=\"hidden\" name=\"bookID\" value=\""+l.get(index).getId()+"\" />"
 						+ "				<button id=\"press\" class=\"book\""
-						+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/BookStore/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\">\n"
+						+           " style=\"padding: 15px; height: 260px;width:100%;background-color:grey;background-image:url('/res/book_images/covers/"+l.get(index).getCover()+"');background-position: center;background-size: cover;\">\n"
 						+ "				</button>\n"
 						+ "			</form>"
 						+ "		</div>\n";

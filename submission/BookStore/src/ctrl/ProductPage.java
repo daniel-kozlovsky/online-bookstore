@@ -282,9 +282,9 @@ public class ProductPage extends HttpServlet {
 			if (r[i].getUserType().equals("CUSTOMER")) {
 				Customer customer = model.getUserByUsername(r[i].getSiteUser());
 				
-				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + this_rate+ " / 5 </p>";
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/res/user_logo.png\" /> "+customer.getSurName() + ", "+ customer.getGivenName() + " " + this_rate+ " / 5 </p>";
 			} else {
-				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/BookStore/res/user_logo.png\" /> <i> site visitor </i> " + this_rate + " / 5 </p>";
+				tmpLine = "					<p> <img class=\"user_image\" style=\"float:left;width:30px;height:30px;vertical-align:center;\" src=\"/res/user_logo.png\" /> <i> site visitor </i> " + this_rate + " / 5 </p>";
 			}
 				
 			html +=   "				<div class=\"review_row\" style=\"margin-top:50px;\">\n"
