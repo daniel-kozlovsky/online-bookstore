@@ -37,7 +37,7 @@ function updateTotalPrice(request)
 				location.reload();
 			}
 			else{
-				target.innerHTML = request.responseText;
+				target.innerHTML = parseFloat(request.responseText).toFixed(2);
 			}
 			
 		}

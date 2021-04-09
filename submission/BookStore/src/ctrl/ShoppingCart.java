@@ -85,7 +85,7 @@ public class ShoppingCart extends HttpServlet {
 		
 		request.setAttribute("books", user.getCart().getBooks());
 		double totalPrice = cartModel.getTotalPrice(user.getCart());
-		request.setAttribute("totalPrice", totalPrice);
+		request.setAttribute("totalPrice", String.format("%.2f", totalPrice));
 		
 		request.getRequestDispatcher(CART_TARGET).forward(request, response);
 	}
