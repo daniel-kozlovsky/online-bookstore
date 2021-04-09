@@ -9,6 +9,7 @@
 
 </head>
 <body  class="overlay" onload="pageLoadMain('/BookStore/PurchaseOrder');">		
+	<h1>Check out: Order Information</h1>
 	<form  action="PurchaseOrder" method="POST" id="purchaseOrder" onsubmit="return validatePurchaseOrder();">
 	<div>
 	<fieldset id="addressBox">
@@ -29,13 +30,13 @@
 
 
 			<label for="streetNumber"><br>Street Number</br>
-			<input id="streetNumber" name="streetNumber"></input>
+			<input id="streetNumber" name="streetNumber"></input><span class="purchaseOrderError"  id="streetNumberError"></span>
 		
-			<label for="street"><br>Street</br><span id="streetError"></span></label>
-			<input id="street" name="street"></input> 
+			<label for="street"><br>Street</br></label>
+			<input id="street" name="street"></input> <span class="purchaseOrderError"  id="streetError"></span>
 			
 			<label for="city"><br>City</br></label>
-			<input  id="city" name="city"></input> 
+			<input  id="city" name="city"></input> <span class="purchaseOrderError"  id="cityError"></span>
 			
 			<label for="province"><br>Province</br></label>
 			
@@ -53,15 +54,15 @@
 			  <option value="Prince Edward Island">Prince Edward Island</option>
 			  <option value="Saskatchewan">Saskatchewan</option>			  
 			  <option value="Yukon">Yukon</option>
-			</select>
+			</select></input> <span class="purchaseOrderError"  id="provinceError"></span>
 			
 			<label for="postalCode"><br>Postal Code</br></label>
-			<input id="postalCode" name="postalCode"></input> 
+			<input id="postalCode" name="postalCode"></input> </input> <span class="purchaseOrderError"  id="postalCodeError"></span>
 			
 			<label for="country"><br>Country</br></label>
 			<select name="country" id="country">
 			<option value="Canada">Canada</option>
-			</select>
+			</select></input> <span class="purchaseOrderError"  id="countryError"></span>
 			<label for="newAddress">Use this address for future checkouts</label>
 			<input type="checkbox" id="newAddress" name="newAddress"></input>
 
@@ -74,26 +75,26 @@
 			<select name="creditCardType" id="creditCardType">
 			  <option value="Visa">Visa</option>
 			  <option value="Mastercard">Mastercard</option>
-			 </select>
-			 <label for="creditCardNumber"><br>creditCardNumber</br></label>
-			<input id="creditCardNumber" name="creditCardNumber"></input> 
+			 </select><span id=""></span><span  class="purchaseOrderError" id="creditCardTypeError"></span>
+			 <label for="creditCardNumber"><br>Credit Card Number</br></label>
+			<input id="creditCardNumber" name="creditCardNumber"></input> <span class="purchaseOrderError" id="creditCardNumberError"></span>
 			<label for="creditCardExpiry"><br>Expiry Date</br></label>
 			<input type="date" id="creditCardExpiry" name="creditCardExpiry"
-		       min="2021-01-01">
-		       <label for="creditCardCVV2"><br>cvv2</br></label>
-		       <input  id="creditCardCVV2" name="creditCardCVV2"></input> 
+		       min="2021-01-01"><span id="creditCardExpiryError"></span>
+		       <label for="creditCardCVV2"><br>cvv2</br></label><span  class="purchaseOrderError" id="creditCardExpiryError"></span>
+		       <input  id="creditCardCVV2" name="creditCardCVV2"></input> <span  class="purchaseOrderError" id="creditCardCVV2Error"></span>
 
 			<label for="newCreditCard">Use this credit card for future checkouts</label>
-			<input type="checkbox" id="newCreditCard" name="newCreditCard"></input>
+			<input type="checkbox" id="newCreditCard" name="newCreditCard"></input><span id=""></span>
 			</fieldset>
 			</div>
-		<button action="submit" name="submitPurchaseOrder" id="submitPurchaseOrder" value="true">Next</button>
+		<button action="submit" name="submitPurchaseOrder" id="submitPurchaseOrder" value="true" onclick="validatePurchaseOrder();">Next</button>
 		
 		</div>
 		</form>
 		<div id="visitorCheckout"></div>
 		<div id="newCustomerCheckoutButtons"></div>
-		<div id="iframeContainer"></div>
+		<div id="visitorControls"></div>
 
 </body>
 </html>

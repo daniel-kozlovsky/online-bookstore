@@ -18,7 +18,7 @@ public class UpdateVisitor extends DataUpdate{
 		String userTablesUpdate = "INSERT INTO SITE_USER (ID,USER_TYPE) VALUES ('"+id+"','"+UserTypes.VISITOR+"')";
 		sendUpdateToDatabase(userTablesUpdate);
 		String update ="INSERT INTO VISITOR (ID,CREATED_AT_EPOCH) VALUES ('"+
-				"('"+id+"','"+UserTypes.VISITOR+"',"+epoch+")";
+				"('"+id+"',"+epoch+")";
 		sendUpdateToDatabase(update);
 		return new Visitor.Builder().withId(new Id(id)).withCart(new Cart.Builder().withId(new Id(id)).build()).withCreatedAtEpoch(epoch).build();
 	}

@@ -207,9 +207,8 @@ public class PurchaseOrderPage extends HttpServlet {
 	
 	private void loadCheckoutInfoPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		customerJsonResponse(request,response);
+		
 	}
-	
-
 	
 	private void loadCheckoutConfirmationPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		  Customer purchaseOrderCustomer = new Customer.Builder(s.getCustomer(request.getSession())).withAddress(getShippingAddressFromSession(request)).withCreditCard(getPaymentMethodFromSession(request)).build();

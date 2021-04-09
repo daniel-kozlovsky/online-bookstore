@@ -16,7 +16,8 @@ public class PurchaseOrderModel {
 	private PurchaseOrderDAO purchaseOrderDAO;
 	
 	public boolean isCustomerLoggedIn(HttpServletRequest request) {
-		return true;		
+		return true;
+		
 	}
 	
 	
