@@ -1,7 +1,8 @@
 /**
  * 
  */
-const registerAddr = "/Register"
+const registerAddr = "/Register";
+const signInAddr = "/SignIn";
 
 function register()
 {
@@ -69,6 +70,6 @@ function handler(request)
 	}
 	else if( request.status == 200)
 	{
-		window.location.href = "/SignIn";
+		window.location.href = signInAddr;
 	}
 }

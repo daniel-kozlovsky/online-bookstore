@@ -10,8 +10,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Login</title>
-	<script type="text/javascript" src="/js/signIn.js">;</script>
-	<link rel="StyleSheet" href="/css/signIn.css" type="text/css" title="cse4413" media="screen, print"/>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/signIn.js">;</script>
+	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/signIn.css" type="text/css" title="cse4413" media="screen, print"/>
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/navBar.css" type="text/css"
 		title="cse4413" media="screen, print" />
 	<link rel="StyleSheet" href="${pageContext.request.contextPath}/css/footer.css" type="text/css"

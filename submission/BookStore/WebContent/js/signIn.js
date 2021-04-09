@@ -2,8 +2,9 @@
  * signIn.js
  * Handles posting for user sign-in
  */
-const signInAddr = "/SignIn"
+const signInAddr = "/SignIn";
 const mainPageAddr = "/MainPage";
+
 
 function signIn()
 {

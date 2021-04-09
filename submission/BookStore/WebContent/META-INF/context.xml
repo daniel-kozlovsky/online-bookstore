@@ -9,7 +9,6 @@
 		type="javax.sql.DataSource"
 		driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
 		url="jdbc:derby:F:\Users\DK\Documents\Programming\Workspaces\Ecommerce-EECS4413\database\BOOKSTORE_DB"/>
-
 	<ResourceLink global="jdbc/EECS" name="jdbc/EECS" type="javax.sql.DataSource"/>
 </Context>
 
