@@ -92,53 +92,15 @@ public class ProductPage extends HttpServlet {
 			String book_id = request.getParameter(bookID);
 			request.setAttribute(bookID, book_id);
 			
-			System.out.println("\tADDING A BOOK TO CART:\tbook_id = " + book_id);
-			
 			// ------ customer ------
 			if (h.getAttribute("customer") != null) {
 				
-				try {				
-					Customer customer = (Customer) h.getAttribute("customer");
-					Cart cart = customer.getCart();
-					
-					System.out.println("\t num of books in cart BEFORE adding product: "+cart.getBooks().size());
-					
-					//================================ TO DO ============================
-					//============== Check if user keeps the pointer to that updated cart
-					if (!cart.isBookInCart(model.getBookByID(book_id)))
-						cart.addBookAmount(model.getBookByID(book_id), 1);
-					
-					System.out.println("\t num of books in cart AFTER adding product: "+cart.getBooks().size());
-					System.out.println("\t num of books in CUSTOMER's cart AFTER adding product: "+customer.getCart().getBooks().size());
-					
-					h.setAttribute("customer", customer);
-					
-					request.setAttribute("success", "Product added successfully");
-				} catch (Exception e) {
-					System.out.println("ERROR - Failed to add book to customer cart! "+e.getMessage());
-				}
+				this.addProductCustomer(book_id, request, model, h);
 			
 			// ------ visitor ------
 			} else {
-				try {
-					Visitor visitor;
-					if (h.getAttribute("visitor") == null) 
-						 visitor = model.getVisitor(request);
-					else
-						visitor = (Visitor) h.getAttribute("visitor");
-					
-					
-					Cart cart = visitor.getCart();
-
-					if (!cart.isBookInCart(model.getBookByID(book_id)))
-						cart.addBookAmount(model.getBookByID(book_id), 1);
-					
-					h.setAttribute("visitor", visitor);
 				
-					request.setAttribute("success", "Product added successfully");
-				} catch (Exception e) {
-					System.out.println("ERROR - Failed to add book to visitor's cart! "+e.getMessage());
-				}
+				this.addProductVisitor(book_id, request, model, h);
 			}
 			
 			try {
@@ -151,47 +113,19 @@ public class ProductPage extends HttpServlet {
 		//----------------------------------------------------------------
 		//---------------- redirect user to add a review  ----------------
 		} else if (request.getParameter("addReview") != null) {
-			System.out.println("==========> HERE 1 <==========");
+			
 			String book_id;
 			
 			if (request.getParameter(bookID) != null)
 				book_id = request.getParameter(bookID);
 			else
 				book_id = (String) h.getAttribute(bookID);
-			
-			// if a user is loged in
-			if (h.getAttribute("customer") != null) {
-				
-				Customer customer = (Customer) h.getAttribute("customer");
-				
-				try {
-					// give customer option to update his review or check it out
-					if (model.didCustomerAddReview(customer, book_id)) {
-						List<Review> review = model.getReview(customer, book_id);
-						Review r = review.get(0);
-						
-						int rating_number = r.getRating();
-						
-						if (rating_number == 1)
-							request.setAttribute(ONE_STAR, 1);
-						else if (rating_number == 2)
-							request.setAttribute(TWO_STAR, 2);
-						else if (rating_number == 3)
-							request.setAttribute(THREE_STAR, 3);
-						else if (rating_number == 4)
-							request.setAttribute(FOUR_STAR, 4);
-						else if (rating_number == 5)
-							request.setAttribute(FIVE_STAR, 5);
-						
-						
-						request.setAttribute(title, r.getTitle());
-						request.setAttribute(body, r.getBody()); 
-					}
-				} catch (Exception e) {
-					System.out.println("There was a problem going back form a specific order page to writing its review! " +e.getMessage());
-				}		
-			}	
+
 			try {
+			
+				// if a user is loged in - set attributes to match customer's previous review if applicable
+				this.setReviewIfNeeded(h, book_id, model, request);	
+			
 				Book book = model.getBookByID(book_id);
 			
 				String title = book.getTitle();
@@ -205,58 +139,28 @@ public class ProductPage extends HttpServlet {
 				request.getRequestDispatcher("html/Review.jspx").forward(request, response);
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				request.setAttribute(bookID, book_id);
+
+				try {
+					completeProductLoad( request,  model,  book_id);
+					request.getRequestDispatcher("html/ProductPage.jspx").forward(request, response);
+
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 		
 		//----------------------------------------------------------------
 		//------------------ initial loading of the page  ----------------
 		else if (request.getParameter(bookID) != null) {
-			System.out.println("==========> HERE 3 <==========");
+
 			String book_id =  request.getParameter(bookID);
 			h.setAttribute(bookID, book_id);
 			try {
 				
-				//----------------------------------------------------------------
-				//---------------- user just submitted a review  -----------------
-				if (request.getParameter("review_form") != null) {
-					System.out.println("\t==========> HERE 2 <==========");
-					
-
-					System.out.println("\t2. get rank!");
-					int rank = Integer.parseInt(request.getParameter(rate));
-					
-					System.out.println("\t3. get title!");
-					String this_title = request.getParameter(title);
-					
-					System.out.println("\t4. get body!");
-					String this_body = request.getParameter(body);
-					
-					// update database with this user
-					if (h.getAttribute("customer") != null) {
-
-						Customer customer = (Customer) h.getAttribute("customer");
-						
-						// add review 
-						System.out.println("About to add Customer review!");
-						model.addReview(customer, this_title, this_body, rank, book_id);
-					} 
-					// update database anonymously
-					else {
-						// add review  anonymously
-						
-						Visitor visitor;
-						if (h.getAttribute("visitor") == null) 
-							 visitor = model.getVisitor(request);
-						else
-							visitor = (Visitor) h.getAttribute("visitor");
-						
-						model.addAnonymousReview(visitor, this_title, this_body, rank, book_id);
-					}
-					
-					request.setAttribute("review_success", "review was added successfully");
-				}
+				// if user just submitted a review- it would handle it
+				this.addReview(h, book_id, model, request);
 				
 				request.setAttribute(bookID, book_id);
 				
@@ -264,6 +168,7 @@ public class ProductPage extends HttpServlet {
 				
 			}catch (Exception e) {
 				
+				request.setAttribute("review_success", "ERROR adding the review: "+e.getMessage());
 				request.setAttribute(bookID, book_id);
 				try {
 					completeProductLoad( request,  model,  book_id);
@@ -310,6 +215,14 @@ public class ProductPage extends HttpServlet {
 		doGet(request, response);
 	}
 	
+	/**
+	 * sets the attribite of book to be seen in the product page
+	 * 
+	 * @param request
+	 * @param model
+	 * @param id
+	 * @throws Exception
+	 */
 	private void setAttributes (HttpServletRequest request, MainPageModel model, String id) throws Exception{
 		Book b = model.getBookByID(id);
 		
@@ -327,6 +240,15 @@ public class ProductPage extends HttpServlet {
 		request.setAttribute("DESC", b.getDescription());
 	}
 	
+	/**
+	 * Pulls out the top 10 reviews for a specific book
+	 * 
+	 * @param request
+	 * @param model
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	private String getTop10Reviews(HttpServletRequest request, MainPageModel model, String id) throws Exception {
 		
 		String html = "";
@@ -373,6 +295,14 @@ public class ProductPage extends HttpServlet {
 		return html;
 	}
 	
+	/**
+	 * loads the page of a product based in the book id
+	 * 
+	 * @param request
+	 * @param model
+	 * @param id
+	 * @throws Exception
+	 */
 	private void completeProductLoad(HttpServletRequest request, MainPageModel model, String id) throws Exception {
 		String html = getTop10Reviews(request, model, id);
 		
@@ -380,5 +310,160 @@ public class ProductPage extends HttpServlet {
 		
 		request.setAttribute(VIWE_SOME_REVIEWS, html);
 	}
+	
+	/**
+	 * Adds the selected product to the customer's cart
+	 * 
+	 * @param book_id
+	 * @param request
+	 * @param model
+	 * @param h
+	 */
+	private void addProductCustomer(String book_id, HttpServletRequest request, MainPageModel model, HttpSession h){
+	
+		try {				
+			Customer customer = (Customer) h.getAttribute("customer");
+			Cart cart = customer.getCart();
+			
+			if (!cart.isBookInCart(model.getBookByID(book_id)))
+				cart.addBookAmount(model.getBookByID(book_id), 1);
+			
+			h.setAttribute("customer", customer);
+			
+			request.setAttribute("success", "Product added successfully");
+		} catch (Exception e) {
+			request.setAttribute("success","ERROR - Failed to add book to customer cart! "+e.getMessage());
+		}
+	}
+	
+	/**
+	 * Adds the selected product to the visitor's cart
+	 * 
+	 * @param book_id
+	 * @param request
+	 * @param model
+	 * @param h
+	 */
+	private void addProductVisitor(String book_id, HttpServletRequest request, MainPageModel model, HttpSession h){
+		try {
+			Visitor visitor;
+			if (h.getAttribute("visitor") == null) 
+				 visitor = model.getVisitor(request);
+			else
+				visitor = (Visitor) h.getAttribute("visitor");
+			
+			Cart cart = visitor.getCart();
 
+			if (!cart.isBookInCart(model.getBookByID(book_id)))
+				cart.addBookAmount(model.getBookByID(book_id), 1);
+			
+			h.setAttribute("visitor", visitor);
+		
+			request.setAttribute("success", "Product added successfully");
+		} catch (Exception e) {
+			request.setAttribute("success", "ERROR - Failed to add book to visitor's cart! "+e.getMessage());
+		}
+	}
+	
+	/**
+	 * sets the review attributes if customer reviewed product before.
+	 * It also prevents visitors to review the same book more than once
+	 * 
+	 * @param h
+	 * @param book_id
+	 * @param model
+	 * @param request
+	 * @throws Exception
+	 */
+	private void setReviewIfNeeded(HttpSession h, String book_id, MainPageModel model, HttpServletRequest request) throws Exception {
+
+		Customer customer = (Customer) h.getAttribute("customer");
+		
+		try {
+			if (customer != null) {
+				// give customer option to update his review or check it out
+				if (model.didCustomerAddReview(customer, book_id)) {
+					List<Review> review = model.getReview(customer, book_id);
+					Review r = review.get(0);
+					
+					int rating_number = r.getRating();
+					
+					if (rating_number == 1)
+						request.setAttribute(ONE_STAR, 1);
+					else if (rating_number == 2)
+						request.setAttribute(TWO_STAR, 2);
+					else if (rating_number == 3)
+						request.setAttribute(THREE_STAR, 3);
+					else if (rating_number == 4)
+						request.setAttribute(FOUR_STAR, 4);
+					else if (rating_number == 5)
+						request.setAttribute(FIVE_STAR, 5);
+					
+					
+					request.setAttribute(title, r.getTitle());
+					request.setAttribute(body, r.getBody()); 
+				}
+			} else {
+
+				if (h.getAttribute("visitor_add_review") != null) {
+					
+					boolean v = (boolean) h.getAttribute("visitor_add_review");
+					
+					if (v) {
+						request.setAttribute("review_success", "visitors can add only one review per book per session!");
+						throw new Exception ();
+					}
+				}
+			}
+		} catch (Exception e) {
+			//request.setAttribute("review_success", "There was a problem going back form a specific order page to writing its review!" + e.getMessage());
+			throw new Exception ();
+		}	
+	}
+	
+	/**
+	 * Adds the input from the user to the database, and adjusts feedback message accordingly
+	 * 
+	 * @param h
+	 * @param book_id
+	 * @param model
+	 * @param request
+	 * @throws Exception
+	 */
+	private void addReview (HttpSession h, String book_id, MainPageModel model, HttpServletRequest request) throws Exception{
+		//----------------------------------------------------------------
+		//---------------- user just submitted a review  -----------------
+		if (request.getParameter("review_form") != null) {
+
+			int rank = Integer.parseInt(request.getParameter(rate));
+			
+			String this_title = request.getParameter(title);
+			
+			String this_body = request.getParameter(body);
+			
+			// update database with this user
+			if (h.getAttribute("customer") != null) {
+
+				Customer customer = (Customer) h.getAttribute("customer");
+				
+				// add review 
+				model.addReview(customer, this_title, this_body, rank, book_id);
+			} 
+			// update database anonymously
+			else {
+				// add review  anonymously
+				
+				Visitor visitor;
+				if (h.getAttribute("visitor") == null) 
+					 visitor = model.getVisitor(request);
+				else
+					visitor = (Visitor) h.getAttribute("visitor");
+				
+				model.addAnonymousReview(visitor, this_title, this_body, rank, book_id);
+				h.setAttribute("visitor_add_review", true);
+			}
+			
+			request.setAttribute("review_success", "review was added successfully");
+		}
+	}
 }
