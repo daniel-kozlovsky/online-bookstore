@@ -1,7 +1,11 @@
 package ctrl;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -407,9 +411,12 @@ public class ProductPage extends HttpServlet {
 
 				if (h.getAttribute("visitor_add_review") != null) {
 					
-					boolean v = (boolean) h.getAttribute("visitor_add_review");
+					Set<String> rev = (HashSet<String>) h.getAttribute("visitor_add_review");
+					int size = rev.size();
+					rev.add(book_id);
 					
-					if (v) {
+					// no id was added - it is a duplicate
+					if (rev.size() == size) {
 						request.setAttribute("review_success", "visitors can add only one review per book per session!");
 						throw new Exception ();
 					}
@@ -460,7 +467,16 @@ public class ProductPage extends HttpServlet {
 					visitor = (Visitor) h.getAttribute("visitor");
 				
 				model.addAnonymousReview(visitor, this_title, this_body, rank, book_id);
-				h.setAttribute("visitor_add_review", true);
+				
+				Set<String> rev;
+				if (h.getAttribute("visitor_add_review") == null) {
+					rev = new HashSet<String>();
+					rev.add(book_id);
+				} else {
+					rev = (HashSet<String>) h.getAttribute("visitor_add_review");
+				}
+					
+				h.setAttribute("visitor_add_review", rev);
 			}
 			
 			request.setAttribute("review_success", "review was added successfully");
