@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import data.beans.Customer;
 import data.beans.Visitor;
 import model.UserAuthenticationModel;
-import model.MainPageModel;
+import model.SessionAccess;
 import model.ShoppingCartModel;
 
 /**
@@ -60,6 +60,7 @@ public class SignIn extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+
 		if (request.getParameter("cameFromPage") != null) {
 			System.out.println("\t\tcameFromPage="+request.getParameter("cameFromPage"));
 			this.doDelete(request, response);
