@@ -66,6 +66,7 @@ public class RestModel {
 	public String getOrdersByISBN (String prodID) throws Exception {
 
 		String orderString = "";
+		DataObjectCompiler docCust = null;
 		
 		//Retrieve the book based on it's ISBN
 		List<Book> book = this.getBookByISBN(prodID);
@@ -80,10 +81,25 @@ public class RestModel {
 		if (book.size() > 1)
 			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
 		else {
-		
+					
+			docCust = new CustomerDAO().newQueryRequest()
+					.includeAllAttributesInResultFromSchema()
+					.queryPurchaseOrder()
+					.includeAllAttributesInResultFromSchema()
+					.queryBook()
+					.includeAllAttributesInResultFromSchema()
+					.queryAttribute()
+					.whereBookISBN()
+					.varCharEquals(prodID)
+					.executeQuery()
+					.executeCompilation();
+			
+			docCust.compileCustomers();
+			
+			orderString = docCust.getPurchaseOrderJson();
+			
 		}
 		return orderString;
-		
 	}
 	
 	public String createBookMessage(List<Book> b, String prodID) {
