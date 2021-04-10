@@ -74,27 +74,12 @@ public class RestModel {
 		List<PurchaseOrder> po;
 		
 		//check size of book list and return appropriate response
-		System.out.println( book.size() + " ISBN:" + prodID);
-		if (book.size() == 0)
-			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
-		else if (book.size() > 1)
-			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
-		String orderString = "";
-		
-		//Retrieve the book based on it's ISBN
-		List<Book> book = this.getBookByISBN(prodID);
-		
-		//Would like to save the orders in this list 
-		List<PurchaseOrder> po;
-		
-		//check size of book list and return appropriate response
 		if (book.size() == 0)
 			orderString = this.create404Message("Book with ISBN: \'" + prodID + "\' Not Found");
 
 		if (book.size() > 1)
 			orderString = this.create403Message("Retrieved multiple books with given ISBN: \'" + prodID + "\' please providd this output to site admin: info@bookstore.ca");
 		else {
-
 		
 		}
 		return orderString;
