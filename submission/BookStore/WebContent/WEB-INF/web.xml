@@ -31,7 +31,7 @@
     <welcome-file>PurchaseOrder</welcome-file>
     <welcome-file>PurchaseOrderConfirmation.html</welcome-file>
   </welcome-file-list>
-	<!-- <security-constraint>
+	<security-constraint>
 	    <web-resource-collection>
 	        <web-resource-name>All</web-resource-name>
 	        <url-pattern>/*</url-pattern>
@@ -39,5 +39,5 @@
 	    <user-data-constraint>
 	        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
 	    </user-data-constraint>
-	</security-constraint> -->
+	</security-constraint>
 </web-app>
