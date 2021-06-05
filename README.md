@@ -1,20 +1,5 @@
-# Deployed Website 
+# Online Bookstore 
 
-Our website has been deployed to IBM cloud foundry. URL:
+A webapp that allows one to order, peruse and review books online. 
 
-https://bookstore-runtime-terror.us-east.mybluemix.net/
-
-# Source
-
-Our source code is in the /submission/BookStore folder.
-
-# Design Document
-
-The design document is in /docs folder. 
-
-# REST API Testing
-
-**Endpoints**
-
-**Client WAR**
-
+Made for EECS 4413 Building E-Commerce Systems
